@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MdDynamicFeed, MdNotifications, MdChat } from "react-icons/md";
+import { MdDynamicFeed, MdNotifications, MdChat, MdPeopleAlt } from "react-icons/md";
 
 const Navigation = () => {
     return (
@@ -11,6 +11,9 @@ const Navigation = () => {
                         <ul className=" flex items-center gap-8">
                             <li>
                                 <Link to="/"><MdDynamicFeed className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
+                            </li>
+                            <li>
+                                <Link to="/"><MdPeopleAlt className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
                             </li>
                             <li>
                                 <Link to="/"><MdChat className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
