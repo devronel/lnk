@@ -4,7 +4,7 @@ import { MdDynamicFeed, MdNotifications, MdChat } from "react-icons/md";
 const Navigation = () => {
     return (
         <>
-            <div className="py-3 shadow-bottom">
+            <div className="py-3 border-b border-lnk-dark-gray fixed top-0 left-0 right-0 z-50 bg-lnk-white">
                 <nav className="max-w-[80rem] w-[90%] mx-auto flex items-center justify-between">
                     <Link to="/" className=" font-bold text-lg text-lnk-orange">Lnk</Link>
                     <div className=" flex items-center gap-8">
