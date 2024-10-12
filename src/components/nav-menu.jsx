@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { HiOutlineUser } from "react-icons/hi2";
 import { CiLogout } from "react-icons/ci";
@@ -7,20 +7,25 @@ import { Link } from "react-router-dom";
 
 const NavMenu = (props) => {
 
-    const closeMenu = () => {
+    const menuDialog = useRef(null)
+
+    const closeMenu = (event) => {
+        if (event.target.closest('a')) {
+            return;
+        }
         props.setMenuOpen(false)
     }
 
-    // useEffect(() => {
-    //     document.addEventListener('mousedown', closeMenu)
+    useEffect(() => {
+        document.addEventListener('mousedown', closeMenu)
 
-    //     return () => {
-    //         document.removeEventListener('mousedown', closeMenu);
-    //     };
-    // }, [])
+        return () => {
+            document.removeEventListener('mousedown', closeMenu);
+        };
+    }, [])
 
     return (
-        <div className={`${props.menuOpen ? 'block animate__fadeIn' : 'hidden'} animate__animated absolute top-12 right-0 bg-lnk-white border border-lnk-gray rounded py-2 px-1 w-40`}>
+        <div ref={menuDialog} className={`${props.menuOpen ? 'block animate__fadeIn' : 'hidden'} animate__animated absolute top-12 right-0 bg-lnk-white border border-lnk-gray rounded py-2 px-1 w-40`}>
             <div className="absolute -top-[1.125rem] left-14">
                 <div className="triangle-wrapper">
                     <div className="triangle"></div>
@@ -28,7 +33,7 @@ const NavMenu = (props) => {
             </div>
             <ul>
                 <li>
-                    <Link to='/profile' className="text-sm flex items-center gap-1 w-full pl-2 px-2 py-2 rounded hover:bg-lnk-gray transition-colors ease-linear duration-150">
+                    <Link to='/profile' onClick={() => props.setMenuOpen(false)} className="text-sm flex items-center gap-1 w-full pl-2 px-2 py-2 rounded hover:bg-lnk-gray transition-colors ease-linear duration-150">
                         <HiOutlineUser />
                         Profile
                     </Link>

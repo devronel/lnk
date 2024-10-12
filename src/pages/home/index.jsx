@@ -9,7 +9,7 @@ const Home = () => {
                 <div className=" w-12 h-12 rounded-full overflow-hidden border border-lnk-dark-gray">
                     <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                 </div>
-                <button className=" flex-grow text-sm border border-lnk-dark-gray p-3 rounded text-left bg-white">Start post</button>
+                <button className=" flex-grow text-sm border border-lnk-gray p-3 rounded text-left bg-white">Start post</button>
             </section>
             <Post />
             <Post />
