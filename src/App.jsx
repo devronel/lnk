@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import Home from './pages/home'
 import MainLayout from './layouts/mainLayout'
+import Home from './pages/home'
+import Profile from './pages/profile'
 
 function App() {
 
@@ -9,6 +10,7 @@ function App() {
       <Routes>
         <Route path='/' element={<MainLayout />}>
           <Route path='/' element={<Home />} />
+          <Route path='/profile' element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>

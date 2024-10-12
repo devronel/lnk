@@ -8,7 +8,7 @@ const Navigation = () => {
     const [menuOpen, setMenuOpen] = useState(false)
 
     const openMenu = () => {
-        setMenuOpen(true)
+        setMenuOpen(prevState => !prevState)
     }
 
     return (
