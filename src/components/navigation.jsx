@@ -8,7 +8,7 @@ const Navigation = () => {
     const [menuOpen, setMenuOpen] = useState(false)
 
     const openMenu = () => {
-        setMenuOpen(prevState => !prevState)
+        setMenuOpen(true)
     }
 
     return (
@@ -39,7 +39,7 @@ const Navigation = () => {
                                 </div>
                                 <p className=" font-medium text-sm">Alexia Yu</p>
                             </button>
-                            <NavMenu menuOpen={menuOpen} />
+                            <NavMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                         </div>
                     </div>
                 </nav>

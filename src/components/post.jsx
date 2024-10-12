@@ -51,7 +51,7 @@ const Post = () => {
                             <AiOutlineLike className=" text-xl" />
                             <span>React</span>
                         </button>
-                        <div className="absolute -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
+                        <div className="animate__animated animate__fadeIn absolute -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
                             <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
                                 <button className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <FaHeart className=" text-red-500 text-xl" />
