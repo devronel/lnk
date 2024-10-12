@@ -1,6 +1,7 @@
 import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { FaRegImage } from "react-icons/fa";
 import Post from "../../components/post";
 
 const Profile = () => {
@@ -8,11 +9,22 @@ const Profile = () => {
         <>
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative">
-                    <div className=" h-52 w-full">
+                    <div className="relative h-52 w-full">
                         <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/633409/pexels-photo-633409.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                        <div className=" absolute inset-0 bg-lnk-dark opacity-50"></div>
+                        <button className=" absolute top-3 text-lnk-gray right-3 border border-lnk-gray hover:bg-lnk-gray hover:text-lnk-dark p-2 rounded-full transition-colors ease-linear duration-150">
+                            <FaRegImage />
+                        </button>
                     </div>
-                    <div className=" w-36 h-36 rounded-full absolute top-28 left-5">
-                        <img className="rounded-full w-full h-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                    <div className="  absolute top-28 left-5">
+                        <div className="w-36 h-36 group rounded-full border border-lnk-white relative">
+                            <img className="rounded-full w-full h-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                            <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">
+                                <button className="group-hover:block hidden text-lnk-gray text-2xl" >
+                                    <FaRegImage />
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className=" px-5 flex items-center justify-end mb-5 pt-6">
