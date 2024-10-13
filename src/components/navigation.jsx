@@ -1,15 +1,22 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { MdDynamicFeed, MdNotifications, MdChat, MdPeopleAlt } from "react-icons/md";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { MdDynamicFeed, MdNotifications, MdPeopleAlt } from "react-icons/md";
+import { IoIosChatbubbles } from "react-icons/io";
 import NavMenu from "./nav-menu";
 
 const Navigation = () => {
 
+    const location = useLocation()
+    const [route, setRoute] = useState(null)
     const [menuOpen, setMenuOpen] = useState(false)
 
     const openMenu = () => {
         setMenuOpen(prevState => !prevState)
     }
+
+    useEffect(() => {
+        setRoute(location.pathname)
+    }, [location])
 
     return (
         <>
@@ -19,13 +26,13 @@ const Navigation = () => {
                     <div className=" flex items-center gap-8">
                         <ul className=" flex items-center gap-8">
                             <li>
-                                <Link to="/"><MdDynamicFeed className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
+                                <Link to="/"><MdDynamicFeed className={`${route === '/' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
-                                <Link to="/"><MdPeopleAlt className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
+                                <Link to="/people"><MdPeopleAlt className={`${route === '/people' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
-                                <Link to="/"><MdChat className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
+                                <Link to="/"><IoIosChatbubbles className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
                             </li>
                             <li>
                                 <Link to="/"><MdNotifications className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
