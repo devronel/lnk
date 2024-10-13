@@ -1,12 +1,28 @@
+import { useState } from "react";
 import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaRegImage } from "react-icons/fa";
 import Post from "../../components/post";
+import Modal from "../../components/modal";
+import LnkInput from "../../components/forms/lnk-input";
 
 const Profile = () => {
+
+    const [openModal, setOpenModal] = useState(false)
+
+    const modalOpen = () => {
+        setOpenModal(prevState => !prevState)
+    }
+
     return (
         <>
+            <Modal openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl" />} maxWidth="max-w-xl">
+                <LnkInput type='text' className='mb-3' placeholder="First name" label='First name' />
+                <LnkInput type='text' className='mb-3' placeholder="Last name" label='Last name' />
+                <LnkInput type='text' className='mb-3' placeholder="Headline" label='Headline' />
+                <LnkInput type='date' className='mb-3' label='Date of Birth' />
+            </Modal>
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative">
                     <div className="relative h-52 w-full">
@@ -28,7 +44,7 @@ const Profile = () => {
                     </div>
                 </div>
                 <div className=" px-5 flex items-center justify-end mb-5 pt-6">
-                    <button className=" text-xl hover:bg-lnk-gray p-2 rounded-full transition-colors ease-linear duration-150">
+                    <button onClick={modalOpen} className=" text-xl hover:bg-lnk-gray p-2 rounded-full transition-colors ease-linear duration-150">
                         <CiEdit />
                     </button>
                 </div>
