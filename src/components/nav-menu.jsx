@@ -25,7 +25,7 @@ const NavMenu = (props) => {
     }, [])
 
     return (
-        <div ref={menuDialog} className={`${props.menuOpen ? 'block animate__fadeIn' : 'hidden'} animate__animated absolute top-12 right-0 bg-lnk-white border border-lnk-gray rounded py-2 px-1 w-40`}>
+        <div ref={menuDialog} className={`${props.menuOpen ? 'block animate__fadeIn' : 'hidden'} animate__animated absolute top-12 right-0 bg-lnk-white border border-lnk-gray rounded py-2 px-1 w-auto min-w-40`}>
             <div className="absolute -top-[1.125rem] left-14">
                 <div className="triangle-wrapper">
                     <div className="triangle"></div>
@@ -39,7 +39,7 @@ const NavMenu = (props) => {
                     </Link>
                     <button className="text-sm flex items-center gap-1 w-full px-2 py-2 rounded hover:bg-lnk-gray transition-colors ease-linear duration-150">
                         <IoSettingsOutline />
-                        Settings
+                        Account Settings
                     </button>
                     <button className="text-sm flex items-center gap-1 w-full px-2 py-2 rounded hover:bg-red-100 hover:text-red-600 transition-colors ease-linear duration-150">
                         <CiLogout />

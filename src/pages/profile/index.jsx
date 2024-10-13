@@ -3,25 +3,45 @@ import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaRegImage } from "react-icons/fa";
+import { AiFillPicture } from "react-icons/ai";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnk-input";
+import LnkTextarea from "../../components/forms/lnk-textarea";
 
 const Profile = () => {
 
     const [openModal, setOpenModal] = useState(false)
+    const [editProfilePhoto, setEditProfilePhoto] = useState(false)
 
     const modalOpen = () => {
         setOpenModal(prevState => !prevState)
     }
 
+    const profileUpdateModal = () => {
+        setEditProfilePhoto(prevState => !prevState)
+    }
+
     return (
         <>
-            <Modal openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl" />} maxWidth="max-w-xl">
+            {/* basic info modal */}
+            <Modal openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
                 <LnkInput type='text' className='mb-3' placeholder="First name" label='First name' />
                 <LnkInput type='text' className='mb-3' placeholder="Last name" label='Last name' />
                 <LnkInput type='text' className='mb-3' placeholder="Headline" label='Headline' />
                 <LnkInput type='date' className='mb-3' label='Date of Birth' />
+                <LnkTextarea className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
+            </Modal>
+            {/* edit profile picture modal */}
+            <Modal openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
+                <div className=" flex items-center justify-center">
+                    <label htmlFor="profile__photo" className=" cursor-pointer">
+                        <div className=" w-80 h-80 rounded-full border border-lnk-orange">
+                            <img className=" w-full h-full object-cover rounded-full" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                        </div>
+                    </label>
+                    <input type="file" hidden id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
+                </div>
             </Modal>
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative">
@@ -36,7 +56,7 @@ const Profile = () => {
                         <div className="w-36 h-36 group rounded-full border border-lnk-white relative">
                             <img className="rounded-full w-full h-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                             <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">
-                                <button className="group-hover:block hidden text-lnk-gray text-2xl" >
+                                <button onClick={profileUpdateModal} className="group-hover:block hidden text-lnk-gray text-2xl" >
                                     <FaRegImage />
                                 </button>
                             </div>

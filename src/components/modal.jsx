@@ -27,7 +27,7 @@ const Modal = (props) => {
                             </div>
                             <div className="bg-lnk-white border-t border-lnk-gray px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                                 <button type="button" className="inline-flex w-full justify-center rounded bg-lnk-dark-gray px-3 py-2 text-sm font-semibold text-lnk-white shadow-sm hover:bg-opacity-80 sm:ml-3 sm:w-auto">Save</button>
-                                <button type="button" className="mt-3 inline-flex w-full justify-center rounded bg-white px-3 py-2 text-sm font-semibold text-lnk-dark-gray shadow-sm border border-lnk-dark-gray hover:bg-gray-50 sm:mt-0 sm:w-auto">Close</button>
+                                <button onClick={closeModal} type="button" className="mt-3 inline-flex w-full justify-center rounded bg-white px-3 py-2 text-sm font-semibold text-lnk-dark-gray shadow-sm border border-lnk-dark-gray hover:bg-gray-50 sm:mt-0 sm:w-auto">Close</button>
                             </div>
                         </div>
                     </div>
