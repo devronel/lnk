@@ -35,7 +35,7 @@ const Navigation = () => {
                                 <Link to="/"><IoIosChatbubbles className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
                             </li>
                             <li>
-                                <Link to="/"><MdNotifications className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
+                                <Link to="/notifications"><MdNotifications className={`${route === '/notifications' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                         </ul>
                         <span className=" block w-[2px] h-5 bg-lnk-dark-gray rounded"></span>

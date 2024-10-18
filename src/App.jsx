@@ -6,6 +6,7 @@ import Profile from './pages/profile'
 import People from './pages/people'
 import Login from './pages/auth/login'
 import Signup from './pages/auth/signup'
+import Notifications from './pages/notifications'
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/people' element={<People />} />
+          <Route path='/notifications' element={<Notifications />} />
         </Route>
         <Route path='/' element={<AuthLayout />}>
           <Route path='/login' element={<Login />} />
