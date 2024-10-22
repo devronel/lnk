@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axiosInstance from "../../utils/axios";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 import { FaRegImages } from "react-icons/fa";
 import { FcAddImage, FcDocument } from "react-icons/fc";
@@ -23,6 +24,17 @@ const Home = () => {
     const startPost = () => {
         setPostModal(true)
     }
+
+    useEffect(() => {
+        const getUser = async () => {
+            let user = await axiosInstance.get('/user', {
+                withCredentials: true
+            });
+            console.log(user)
+        }
+
+        getUser()
+    }, [])
 
     return (
         <>

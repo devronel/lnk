@@ -1,9 +1,42 @@
-import { Link } from "react-router-dom"
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom"
+import axiosInstance from "../../utils/axios";
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
 import LnkInput from "../../components/forms/lnk-input";
 
 const Login = () => {
+
+    const navigate = useNavigate()
+    const [authData, setAuthData] = useState({
+        email: '',
+        password: ''
+    })
+
+    const handleChange = (e) => {
+        setAuthData({
+            ...authData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const submit = async (e) => {
+        e.preventDefault();
+        let user = await axiosInstance.post('/user/authenticate', authData, {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+
+        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.data.access_token}`
+
+        if (user.data.success) {
+            navigate('/')
+        }
+
+    }
+
     return (
         <>
             <section className="  max-w-[400px] w-[90%] mx-auto">
@@ -20,12 +53,12 @@ const Login = () => {
                     <p className=" text-xs font-light">or Login with Email</p>
                     <div className=" flex-grow bg-lnk-gray h-[1px]"></div>
                 </div>
-                <form>
+                <form onSubmit={submit}>
                     <div className=" mb-3">
-                        <LnkInput type="email" label="Email" />
+                        <LnkInput onChange={handleChange} name='email' type="email" label="Email" />
                     </div>
                     <div className=" mb-3">
-                        <LnkInput type='password' label="Password" />
+                        <LnkInput onChange={handleChange} name='password' type='password' label="Password" />
                     </div>
                     <Link to='/login' className="block mb-3 text-right text-xs hover:underline text-lnk-orange">
                         Forgot Password?
