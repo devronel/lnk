@@ -19,8 +19,8 @@ const MainLayout = () => {
                 <Navigation />
                 <main>
                     <div className={`max-w-[80rem] w-[90%] mx-auto grid gap-5
-                        ${currentUrl === '/profile' ? 'grid-cols-[1fr_350px]' : 'grid-cols-[260px_1fr_260px]'}
-                        `}>
+                            ${currentUrl === '/profile' ? 'grid-cols-[1fr_350px]' : 'grid-cols-[260px_1fr_260px]'}
+                            `}>
                         {
                             currentUrl === '/profile' ? null : <LeftSidebar />
                         }

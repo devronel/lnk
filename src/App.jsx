@@ -7,23 +7,26 @@ import People from './pages/people'
 import Login from './pages/auth/login'
 import Signup from './pages/auth/signup'
 import Notifications from './pages/notifications'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<MainLayout />}>
-          <Route path='/' element={<Home />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/people' element={<People />} />
-          <Route path='/notifications' element={<Notifications />} />
-        </Route>
-        <Route path='/' element={<AuthLayout />}>
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<MainLayout />}>
+            <Route path='/' element={<Home />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='/people' element={<People />} />
+            <Route path='/notifications' element={<Notifications />} />
+          </Route>
+          <Route path='/' element={<AuthLayout />}>
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   )
 }

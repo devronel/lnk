@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import axiosInstance from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
 import LnkInput from "../../components/forms/lnk-input";
 
 const Login = () => {
 
+    const { authenticate } = useContext(AuthContext)
     const navigate = useNavigate()
     const [authData, setAuthData] = useState({
         email: '',
@@ -22,18 +24,19 @@ const Login = () => {
 
     const submit = async (e) => {
         e.preventDefault();
-        let user = await axiosInstance.post('/user/authenticate', authData, {
-            withCredentials: true,
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+        authenticate(authData)
+        // let user = await axiosInstance.post('/user/authenticate', authData, {
+        //     withCredentials: true,
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // })
 
-        axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.data.access_token}`
+        // axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.data.access_token}`
 
-        if (user.data.success) {
-            navigate('/')
-        }
+        // if (user.data.success) {
+        //     navigate('/')
+        // }
 
     }
 

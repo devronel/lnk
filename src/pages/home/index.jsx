@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import axiosInstance from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 import { FaRegImages } from "react-icons/fa";
 import { FcAddImage, FcDocument } from "react-icons/fc";
@@ -10,6 +11,7 @@ import Post from "../../components/post"
 
 const Home = () => {
 
+    // const { data } = useContext(AuthContext)
     const [postModal, setPostModal] = useState(false)
     const [post, setPost] = useState('')
 
@@ -27,10 +29,14 @@ const Home = () => {
 
     useEffect(() => {
         const getUser = async () => {
-            let user = await axiosInstance.get('/user', {
-                withCredentials: true
-            });
-            console.log(user)
+            try {
+                let user = await axiosInstance.get('/user', {
+                    withCredentials: true
+                });
+                console.log(user)
+            } catch (error) {
+                console.log(error.message)
+            }
         }
 
         getUser()
