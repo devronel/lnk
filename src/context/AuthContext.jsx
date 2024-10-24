@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
 
             if (user.data.success) {
                 setIsLogin(true)
+                navigate('/')
             } else {
                 setIsLogin(false)
             }
@@ -67,12 +68,9 @@ export const AuthProvider = ({ children }) => {
 
         validateUser()
 
-        if (!isLogin) {
+        if (isLogin === false) {
             navigate('/login')
-        } else {
-            navigate('/')
         }
-
 
     }, [isLogin, navigate])
 
@@ -82,7 +80,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ authenticate, logout }}>
+        <AuthContext.Provider value={{ authenticate, logout, isLogin }}>
             {children}
         </AuthContext.Provider>
     )
