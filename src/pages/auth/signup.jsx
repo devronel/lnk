@@ -55,11 +55,6 @@ const Signup = () => {
         }
     }
 
-    // useEffect(() => {
-    //     console.log(errorExist('email').msg)
-    //     console.log(errorExist('password').msg)
-    // }, [errors])
-
     return (
         <>
             <section className="  max-w-[400px] w-[90%] mx-auto">

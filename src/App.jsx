@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 import MainLayout from './layouts/mainLayout'
 import AuthLayout from './layouts/authLayout'
 import Home from './pages/home'
@@ -13,6 +14,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Toaster />
       <AuthProvider>
         <Routes>
           <Route path='/' element={<MainLayout />}>

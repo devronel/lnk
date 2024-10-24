@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { Navigate, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axios";
 
@@ -25,6 +26,7 @@ export const AuthProvider = ({ children }) => {
                 setIsLogin(true)
                 navigate('/')
             } else {
+                toast.error(user.data.message + '!')
                 setIsLogin(false)
             }
         } catch (error) {
