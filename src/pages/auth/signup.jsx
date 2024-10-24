@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
+import toast from "react-hot-toast";
 import axiosInstance from "../../utils/axios"
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
@@ -32,7 +33,7 @@ const Signup = () => {
                 }
             })
             if (response.data.success) {
-                console.log(response.data);
+                toast.success("Account successfully created!")
                 setUserData({
                     username: '',
                     email: '',
