@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axios";
 
 export const AuthContext = createContext(null)
@@ -7,8 +7,9 @@ export const AuthContext = createContext(null)
 export const AuthProvider = ({ children }) => {
 
     const navigate = useNavigate()
-    const [isLogin, setIsLogin] = useState(false)
+    const [isLogin, setIsLogin] = useState(null)
 
+    // Login user
     const authenticate = async (data) => {
         try {
             let user = await axiosInstance.post('/user/authenticate', data, {
@@ -31,21 +32,57 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    // if (isLogin === null) {
-    //     return <div>Loading...</div>
-    // }
+    // Logout user
+    const logout = async () => {
+        try {
+            let response = await axiosInstance.delete('/user/logout', {
+                withCredentials: true
+            });
+            if (response.data.success) {
+                setIsLogin(false)
+            }
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    // Validate user
+    const validateUser = async () => {
+        try {
+            let user = await axiosInstance.get('/user/validate-user', {
+                withCredentials: true
+            });
+            if (user.data.success) {
+                setIsLogin(true)
+            } else {
+                setIsLogin(false)
+            }
+        } catch (error) {
+            setIsLogin(false)
+            console.log(error.message)
+        }
+    }
 
     useEffect(() => {
+
+        validateUser()
+
         if (!isLogin) {
             navigate('/login')
         } else {
             navigate('/')
         }
-    }, [isLogin])
 
+
+    }, [isLogin, navigate])
+
+
+    if (isLogin === null) {
+        return <div>Loading...</div>
+    }
 
     return (
-        <AuthContext.Provider value={{ authenticate }}>
+        <AuthContext.Provider value={{ authenticate, logout }}>
             {children}
         </AuthContext.Provider>
     )

@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { IoSettingsOutline } from "react-icons/io5";
 import { HiOutlineUser } from "react-icons/hi2";
 import { CiLogout } from "react-icons/ci";
@@ -8,9 +9,10 @@ import { Link } from "react-router-dom";
 const NavMenu = (props) => {
 
     const menuDialog = useRef(null)
+    const { logout } = useContext(AuthContext)
 
     const closeMenu = (event) => {
-        if (event.target.closest('a')) {
+        if (event.target.closest('a') || event.target.closest('button')) {
             return;
         }
         props.setMenuOpen(false)
@@ -41,7 +43,7 @@ const NavMenu = (props) => {
                         <IoSettingsOutline />
                         Account Settings
                     </button>
-                    <button className="text-sm flex items-center gap-1 w-full px-2 py-2 rounded hover:bg-red-100 hover:text-red-600 transition-colors ease-linear duration-150">
+                    <button onClick={logout} className="text-sm flex items-center gap-1 w-full px-2 py-2 rounded hover:bg-red-100 hover:text-red-600 transition-colors ease-linear duration-150">
                         <CiLogout />
                         Logout
                     </button>
