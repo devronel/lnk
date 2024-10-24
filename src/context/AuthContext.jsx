@@ -68,10 +68,6 @@ export const AuthProvider = ({ children }) => {
 
         validateUser()
 
-        if (isLogin === false) {
-            navigate('/login')
-        }
-
     }, [isLogin, navigate])
 
 

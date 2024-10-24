@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom"
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { Outlet, useLocation, useNavigate } from "react-router-dom"
 import Navigation from "../components/navigation"
 import LeftSidebar from "../components/left-sidebar"
 
 const MainLayout = () => {
 
     const location = useLocation();
+    const navigate = useNavigate()
+    const { isLogin } = useContext(AuthContext)
     const [currentUrl, setCurrentUrl] = useState('')
 
     useEffect(() => {
         setCurrentUrl(location.pathname)
+
+        if (!isLogin) {
+            navigate('/login')
+        }
+
     }, [location])
 
 

@@ -7,7 +7,7 @@ import LnkInput from "../../components/forms/lnk-input";
 
 const Login = () => {
 
-    const { isLogin } = useContext(AuthContext)
+    const { isLogin, authenticate } = useContext(AuthContext)
     const navigate = useNavigate()
     const [authData, setAuthData] = useState({
         email: '',
