@@ -1,9 +1,65 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"
+import axiosInstance from "../../utils/axios"
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
 import LnkInput from "../../components/forms/lnk-input";
 
 const Signup = () => {
+
+    const [userData, setUserData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        passwordConfirmation: ''
+    })
+    const [errors, setErrors] = useState([])
+
+    const handleChangeInput = (e) => {
+        setUserData({
+            ...userData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const submit = async (e) => {
+        e.preventDefault();
+
+        try {
+            let response = await axiosInstance.post('/user/create', userData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            if (response.data.success) {
+                console.log(response.data);
+                setUserData({
+                    username: '',
+                    email: '',
+                    password: '',
+                    passwordConfirmation: ''
+                })
+                setErrors([])
+            } else {
+                setErrors(response.data.data.errors)
+            }
+        } catch (error) {
+            console.log(error.message)
+        }
+
+    }
+
+    const errorExist = (pathName) => {
+        if (errors.length > 0) {
+            return errors.find(value => value.path === pathName)
+        }
+    }
+
+    // useEffect(() => {
+    //     console.log(errorExist('email').msg)
+    //     console.log(errorExist('password').msg)
+    // }, [errors])
+
     return (
         <>
             <section className="  max-w-[400px] w-[90%] mx-auto">
@@ -20,20 +76,32 @@ const Signup = () => {
                     <p className=" text-xs font-light">or Signup with Email</p>
                     <div className=" flex-grow bg-lnk-gray h-[1px]"></div>
                 </div>
-                <form>
+                <form onSubmit={submit}>
                     <div className=" mb-3">
-                        <LnkInput type="text" label="Full name" />
+                        <LnkInput onChange={handleChangeInput} value={userData.username} name='username' type="text" label="Username" error={errorExist('username')} />
+                        {
+                            errorExist('username') ? <p className=" text-red-500 text-xs">{errorExist('username').msg}</p> : null
+                        }
                     </div>
                     <div className=" mb-3">
-                        <LnkInput type="email" label="Email" />
+                        <LnkInput onChange={handleChangeInput} value={userData.email} name='email' type="email" label="Email" error={errorExist('email')} />
+                        {
+                            errorExist('email') ? <p className=" text-red-500 text-xs">{errorExist('email').msg}</p> : null
+                        }
                     </div>
                     <div className=" mb-3">
-                        <LnkInput type='password' label="Password" />
+                        <LnkInput onChange={handleChangeInput} value={userData.password} name='password' type='password' label="Password" error={errorExist('password')} />
+                        {
+                            errorExist('password') ? <p className=" text-red-500 text-xs">{errorExist('password').msg}</p> : null
+                        }
                     </div>
                     <div className=" mb-3">
-                        <LnkInput type='password' label="Re-type Password" />
+                        <LnkInput onChange={handleChangeInput} value={userData.passwordConfirmation} name='passwordConfirmation' type='password' label="Re-type Password" error={errorExist('passwordConfirmation')} />
+                        {
+                            errorExist('passwordConfirmation') ? <p className=" text-red-500 text-xs">{errorExist('passwordConfirmation').msg}</p> : null
+                        }
                     </div>
-                    <button className=" bg-lnk-orange w-full py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-90 transition-all ease-linear duration-150">
+                    <button type="submit" className=" bg-lnk-orange w-full py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-90 transition-all ease-linear duration-150">
                         Signup
                     </button>
                     <p className=" text-xs text-center">Already have an account? <Link to="/login" className=" text-lnk-orange hover:underline">Login</Link></p>

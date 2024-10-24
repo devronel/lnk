@@ -18,7 +18,7 @@ const MainLayout = () => {
             navigate('/login')
         }
 
-    }, [location])
+    }, [location, isLogin])
 
 
     return (
