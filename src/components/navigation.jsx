@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MdDynamicFeed, MdNotifications, MdPeopleAlt } from "react-icons/md";
 import { IoIosChatbubbles } from "react-icons/io";
+import { isNull } from "../utils/functions";
 import NavMenu from "./nav-menu";
 
-const Navigation = () => {
+const Navigation = (props) => {
 
     const location = useLocation()
     const [route, setRoute] = useState(null)
@@ -44,7 +45,7 @@ const Navigation = () => {
                                 <div className=" w-6 h-6 rounded-full overflow-hidden border border-lnk-dark-gray">
                                     <img className="w-full h-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                                 </div>
-                                <p className=" font-medium text-sm">Alexia Yu</p>
+                                <p className=" font-medium text-sm">{!isNull(props.user) ? props.user.username : null}</p>
                             </button>
                             <NavMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                         </div>

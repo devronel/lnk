@@ -8,7 +8,7 @@ const MainLayout = () => {
 
     const location = useLocation();
     const navigate = useNavigate()
-    const { isLogin } = useContext(AuthContext)
+    const { isLogin, user } = useContext(AuthContext)
     const [currentUrl, setCurrentUrl] = useState('')
 
     useEffect(() => {
@@ -24,7 +24,7 @@ const MainLayout = () => {
     return (
         <>
             <div className=" min-h-screen h-auto pt-[4.0625rem] pb-4">
-                <Navigation />
+                <Navigation user={user} />
                 <main>
                     <div className={`max-w-[80rem] w-[90%] mx-auto grid gap-5
                             ${currentUrl === '/profile' ? 'grid-cols-[1fr_350px]' : 'grid-cols-[260px_1fr_260px]'}

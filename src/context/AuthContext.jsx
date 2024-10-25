@@ -8,7 +8,8 @@ export const AuthContext = createContext(null)
 export const AuthProvider = ({ children }) => {
 
     const navigate = useNavigate()
-    const [isLogin, setIsLogin] = useState(null)
+    const [isLogin, setIsLogin] = useState(null);
+    const [user, setUser] = useState(null)
 
     // Login user
     const authenticate = async (data) => {
@@ -24,7 +25,8 @@ export const AuthProvider = ({ children }) => {
 
             if (user.data.success) {
                 setIsLogin(true)
-                navigate('/')
+                setUser(user.data.data.authUser)
+                // navigate('/')
             } else {
                 toast.error(user.data.message + '!')
                 setIsLogin(false)
@@ -56,6 +58,7 @@ export const AuthProvider = ({ children }) => {
                 withCredentials: true
             });
             if (user.data.success) {
+                setUser(user.data.data.authUser)
                 setIsLogin(true)
             } else {
                 setIsLogin(false)
@@ -78,7 +81,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ authenticate, logout, isLogin }}>
+        <AuthContext.Provider value={{ authenticate, logout, isLogin, user }}>
             {children}
         </AuthContext.Provider>
     )

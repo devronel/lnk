@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { isNull } from "../../utils/functions";
 import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
@@ -11,6 +13,7 @@ import LnkTextarea from "../../components/forms/lnk-textarea";
 
 const Profile = () => {
 
+    const { user } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
 
@@ -69,7 +72,7 @@ const Profile = () => {
                     </button>
                 </div>
                 <div className=" px-5 pb-3">
-                    <h6 className=" text-2xl font-bold">Alexia Yu</h6>
+                    <h6 className=" text-2xl font-bold">{!isNull(user) ? user.username : null}</h6>
                     <p className=" text-sm font-normal ">Frontend Developer | Javascript | Laravel</p>
                     <p className=" text-xs font-light mb-1">New York City</p>
                     <button className=" text-xs font-bold text-lnk-dark-gray hover:underline">2,000 followers</button>
