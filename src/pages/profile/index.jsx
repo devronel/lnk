@@ -13,14 +13,36 @@ import LnkTextarea from "../../components/forms/lnk-textarea";
 
 const Profile = () => {
 
+    /*
+        Initialize React hooks like states, context and etc.
+    */
     const { user } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
+    const [userData, setUserData] = useState({
+        firsName: user?.first_name ? user.first_name : '',
+        lastName: user?.last_name ? user.last_name : '',
+        headline: user?.headline ? user.headline : '',
+        dateOfBirth: user?.date_of_birth ? user.date_of_birth : '',
+        about: user?.about ? user.about : ''
+    })
 
+    /*
+        Onchange handler
+    */
+    const handleOnChange = (e) => {
+        setUserData({
+            ...userData,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    /*
+        Modal functions for open and close
+    */
     const modalOpen = () => {
         setOpenModal(prevState => !prevState)
     }
-
     const profileUpdateModal = () => {
         setEditProfilePhoto(prevState => !prevState)
     }
@@ -29,11 +51,11 @@ const Profile = () => {
         <>
             {/* basic info modal */}
             <Modal openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
-                <LnkInput type='text' className='mb-3' placeholder="First name" label='First name' />
-                <LnkInput type='text' className='mb-3' placeholder="Last name" label='Last name' />
-                <LnkInput type='text' className='mb-3' placeholder="Headline" label='Headline' />
-                <LnkInput type='date' className='mb-3' label='Date of Birth' />
-                <LnkTextarea className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
+                <LnkInput onChange={handleOnChange} value={userData.firsName} name='firstName' type='text' className='mb-3' placeholder="First name" label='First name' />
+                <LnkInput onChange={handleOnChange} value={userData.lastName} name='lastName' type='text' className='mb-3' placeholder="Last name" label='Last name' />
+                <LnkInput onChange={handleOnChange} value={userData.headline} name='headline' type='text' className='mb-3' placeholder="Headline" label='Headline' />
+                <LnkInput onChange={handleOnChange} value={userData.dateOfBirth} name='dateOfBirth' type='date' className='mb-3' label='Date of Birth' />
+                <LnkTextarea onChange={handleOnChange} value={userData.about} name='about' className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
             </Modal>
             {/* edit profile picture modal */}
             <Modal openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
@@ -72,19 +94,39 @@ const Profile = () => {
                     </button>
                 </div>
                 <div className=" px-5 pb-3">
-                    <h6 className=" text-2xl font-bold">{!isNull(user) ? user.username : null}</h6>
-                    <p className=" text-sm font-normal ">Frontend Developer | Javascript | Laravel</p>
-                    <p className=" text-xs font-light mb-1">New York City</p>
+                    {
+                        !isNull(user) ? (
+                            <>
+                                <h6 className=" text-2xl font-bold">{isNull(user.first_name) || isNull(user.last_name) ? user.username : user.first_name + ' ' + user.last_name}</h6>
+                                {
+                                    !isNull(user.headline) ? (
+                                        <p className=" text-sm font-normal ">{user.headline}</p>
+                                    ) : null
+                                }
+                                {
+                                    !isNull(user.address) ? (
+                                        <p className=" text-xs font-light mb-1 ">{user.address}</p>
+                                    ) : null
+                                }
+                            </>
+                        ) : null
+                    }
                     <button className=" text-xs font-bold text-lnk-dark-gray hover:underline">2,000 followers</button>
                 </div>
             </section>
-            <section className=" px-5 py-3 bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-3">
-                <h3 className=" text-normal font-bold mb-1 text-lnk-dark-gray">
-                    <FcAbout className=" text-lg inline align-middle mr-1" />
-                    <span className=" align-middle">About</span>
-                </h3>
-                <p className=" text-sm font-normal">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
-            </section>
+            {
+                !isNull(user) ? (
+                    !isNull(user.about) ? (
+                        <section className=" px-5 py-3 bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-3">
+                            <h3 className=" text-normal font-bold mb-1 text-lnk-dark-gray">
+                                <FcAbout className=" text-lg inline align-middle mr-1" />
+                                <span className=" align-middle">About</span>
+                            </h3>
+                            <p className=" text-sm font-normal">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                        </section>
+                    ) : null
+                ) : null
+            }
             <div className=" flex items-center gap-3 mb-2">
                 <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
                 <p className=" text-sm font-light text-lnk-dark-gray">
