@@ -1,11 +1,13 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import axiosInstance from "../../utils/axios";
 import { isNull } from "../../utils/functions";
 import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaRegImage } from "react-icons/fa";
 import { AiFillPicture } from "react-icons/ai";
+import { dateFormat } from "../../utils/functions";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnk-input";
@@ -16,14 +18,15 @@ const Profile = () => {
     /*
         Initialize React hooks like states, context and etc.
     */
-    const { user } = useContext(AuthContext)
+    const { user, setUser } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
     const [userData, setUserData] = useState({
-        firsName: user?.first_name ? user.first_name : '',
+        firstName: user?.first_name ? user.first_name : '',
         lastName: user?.last_name ? user.last_name : '',
         headline: user?.headline ? user.headline : '',
-        dateOfBirth: user?.date_of_birth ? user.date_of_birth : '',
+        dateOfBirth: user?.date_of_birth ? dateFormat(user.date_of_birth) : '',
+        address: user?.address ? user.address : '',
         about: user?.about ? user.about : ''
     })
 
@@ -47,14 +50,35 @@ const Profile = () => {
         setEditProfilePhoto(prevState => !prevState)
     }
 
+    /*
+        Submit function
+    */
+    const saveUserDetails = async () => {
+        console.log(userData)
+        try {
+            let response = await axiosInstance.post('/user/update-user-details', userData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            if (response.data.success) {
+                setOpenModal(false)
+                setUser(response.data.data.authUser)
+            }
+        } catch (error) {
+
+        }
+    }
+
     return (
         <>
             {/* basic info modal */}
-            <Modal openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
-                <LnkInput onChange={handleOnChange} value={userData.firsName} name='firstName' type='text' className='mb-3' placeholder="First name" label='First name' />
+            <Modal submit={saveUserDetails} openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
+                <LnkInput onChange={handleOnChange} value={userData.firstName} name='firstName' type='text' className='mb-3' placeholder="First name" label='First name' />
                 <LnkInput onChange={handleOnChange} value={userData.lastName} name='lastName' type='text' className='mb-3' placeholder="Last name" label='Last name' />
                 <LnkInput onChange={handleOnChange} value={userData.headline} name='headline' type='text' className='mb-3' placeholder="Headline" label='Headline' />
                 <LnkInput onChange={handleOnChange} value={userData.dateOfBirth} name='dateOfBirth' type='date' className='mb-3' label='Date of Birth' />
+                <LnkInput onChange={handleOnChange} value={userData.address} name='address' type='text' className='mb-3' label='Address' />
                 <LnkTextarea onChange={handleOnChange} value={userData.about} name='about' className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
             </Modal>
             {/* edit profile picture modal */}
@@ -122,7 +146,7 @@ const Profile = () => {
                                 <FcAbout className=" text-lg inline align-middle mr-1" />
                                 <span className=" align-middle">About</span>
                             </h3>
-                            <p className=" text-sm font-normal">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+                            <p className=" text-sm font-normal">{user.about}</p>
                         </section>
                     ) : null
                 ) : null
