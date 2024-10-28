@@ -21,6 +21,7 @@ const Profile = () => {
     const { user, setUser } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
         lastName: user?.last_name ? user.last_name : '',
@@ -54,8 +55,8 @@ const Profile = () => {
         Submit function
     */
     const saveUserDetails = async () => {
-        console.log(userData)
         try {
+            setLoading(true)
             let response = await axiosInstance.post('/user/update-user-details', userData, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -63,6 +64,7 @@ const Profile = () => {
             })
             if (response.data.success) {
                 setOpenModal(false)
+                setLoading(false)
                 setUser(response.data.data.authUser)
             }
         } catch (error) {
@@ -73,7 +75,7 @@ const Profile = () => {
     return (
         <>
             {/* basic info modal */}
-            <Modal submit={saveUserDetails} openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
+            <Modal submit={saveUserDetails} loader={loading} openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
                 <LnkInput onChange={handleOnChange} value={userData.firstName} name='firstName' type='text' className='mb-3' placeholder="First name" label='First name' />
                 <LnkInput onChange={handleOnChange} value={userData.lastName} name='lastName' type='text' className='mb-3' placeholder="Last name" label='Last name' />
                 <LnkInput onChange={handleOnChange} value={userData.headline} name='headline' type='text' className='mb-3' placeholder="Headline" label='Headline' />
@@ -129,7 +131,7 @@ const Profile = () => {
                                 }
                                 {
                                     !isNull(user.address) ? (
-                                        <p className=" text-xs font-light mb-1 ">{user.address}</p>
+                                        <p className="mt-1 text-xs font-light mb-1 ">{user.address}</p>
                                     ) : null
                                 }
                             </>
