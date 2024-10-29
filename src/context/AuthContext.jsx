@@ -75,6 +75,8 @@ export const AuthProvider = ({ children }) => {
 
         validateUser()
 
+        console.log(user)
+
     }, [isLogin, navigate])
 
 

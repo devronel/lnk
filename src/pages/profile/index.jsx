@@ -27,7 +27,7 @@ const Profile = () => {
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
     const [photo, setPhoto] = useState(null)
-    const [displayPhoto, setDisplayPhoto] = useState(null)
+    const [displayPhoto, setDisplayPhoto] = useState(!isNull(user.url) ? user.server_name + user.url : null)
     const [loading, setLoading] = useState(false)
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
