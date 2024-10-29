@@ -13,6 +13,11 @@ import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnk-input";
 import LnkTextarea from "../../components/forms/lnk-textarea";
 
+/*
+    Import photos
+*/
+import profilePlaceholder from "../../assets/profile-placeholder.jpg"
+
 const Profile = () => {
 
     /*
@@ -21,6 +26,8 @@ const Profile = () => {
     const { user, setUser } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
+    const [photo, setPhoto] = useState(null)
+    const [displayPhoto, setDisplayPhoto] = useState(null)
     const [loading, setLoading] = useState(false)
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
@@ -40,6 +47,22 @@ const Profile = () => {
             [e.target.name]: e.target.value
         })
     }
+    const profilePhoto = (e) => {
+
+        if (e.target.files && e.target.files[0]) {
+            setPhoto(e.target.files[0])
+
+            let reader = new FileReader()
+
+            reader.onload = function (e) {
+                setDisplayPhoto(e.target.result);
+            };
+
+            reader.readAsDataURL(e.target.files[0])
+        }
+
+    }
+
 
     /*
         Modal functions for open and close
@@ -71,6 +94,21 @@ const Profile = () => {
 
         }
     }
+    const updateProfilePhoto = async () => {
+        console.log(photo)
+        try {
+            let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            )
+            console.log(response)
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
 
     return (
         <>
@@ -84,14 +122,14 @@ const Profile = () => {
                 <LnkTextarea onChange={handleOnChange} value={userData.about} name='about' className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
             </Modal>
             {/* edit profile picture modal */}
-            <Modal openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
+            <Modal submit={updateProfilePhoto} openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
                 <div className=" flex items-center justify-center">
                     <label htmlFor="profile__photo" className=" cursor-pointer">
                         <div className=" w-80 h-80 rounded-full border border-lnk-orange">
-                            <img className=" w-full h-full object-cover rounded-full" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                            <img className=" w-full h-full object-cover rounded-full" src={displayPhoto ?? profilePlaceholder} />
                         </div>
                     </label>
-                    <input type="file" hidden id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
+                    <input onChange={profilePhoto} type="file" hidden id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
                 </div>
             </Modal>
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">

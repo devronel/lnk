@@ -51,7 +51,9 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    // Validate user
+    /*
+        Validate user
+    */
     const validateUser = async () => {
         try {
             let user = await axiosInstance.get('/user/validate-user', {
@@ -72,8 +74,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
 
         validateUser()
-
-        console.log(user)
 
     }, [isLogin, navigate])
 

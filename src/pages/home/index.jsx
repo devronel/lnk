@@ -33,7 +33,7 @@ const Home = () => {
                 let user = await axiosInstance.get('/user', {
                     withCredentials: true
                 });
-                console.log(user)
+                // console.log(user)
             } catch (error) {
                 console.log(error.message)
             }
