@@ -49,9 +49,9 @@ const Navigation = (props) => {
                         <div className=" relative">
                             <button onClick={openMenu} className=" flex items-center gap-3 hover:bg-lnk-gray px-3 py-2 rounded transition-colors ease-linear duration-150">
                                 <div className=" w-6 h-6 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                    <img className="w-full h-full object-cover" src={(props.user.url && SERVER_URL + props.user.url) ?? profilePlaceholder} alt="" />
+                                    <img className="w-full h-full object-cover" src={!isNull(props.user) ? (props.user.url && SERVER_URL + props.user.url) ?? profilePlaceholder : null} alt="" />
                                 </div>
-                                <p className=" font-medium text-sm">{isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name}</p>
+                                <p className=" font-medium text-sm">{!isNull(props.user) ? isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name : null}</p>
                             </button>
                             <NavMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                         </div>

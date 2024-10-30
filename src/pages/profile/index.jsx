@@ -22,7 +22,7 @@ import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 const Profile = () => {
 
     /*
-        Initialize React hooks like states, context and etc.
+        Initialize React hooks like states, context api and etc.
     */
     const { user, setUser, refreshUser } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
