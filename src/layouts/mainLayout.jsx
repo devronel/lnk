@@ -30,7 +30,14 @@ const MainLayout = () => {
                             ${currentUrl === '/profile' ? 'grid-cols-[1fr_350px]' : 'grid-cols-[260px_1fr_260px]'}
                             `}>
                         {
-                            currentUrl === '/profile' ? null : <LeftSidebar />
+                            currentUrl === '/profile' ? null : <LeftSidebar
+                                firstName={user?.first_name}
+                                lastName={user?.last_name}
+                                username={user?.username}
+                                headline={user?.headline}
+                                address={user?.address}
+                                profileUrl={user?.url}
+                            />
                         }
                         <div>
                             <Outlet />
