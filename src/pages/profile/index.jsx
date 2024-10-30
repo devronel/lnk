@@ -27,10 +27,13 @@ const Profile = () => {
     const { user, setUser, refreshUser } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    const [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
     const [photo, setPhoto] = useState(null)
     const [displayPhoto, setDisplayPhoto] = useState(!isNull(user.url) ? SERVER_URL + user.url : null)
-    const [loading, setLoading] = useState(false)
-    const [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
+    const [profileError, setProfileError] = useState(null);
+
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
         lastName: user?.last_name ? user.last_name : '',
@@ -83,6 +86,7 @@ const Profile = () => {
         try {
             setLoading(true)
             let response = await axiosInstance.post('/user/update-user-details', userData, {
+                withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -101,6 +105,7 @@ const Profile = () => {
             setSubmitPhotoLoading(true)
             let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
                 {
+                    withCredentials: true,
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -110,11 +115,15 @@ const Profile = () => {
             if (response.data.success) {
                 setEditProfilePhoto(false)
                 setSubmitPhotoLoading(false)
+                setProfileError(null)
+                setPhoto(null)
                 refreshUser()
 
+            } else {
+                setProfileError(response.data.message)
+                setSubmitPhotoLoading(false)
             }
 
-            console.log(response)
         } catch (error) {
             console.log(error.message)
         }
@@ -141,6 +150,9 @@ const Profile = () => {
                     </label>
                     <input onChange={profilePhoto} type="file" hidden id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
                 </div>
+                {
+                    !isNull(profileError) ? <p className="text-center text-xs mt-3 text-red-500 italic">{profileError}</p> : null
+                }
             </Modal>
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative">
