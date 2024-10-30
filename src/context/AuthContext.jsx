@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
     /*
         Validate user
     */
-    const validateUser = async () => {
+    const refreshUser = async () => {
         try {
             let user = await axiosInstance.get('/user/validate-user', {
                 withCredentials: true
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
 
-        validateUser()
+        refreshUser()
 
         console.log(user)
 
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ authenticate, logout, isLogin, user, setUser }}>
+        <AuthContext.Provider value={{ authenticate, logout, isLogin, refreshUser, user, setUser }}>
             {children}
         </AuthContext.Provider>
     )

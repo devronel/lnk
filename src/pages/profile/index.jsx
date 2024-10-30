@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
+import { SERVER_URL } from "../../utils/axios";
 import { isNull } from "../../utils/functions";
 import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
@@ -23,12 +24,13 @@ const Profile = () => {
     /*
         Initialize React hooks like states, context and etc.
     */
-    const { user, setUser } = useContext(AuthContext)
+    const { user, setUser, refreshUser } = useContext(AuthContext)
     const [openModal, setOpenModal] = useState(false)
     const [editProfilePhoto, setEditProfilePhoto] = useState(false)
     const [photo, setPhoto] = useState(null)
-    const [displayPhoto, setDisplayPhoto] = useState(!isNull(user.url) ? user.server_name + user.url : null)
+    const [displayPhoto, setDisplayPhoto] = useState(!isNull(user.url) ? SERVER_URL + user.url : null)
     const [loading, setLoading] = useState(false)
+    const [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
         lastName: user?.last_name ? user.last_name : '',
@@ -88,15 +90,15 @@ const Profile = () => {
             if (response.data.success) {
                 setOpenModal(false)
                 setLoading(false)
-                setUser(response.data.data.authUser)
+                refreshUser()
             }
         } catch (error) {
 
         }
     }
     const updateProfilePhoto = async () => {
-        console.log(photo)
         try {
+            setSubmitPhotoLoading(true)
             let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
                 {
                     headers: {
@@ -104,6 +106,14 @@ const Profile = () => {
                     }
                 }
             )
+
+            if (response.data.success) {
+                setEditProfilePhoto(false)
+                setSubmitPhotoLoading(false)
+                refreshUser()
+
+            }
+
             console.log(response)
         } catch (error) {
             console.log(error.message)
@@ -122,7 +132,7 @@ const Profile = () => {
                 <LnkTextarea onChange={handleOnChange} value={userData.about} name='about' className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
             </Modal>
             {/* edit profile picture modal */}
-            <Modal submit={updateProfilePhoto} openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
+            <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
                 <div className=" flex items-center justify-center">
                     <label htmlFor="profile__photo" className=" cursor-pointer">
                         <div className=" w-80 h-80 rounded-full border border-lnk-orange">
@@ -143,7 +153,7 @@ const Profile = () => {
                     </div>
                     <div className="  absolute top-28 left-5">
                         <div className="w-36 h-36 group rounded-full border border-lnk-white relative">
-                            <img className="rounded-full w-full h-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                            <img className="rounded-full w-full h-full object-cover" src={(user.url && SERVER_URL + user.url) ?? profilePlaceholder} alt="" />
                             <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">
                                 <button onClick={profileUpdateModal} className="group-hover:block hidden text-lnk-gray text-2xl" >
                                     <FaRegImage />

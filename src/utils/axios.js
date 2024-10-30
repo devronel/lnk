@@ -1,7 +1,9 @@
 import axios from "axios";
 
+export const SERVER_URL = 'http://localhost:3001/'
+
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3001/api/'
+    baseURL: `${SERVER_URL}api/`
 })
 
 axiosInstance.interceptors.response.use(response => response, async error => {

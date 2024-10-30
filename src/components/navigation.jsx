@@ -3,7 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { MdDynamicFeed, MdNotifications, MdPeopleAlt } from "react-icons/md";
 import { IoIosChatbubbles } from "react-icons/io";
 import { isNull } from "../utils/functions";
+import { SERVER_URL } from "../utils/axios";
 import NavMenu from "./nav-menu";
+
+/*
+    Import images
+*/
+import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
 const Navigation = (props) => {
 
@@ -43,9 +49,9 @@ const Navigation = (props) => {
                         <div className=" relative">
                             <button onClick={openMenu} className=" flex items-center gap-3 hover:bg-lnk-gray px-3 py-2 rounded transition-colors ease-linear duration-150">
                                 <div className=" w-6 h-6 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                    <img className="w-full h-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                                    <img className="w-full h-full object-cover" src={(props.user.url && SERVER_URL + props.user.url) ?? profilePlaceholder} alt="" />
                                 </div>
-                                <p className=" font-medium text-sm">{!isNull(props.user) ? props.user.username : null}</p>
+                                <p className=" font-medium text-sm">{isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name}</p>
                             </button>
                             <NavMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                         </div>
