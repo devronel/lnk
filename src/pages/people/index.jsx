@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import axiosInstance from '../../utils/axios'
 import PeopleCard from "../../components/people-card";
 
+/*
+    Import Assets
+*/
+import empty from "../../assets/empty.svg"
+
 const People = () => {
 
     let [users, setUsers] = useState([])
@@ -28,33 +33,40 @@ const People = () => {
 
         getAllusers();
 
-        console.log(users);
-
-
     }, [])
 
     return (
         <section className=" p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
             <h1 className=" mb-2">People you may know</h1>
-            <main className=" grid grid-cols-3 grid-flow-col gap-2">
-                {
+            {
+                users.length > 0 ? (
+                    <main className=" grid grid-cols-3 grid-flow-col gap-2">
+                        {
+                            users.map(value => {
+                                return (
+                                    <PeopleCard
+                                        key={value.userId}
+                                        firstName={value.first_name}
+                                        lastName={value.last_name}
+                                        username={value.username}
+                                        headline={value.headline}
+                                        address={value.address}
+                                        profileUrl={value.url}
+                                    />
+                                )
+                            })
 
-                    users.map(value => {
-                        return (
-                            <PeopleCard
-                                key={value.userId}
-                                firstName={value.first_name}
-                                lastName={value.last_name}
-                                username={value.username}
-                                headline={value.headline}
-                                address={value.address}
-                                profileUrl={value.url}
-                            />
-                        )
-                    })
-
-                }
-            </main>
+                        }
+                    </main>
+                ) : (
+                    <>
+                        <div className=" mt-4 flex items-center justify-center">
+                            <img src={empty} width={250} height={250} alt="empty" />
+                        </div>
+                        <p className=" text-sm text-center text-lnk-dark-gray">No one's here!</p>
+                    </>
+                )
+            }
         </section>
     )
 }

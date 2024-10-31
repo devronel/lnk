@@ -165,7 +165,11 @@ const Profile = () => {
                     </div>
                     <div className="  absolute top-28 left-5">
                         <div className="w-36 h-36 group rounded-full border border-lnk-white relative">
-                            <img className="rounded-full w-full h-full object-cover" src={(user.url && SERVER_URL + user.url) ?? profilePlaceholder} alt="" />
+                            <img
+                                className="rounded-full w-full h-full object-cover"
+                                src={(user.url && SERVER_URL + user.url) ?? profilePlaceholder}
+                                alt={isNull(user.first_name) || isNull(user.last_name) ? user.username : user.first_name + ' ' + user.last_name}
+                            />
                             <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">
                                 <button onClick={profileUpdateModal} className="group-hover:block hidden text-lnk-gray text-2xl" >
                                     <FaRegImage />

@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axios";
 
 export const AuthContext = createContext(null)
@@ -11,7 +11,9 @@ export const AuthProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(null);
     const [user, setUser] = useState(null)
 
-    // Login user
+    /*
+        Login user
+    */
     const authenticate = async (data) => {
         try {
             let user = await axiosInstance.post('/user/authenticate', data, {
@@ -25,8 +27,7 @@ export const AuthProvider = ({ children }) => {
 
             if (user.data.success) {
                 setIsLogin(true)
-                setUser(user.data.data.authUser)
-                // navigate('/')
+                refreshUser()
             } else {
                 toast.error(user.data.message + '!')
                 setIsLogin(false)
@@ -37,7 +38,9 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    // Logout user
+    /*
+        Logout user
+    */
     const logout = async () => {
         try {
             let response = await axiosInstance.delete('/user/logout', {
@@ -74,8 +77,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
 
         refreshUser()
-
-        console.log(user)
 
     }, [isLogin, navigate])
 
