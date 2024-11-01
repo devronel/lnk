@@ -5,7 +5,7 @@ import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 
-const Post = () => {
+const Post = ({ content }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -27,7 +27,7 @@ const Post = () => {
             </div>
             <div className="mb-3">
                 <div className=" px-5 mb-1">
-                    <p className=" text-sm font-light">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem</p>
+                    <p className=" text-sm font-light whitespace-pre-line">{content}</p>
                 </div>
                 <img src="https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
             </div>

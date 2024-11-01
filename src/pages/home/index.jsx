@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react"
 import axiosInstance from "../../utils/axios";
 import { AuthContext } from "../../context/AuthContext";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
-import { FaRegImages } from "react-icons/fa";
 import { FcAddImage, FcDocument } from "react-icons/fc";
 import LnkTextarea from "../../components/forms/lnk-textarea"
 import Modal from "../../components/modal"
@@ -12,41 +11,69 @@ import Post from "../../components/post"
 const Home = () => {
 
     // const { data } = useContext(AuthContext)
-    const [postModal, setPostModal] = useState(false)
-    const [post, setPost] = useState('')
+    let [postModal, setPostModal] = useState(false)
+    let [post, setPost] = useState('')
+    let [posts, setPosts] = useState([])
 
     const handleOnchange = (e) => {
+
         setPost(e.target.value)
+
     }
 
-    const saveData = () => {
-        console.log(post)
+    const saveData = async () => {
+        try {
+
+            let result = await axiosInstance.post('/post/create', { content: post }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            console.log(result)
+            getPost()
+
+        } catch (error) {
+            console.log(error.message)
+        }
     }
 
     const startPost = () => {
         setPostModal(true)
     }
 
-    useEffect(() => {
-        const getUser = async () => {
-            try {
-                let user = await axiosInstance.get('/user', {
-                    withCredentials: true
-                });
-                // console.log(user)
-            } catch (error) {
-                console.log(error.message)
-            }
-        }
 
-        getUser()
+    const getPost = async () => {
+        try {
+            let result = await axiosInstance.get('/post', {
+                withCredentials: true
+            });
+            console.log(result)
+            if (result.data.success) {
+                setPosts(result.data.data.result)
+            }
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    useEffect(() => {
+
+        getPost()
+
     }, [])
 
     return (
         <>
-            <Modal handleSubmit={saveData} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
+            <Modal submit={saveData} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
                 <div className=" mb-3">
-                    <LnkTextarea onChange={handleOnchange} value={post} label='Share your thoughts' placeholder='Write here...' />
+                    <LnkTextarea
+                        onChange={handleOnchange}
+                        value={post}
+                        label='Share your thoughts'
+                        placeholder='Write here...'
+                    />
                 </div>
                 <div className=" flex items-center gap-2 justify-end">
                     <button className=" hover:text-lnk-orange text-xl">
@@ -63,8 +90,13 @@ const Home = () => {
                 </div>
                 <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-3 rounded text-left bg-white">Start post</button>
             </section>
-            <Post />
-            <Post />
+            {
+                posts.map(value => {
+                    return (
+                        <Post key={value.id} content={value.content} />
+                    )
+                })
+            }
         </>
     )
 }
