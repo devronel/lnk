@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import axiosInstance from "../../utils/axios";
-import { AuthContext } from "../../context/AuthContext";
+import useError from "../../hooks/useError";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 import { FcAddImage, FcDocument } from "react-icons/fc";
 import LnkTextarea from "../../components/forms/lnk-textarea"
@@ -10,16 +10,26 @@ import Post from "../../components/post"
 
 const Home = () => {
 
-    // const { data } = useContext(AuthContext)
+    /*
+        Initialize react hooks
+    */
     let [postModal, setPostModal] = useState(false)
     let [postLoading, setPostLoading] = useState(false)
     let [post, setPost] = useState('')
     let [posts, setPosts] = useState([])
+    let [errors, setErrors, errorExist] = useError()
 
+
+    /*
+        Functions and event
+    */
     const handleOnchange = (e) => {
-
         setPost(e.target.value)
+    }
 
+    const startPost = () => {
+        setErrors([])
+        setPostModal(true)
     }
 
     const saveData = async () => {
@@ -36,34 +46,35 @@ const Home = () => {
             if (result.data.success) {
                 setPostModal(false)
                 setPostLoading(false)
+                setPost('')
                 getPost()
+            } else {
+                setPostLoading(false)
+                setErrors(result.data.payload)
             }
 
         } catch (error) {
             console.log(error.message)
         }
     }
-
-    const startPost = () => {
-        setPostModal(true)
-    }
-
 
     const getPost = async () => {
         try {
             let result = await axiosInstance.get('/post', {
                 withCredentials: true
             });
-            console.log(result)
             if (result.data.success) {
                 setPosts(result.data.payload.result)
-                console.log(result.data.payload.result)
             }
         } catch (error) {
             console.log(error.message)
         }
     }
 
+
+    /*
+        Initialize useEffect
+    */
     useEffect(() => {
 
         getPost()
@@ -79,7 +90,11 @@ const Home = () => {
                         value={post}
                         label='Share your thoughts'
                         placeholder='Write here...'
+                        error={errorExist('content')}
                     />
+                    {
+                        errorExist('content') ? <p className=" text-red-500 text-xs">{errorExist('content').msg}</p> : null
+                    }
                 </div>
                 <div className=" flex items-center gap-2 justify-end">
                     <button className=" hover:text-lnk-orange text-xl">

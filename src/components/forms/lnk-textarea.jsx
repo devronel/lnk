@@ -1,4 +1,4 @@
-const LnkTextarea = ({ onChange, value, placeholder, label, name, className }) => {
+const LnkTextarea = ({ onChange, value, placeholder, label, name, className, error }) => {
     return (
         <div className={className}>
             {label ? (
@@ -11,7 +11,7 @@ const LnkTextarea = ({ onChange, value, placeholder, label, name, className }) =
                 rows='5'
                 id={label.toLowerCase().replace(' ', '-')}
                 placeholder={placeholder}
-                className=" px-3 py-2 w-full rounded border border-lnk-gray text-sm outline-none focus:outline focus:outline-lnk-orange "></textarea>
+                className={`${error ? ' border-red-500' : 'border-lnk-gray'} px-3 py-2 w-full rounded border text-sm outline-none focus:outline focus:outline-lnk-orange `}></textarea>
         </div>
     )
 }

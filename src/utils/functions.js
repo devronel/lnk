@@ -28,3 +28,12 @@ export const dateFormat = (value) => {
     const formatted = `${date.getFullYear()}-${month}-${day}`;
     return formatted
 }
+
+/*
+    Check every error in array to display in every input
+*/
+export const errorExist = (errors, pathName) => {
+    if (errors.length > 0) {
+        return errors.find(value => value.path === pathName)
+    }
+}

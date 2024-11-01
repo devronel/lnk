@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
                 }
             })
 
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.data.access_token}`
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.access_token}`
 
             if (user.data.success) {
                 setIsLogin(true)

@@ -5,17 +5,24 @@ import axiosInstance from "../../utils/axios"
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
 import LnkInput from "../../components/forms/lnk-input";
+import useError from "../../hooks/useError";
 
 const Signup = () => {
 
+    /*
+       Initialize react hooks
+   */
     const [userData, setUserData] = useState({
         username: '',
         email: '',
         password: '',
         passwordConfirmation: ''
     })
-    const [errors, setErrors] = useState([])
+    let [errors, setErrors, errorExist] = useError()
 
+    /*
+        Functions and event
+    */
     const handleChangeInput = (e) => {
         setUserData({
             ...userData,
@@ -42,18 +49,12 @@ const Signup = () => {
                 })
                 setErrors([])
             } else {
-                setErrors(response.data.data.errors)
+                setErrors(response.data.payload.errors)
             }
         } catch (error) {
             console.log(error.message)
         }
 
-    }
-
-    const errorExist = (pathName) => {
-        if (errors.length > 0) {
-            return errors.find(value => value.path === pathName)
-        }
     }
 
     return (
