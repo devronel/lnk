@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
                 withCredentials: true
             });
             if (user.data.success) {
-                setUser(user.data.data.authUser)
+                setUser(user.data.payload.authUser)
                 setIsLogin(true)
             } else {
                 setIsLogin(false)

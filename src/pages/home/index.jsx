@@ -12,6 +12,7 @@ const Home = () => {
 
     // const { data } = useContext(AuthContext)
     let [postModal, setPostModal] = useState(false)
+    let [postLoading, setPostLoading] = useState(false)
     let [post, setPost] = useState('')
     let [posts, setPosts] = useState([])
 
@@ -24,6 +25,7 @@ const Home = () => {
     const saveData = async () => {
         try {
 
+            setPostLoading(true)
             let result = await axiosInstance.post('/post/create', { content: post }, {
                 withCredentials: true,
                 headers: {
@@ -31,8 +33,11 @@ const Home = () => {
                 }
             })
 
-            console.log(result)
-            getPost()
+            if (result.data.success) {
+                setPostModal(false)
+                setPostLoading(false)
+                getPost()
+            }
 
         } catch (error) {
             console.log(error.message)
@@ -51,7 +56,8 @@ const Home = () => {
             });
             console.log(result)
             if (result.data.success) {
-                setPosts(result.data.data.result)
+                setPosts(result.data.payload.result)
+                console.log(result.data.payload.result)
             }
         } catch (error) {
             console.log(error.message)
@@ -66,7 +72,7 @@ const Home = () => {
 
     return (
         <>
-            <Modal submit={saveData} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
+            <Modal submit={saveData} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
                 <div className=" mb-3">
                     <LnkTextarea
                         onChange={handleOnchange}
