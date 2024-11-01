@@ -122,6 +122,7 @@ const Home = () => {
                             lastName={value.last_name}
                             headline={value.headline}
                             createdAt={value.created_at}
+                            profilPicUrl={value.url}
                         />
                     )
                 })

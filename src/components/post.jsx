@@ -4,9 +4,15 @@ import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineEmojiEmotions } from "react-icons/md";
-import { concatName, diffInDays } from "../utils/functions";
+import { SERVER_URL } from "../utils/axios";
+import { concatName, diffInDays, isNull } from "../utils/functions";
 
-const Post = ({ content, firstName, lastName, username, headline, createdAt }) => {
+/*
+    Import assets like image and etc.
+*/
+import profilePlaceholder from "../assets/profile-placeholder.jpg"
+
+const Post = ({ content, firstName, lastName, username, headline, createdAt, profilPicUrl }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -18,7 +24,7 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt }) =
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
             <div className=" flex items-start gap-2 px-5 mb-3">
                 <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                    <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/5234256/pexels-photo-5234256.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                    <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? (SERVER_URL + profilPicUrl) : profilePlaceholder} alt="" />
                 </div>
                 <div>
                     <h5 className=" text-base font-bold">{concatName(firstName, lastName, username)}</h5>
