@@ -32,8 +32,38 @@ export const dateFormat = (value) => {
 /*
     Check every error in array to display in every input
 */
-export const errorExist = (errors, pathName) => {
-    if (errors.length > 0) {
-        return errors.find(value => value.path === pathName)
+export const concatName = (firstName, lastName, username) => {
+
+    if (isNull(firstName) || isNull(lastName)) {
+        return username;
+    }
+
+    return firstName + ' ' + lastName
+
+}
+
+
+/*
+    Convert date into relative date
+*/
+export const diffInDays = (date) => {
+    let timeStamp = new Date(date);
+    let now = new Date()
+    let secondsPast = (now.getTime() - timeStamp) / 1000;
+
+    if (secondsPast < 60) {
+        return parseInt(secondsPast) + 's';
+    }
+    if (secondsPast < 3600) {
+        return parseInt(secondsPast / 60) + 'm';
+    }
+    if (secondsPast <= 86400) {
+        return parseInt(secondsPast / 3600) + 'h';
+    }
+    if (secondsPast > 86400) {
+        day = timeStamp.getDate();
+        month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
+        year = timeStamp.getFullYear() == now.getFullYear() ? "" : " " + timeStamp.getFullYear();
+        return day + " " + month + year;
     }
 }

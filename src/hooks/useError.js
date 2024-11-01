@@ -10,7 +10,7 @@ const useError = () => {
         }
     }
 
-    return [errors, setErrors, errorExist]
+    return [setErrors, errorExist]
 
 }
 

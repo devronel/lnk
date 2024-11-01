@@ -17,7 +17,7 @@ const Home = () => {
     let [postLoading, setPostLoading] = useState(false)
     let [post, setPost] = useState('')
     let [posts, setPosts] = useState([])
-    let [errors, setErrors, errorExist] = useError()
+    let [setErrors, errorExist] = useError()
 
 
     /*
@@ -114,7 +114,15 @@ const Home = () => {
             {
                 posts.map(value => {
                     return (
-                        <Post key={value.id} content={value.content} />
+                        <Post
+                            key={value.id}
+                            content={value.content}
+                            username={value.username}
+                            firstName={value.first_name}
+                            lastName={value.last_name}
+                            headline={value.headline}
+                            createdAt={value.created_at}
+                        />
                     )
                 })
             }

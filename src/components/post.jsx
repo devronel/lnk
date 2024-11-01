@@ -4,8 +4,9 @@ import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { concatName, diffInDays } from "../utils/functions";
 
-const Post = ({ content }) => {
+const Post = ({ content, firstName, lastName, username, headline, createdAt }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -20,9 +21,9 @@ const Post = ({ content }) => {
                     <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/5234256/pexels-photo-5234256.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                 </div>
                 <div>
-                    <h5 className=" text-base font-bold">Ronel Florida</h5>
-                    <p className=" text-xs font-light">Laravel Developer | IT Manager</p>
-                    <p className=" text-xs font-light">12h <IoMdTime className=" inline" /></p>
+                    <h5 className=" text-base font-bold">{concatName(firstName, lastName, username)}</h5>
+                    <p className=" text-xs font-light">{headline}</p>
+                    <p className=" text-xs font-light">{diffInDays(createdAt)} <IoMdTime className=" inline" /></p>
                 </div>
             </div>
             <div className="mb-3">

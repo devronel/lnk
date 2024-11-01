@@ -18,7 +18,7 @@ const Signup = () => {
         password: '',
         passwordConfirmation: ''
     })
-    let [errors, setErrors, errorExist] = useError()
+    let [setErrors, errorExist] = useError()
 
     /*
         Functions and event
