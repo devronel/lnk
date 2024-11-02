@@ -3,6 +3,8 @@ import axiosInstance from "../../utils/axios";
 import useError from "../../hooks/useError";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 import { FcAddImage, FcDocument } from "react-icons/fc";
+import { AiFillMinusCircle } from "react-icons/ai";
+import { RiCloseCircleFill } from "react-icons/ri";
 import LnkTextarea from "../../components/forms/lnk-textarea"
 import Modal from "../../components/modal"
 import Post from "../../components/post"
@@ -15,16 +17,27 @@ const Home = () => {
     */
     let [postModal, setPostModal] = useState(false)
     let [postLoading, setPostLoading] = useState(false)
-    let [post, setPost] = useState('')
+    let [post, setPost] = useState({
+        content: '',
+        files: []
+    })
     let [posts, setPosts] = useState([])
     let [setErrors, errorExist] = useError()
+    let [filesPreview, setFilesPreview] = useState([])
 
 
     /*
         Functions and event
     */
     const handleOnchange = (e) => {
-        setPost(e.target.value)
+        let name = e.target.name;
+
+        console.log('Hello')
+
+        setPost({
+            ...post,
+            [name]: name == 'files' ? e.target.files : e.target.value
+        })
     }
 
     const startPost = () => {
@@ -33,29 +46,31 @@ const Home = () => {
     }
 
     const saveData = async () => {
-        try {
+        console.log(post)
+        console.log(filesPreview)
+        // try {
 
-            setPostLoading(true)
-            let result = await axiosInstance.post('/post/create', { content: post }, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+        //     setPostLoading(true)
+        //     let result = await axiosInstance.post('/post/create', { content: post.content }, {
+        //         withCredentials: true,
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     })
 
-            if (result.data.success) {
-                setPostModal(false)
-                setPostLoading(false)
-                setPost('')
-                getPost()
-            } else {
-                setPostLoading(false)
-                setErrors(result.data.payload)
-            }
+        //     if (result.data.success) {
+        //         setPostModal(false)
+        //         setPostLoading(false)
+        //         setPost('')
+        //         getPost()
+        //     } else {
+        //         setPostLoading(false)
+        //         setErrors(result.data.payload)
+        //     }
 
-        } catch (error) {
-            console.log(error.message)
-        }
+        // } catch (error) {
+        //     console.log(error.message)
+        // }
     }
 
     const getPost = async () => {
@@ -71,6 +86,35 @@ const Home = () => {
         }
     }
 
+    const imagePreview = () => {
+
+        if (post.files.length > 0) {
+            let result = []
+
+            for (let i = 0; i < post.files.length; i++) {
+                let url = URL.createObjectURL(post.files[i])
+                result.push(url);
+            }
+
+            setFilesPreview(result)
+
+        }
+
+    }
+
+    const removeImage = (index) => {
+
+        setFilesPreview(filesPreview.splice(index, -1))
+
+        let filesToArr = Array.from(post.files)
+        filesToArr.splice(index, 1);
+
+        setPost({
+            ...post,
+            files: filesToArr
+        })
+    }
+
 
     /*
         Initialize useEffect
@@ -81,13 +125,24 @@ const Home = () => {
 
     }, [])
 
+    useEffect(() => {
+
+        imagePreview()
+
+        return () => {
+            filesPreview.forEach(url => URL.revokeObjectURL(url));
+        };
+
+    }, [post])
+
     return (
         <>
             <Modal submit={saveData} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
                 <div className=" mb-3">
                     <LnkTextarea
+                        name='content'
                         onChange={handleOnchange}
-                        value={post}
+                        value={post.content}
                         label='Share your thoughts'
                         placeholder='Write here...'
                         error={errorExist('content')}
@@ -96,13 +151,30 @@ const Home = () => {
                         errorExist('content') ? <p className=" text-red-500 text-xs">{errorExist('content').msg}</p> : null
                     }
                 </div>
+                <div className=" flex items-center flex-wrap gap-2">
+                    {
+                        filesPreview.length > 0 ? (
+                            filesPreview.map((value, index) => {
+                                return (
+                                    <div key={index} className=" w-12 h-12 group relative">
+                                        <button onClick={() => removeImage(index)} className="hidden group-hover:block absolute -top-1 -right-2">
+                                            <RiCloseCircleFill className=" text-red-600 text-lg" />
+                                        </button>
+                                        <img className="w-full h-full object-cover rounded-md border border-lnk-orange" src={value} alt="" />
+                                    </div>
+                                )
+                            })
+                        ) : null
+                    }
+                </div>
                 <div className=" flex items-center gap-2 justify-end">
-                    <button className=" hover:text-lnk-orange text-xl">
-                        <FcDocument />
-                    </button>
-                    <button className=" hover:text-lnk-orange text-xl">
+                    <label htmlFor="files" className="cursor-pointer hover:text-lnk-orange text-xl">
                         <FcAddImage />
-                    </button>
+                        <input onChange={handleOnchange} type="file" multiple name="files" id="files" hidden />
+                    </label>
+                    {/* <button className=" hover:text-lnk-orange text-xl">
+                        <FcDocument />
+                    </button> */}
                 </div>
             </Modal>
             <section className=" flex items-center gap-3 p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
