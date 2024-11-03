@@ -32,8 +32,6 @@ const Home = () => {
     const handleOnchange = (e) => {
         let name = e.target.name;
 
-        console.log('Hello')
-
         setPost({
             ...post,
             [name]: name == 'files' ? e.target.files : e.target.value
@@ -46,31 +44,41 @@ const Home = () => {
     }
 
     const saveData = async () => {
-        console.log(post)
-        console.log(filesPreview)
-        // try {
+        try {
 
-        //     setPostLoading(true)
-        //     let result = await axiosInstance.post('/post/create', { content: post.content }, {
-        //         withCredentials: true,
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         }
-        //     })
+            let formData = new FormData()
+            let files = Array.from(post.files)
+            files.forEach(value => {
+                formData.append(`files`, value)
+            })
+            formData.append('content', post.content)
 
-        //     if (result.data.success) {
-        //         setPostModal(false)
-        //         setPostLoading(false)
-        //         setPost('')
-        //         getPost()
-        //     } else {
-        //         setPostLoading(false)
-        //         setErrors(result.data.payload)
-        //     }
+            setPostLoading(true)
+            let result = await axiosInstance.post('/post/create', formData, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
 
-        // } catch (error) {
-        //     console.log(error.message)
-        // }
+            if (result.data.success) {
+                setPostModal(false)
+                setPostLoading(false)
+                setPost({
+                    ...post,
+                    content: '',
+                    files: []
+                })
+                setFilesPreview([])
+                getPost()
+            } else {
+                setPostLoading(false)
+                setErrors(result.data.payload)
+            }
+
+        } catch (error) {
+            console.log(error.message)
+        }
     }
 
     const getPost = async () => {
