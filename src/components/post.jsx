@@ -12,7 +12,7 @@ import { concatName, diffInDays, isNull } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ content, firstName, lastName, username, headline, createdAt, profilPicUrl }) => {
+const Post = ({ content, firstName, lastName, username, headline, createdAt, profilPicUrl, postPhotos }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -36,7 +36,26 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
                 <div className=" px-5 mb-1">
                     <p className=" text-sm font-light whitespace-pre-line">{content}</p>
                 </div>
-                <img src="https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                {
+                    !isNull(postPhotos) ? (
+                        <div className={`
+                        grid
+                        ${postPhotos.split(',').length <= 1 ? 'grid-cols-1' : 'grid-cols-2'}
+                    `}>
+                            {
+
+                                postPhotos.split(',').map(value => {
+                                    return (
+                                        <div key={value} className=''>
+                                            <img className="w-full h-full object-contain" src={SERVER_URL + value} alt={value} />
+                                        </div>
+                                    )
+                                })
+
+                            }
+                        </div>
+                    ) : null
+                }
             </div>
             <div className="px-5 flex items-center justify-between mb-3">
                 <div className=" flex items-center gap-2">

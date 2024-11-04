@@ -89,6 +89,7 @@ const Home = () => {
             if (result.data.success) {
                 setPosts(result.data.payload.result)
             }
+
         } catch (error) {
             console.log(error.message)
         }
@@ -203,6 +204,7 @@ const Home = () => {
                             headline={value.headline}
                             createdAt={value.created_at}
                             profilPicUrl={value.url}
+                            postPhotos={value.post_photos}
                         />
                     )
                 })
