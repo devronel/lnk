@@ -20,6 +20,70 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
         setShowComment(true)
     }
 
+    const postImageDisplay = () => {
+        if (!isNull(postPhotos)) {
+
+            let photos = postPhotos.split(',');
+
+            if (photos.length === 1) {
+                return (
+                    <div className=''>
+                        <img className="w-full h-full object-contain" src={SERVER_URL + photos[0]} alt={photos[0]} />
+                    </div>
+                )
+            } else if (photos.length === 2) {
+                return (
+                    <div className="grid grid-cols-2">
+                        {
+                            photos.map(value => (
+                                <div key={value} className=''>
+                                    <img className="w-full h-full object-contain" src={SERVER_URL + value} alt={value} />
+                                </div>
+                            ))
+                        }
+                    </div>
+                )
+            } else if (photos.length >= 3) {
+
+                let twoPhotos
+
+                if (photos.length > 3) {
+                    twoPhotos = photos.splice(2);
+                } else {
+                    twoPhotos = photos.splice(1);
+                }
+
+                return (
+                    <div className="grid grid-cols-2 h-full">
+                        <div className='h-[300px]'>
+                            <img className="w-full h-full object-cover" src={SERVER_URL + photos[0]} alt={photos[0]} />
+                        </div>
+                        <div className=" grid grid-cols-1 grid-rows-2 h-[300px]">
+                            {
+                                twoPhotos.map(value => (
+                                    <div key={value} className='h-full relative'>
+                                        {
+                                            twoPhotos[twoPhotos.length - 1] === value ? (
+                                                <div className=" bg-lnk-dark opacity-55 absolute inset-0 flex items-center justify-center">
+                                                    <p className=" text-lnk-white">{3 - photos.length} more</p>
+                                                </div>) : null
+                                        }
+                                        <img className="w-full h-full object-cover" src={SERVER_URL + value} alt={value} />
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                )
+            }
+            else {
+                return null
+            }
+        } else {
+            return null
+        }
+    }
+
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
             <div className=" flex items-start gap-2 px-5 mb-3">
@@ -37,6 +101,9 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
                     <p className=" text-sm font-light whitespace-pre-line">{content}</p>
                 </div>
                 {
+                    postImageDisplay()
+                }
+                {/* {
                     !isNull(postPhotos) ? (
                         <div className={`
                         grid
@@ -55,7 +122,7 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
                             }
                         </div>
                     ) : null
-                }
+                } */}
             </div>
             <div className="px-5 flex items-center justify-between mb-3">
                 <div className=" flex items-center gap-2">
