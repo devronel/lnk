@@ -48,10 +48,11 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
                 let twoPhotos
 
                 if (photos.length > 3) {
-                    twoPhotos = photos.splice(2);
+                    twoPhotos = photos.slice(1, 3);
                 } else {
-                    twoPhotos = photos.splice(1);
+                    twoPhotos = photos.splice(1)
                 }
+
 
                 return (
                     <div className="grid grid-cols-2 h-full">
@@ -63,9 +64,9 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
                                 twoPhotos.map(value => (
                                     <div key={value} className='h-full relative'>
                                         {
-                                            twoPhotos[twoPhotos.length - 1] === value ? (
+                                            twoPhotos[twoPhotos.length - 1] === value && photos.length > 1 ? (
                                                 <div className=" bg-lnk-dark opacity-55 absolute inset-0 flex items-center justify-center">
-                                                    <p className=" text-lnk-white">{3 - photos.length} more</p>
+                                                    <p className=" text-lnk-white">{photos.length - 3} more</p>
                                                 </div>) : null
                                         }
                                         <img className="w-full h-full object-cover" src={SERVER_URL + value} alt={value} />
