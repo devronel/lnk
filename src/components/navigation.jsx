@@ -54,7 +54,7 @@ const Navigation = (props) => {
                                     <img
                                         className="w-full h-full object-cover"
                                         src={!isNull(props.user) ? (props.user.url && SERVER_URL + props.user.url) ?? profilePlaceholder : null}
-                                        alt={!isNull(props.user) ? isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name : null}
+                                        alt={!isNull(props.user) ? isNull(props.user.full_name) ? props.user.username : props.user.full_name : null}
                                     />
                                 </div>
                                 <p className=" font-medium text-sm">{!isNull(props.user) ? isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name : null}</p>

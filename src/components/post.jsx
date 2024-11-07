@@ -5,14 +5,14 @@ import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { SERVER_URL } from "../utils/axios";
-import { concatName, diffInDays, isNull } from "../utils/functions";
+import { diffInDays, isNull } from "../utils/functions";
 
 /*
     Import assets like image and etc.
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ content, firstName, lastName, username, headline, createdAt, profilPicUrl, postPhotos }) => {
+const Post = ({ content, fullName, username, headline, createdAt, profilPicUrl, postPhotos }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -92,7 +92,7 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
                     <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? (SERVER_URL + profilPicUrl) : profilePlaceholder} alt="" />
                 </div>
                 <div>
-                    <h5 className=" text-base font-bold">{concatName(firstName, lastName, username)}</h5>
+                    <h5 className=" text-base font-bold">{isNull(fullName) ? username : fullName}</h5>
                     <p className=" text-xs font-light">{headline}</p>
                     <p className=" text-xs font-light">{diffInDays(createdAt)} <IoMdTime className=" inline" /></p>
                 </div>
@@ -104,26 +104,6 @@ const Post = ({ content, firstName, lastName, username, headline, createdAt, pro
                 {
                     postImageDisplay()
                 }
-                {/* {
-                    !isNull(postPhotos) ? (
-                        <div className={`
-                        grid
-                        ${postPhotos.split(',').length <= 1 ? 'grid-cols-1' : 'grid-cols-2'}
-                    `}>
-                            {
-
-                                postPhotos.split(',').map(value => {
-                                    return (
-                                        <div key={value} className=''>
-                                            <img className="w-full h-full object-contain" src={SERVER_URL + value} alt={value} />
-                                        </div>
-                                    )
-                                })
-
-                            }
-                        </div>
-                    ) : null
-                } */}
             </div>
             <div className="px-5 flex items-center justify-between mb-3">
                 <div className=" flex items-center gap-2">

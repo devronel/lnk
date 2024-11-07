@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
 import { SERVER_URL } from "../../utils/axios";
-import { isNull, concatName } from "../../utils/functions";
+import { isNull } from "../../utils/functions";
 import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
@@ -168,7 +168,7 @@ const Profile = () => {
                             <img
                                 className="rounded-full w-full h-full object-cover"
                                 src={(user?.url && SERVER_URL + user?.url) ?? profilePlaceholder}
-                                alt={concatName(user?.first_name, user?.last_name, user?.username)}
+                                alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                             />
                             <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">
                                 <button onClick={profileUpdateModal} className="group-hover:block hidden text-lnk-gray text-2xl" >
@@ -187,7 +187,7 @@ const Profile = () => {
                     {
                         !isNull(user) ? (
                             <>
-                                <h6 className=" text-2xl font-bold">{concatName(user?.first_name, user?.last_name, user?.username)}</h6>
+                                <h6 className=" text-2xl font-bold">{!isNull(user.full_name) ? user.full_name : user.username}</h6>
                                 {
                                     !isNull(user.headline) ? (
                                         <p className=" text-sm font-normal ">{user.headline}</p>

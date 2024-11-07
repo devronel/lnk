@@ -20,8 +20,6 @@ const People = () => {
 
             if (result.data.success) {
 
-                console.log(result)
-
                 setUsers(result.data.payload.users);
 
             }
@@ -48,8 +46,7 @@ const People = () => {
                                 return (
                                     <PeopleCard
                                         key={value.userId}
-                                        firstName={value.first_name}
-                                        lastName={value.last_name}
+                                        fullName={value.full_name}
                                         username={value.username}
                                         headline={value.headline}
                                         address={value.address}

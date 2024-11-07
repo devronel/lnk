@@ -7,7 +7,7 @@ import { isNull } from '../utils/functions'
 */
 import profilePlacholder from '../assets/profile-placeholder.jpg'
 
-const PeopleCard = ({ firstName, lastName, headline, address, profileUrl, username }) => {
+const PeopleCard = ({ fullName, headline, address, profileUrl, username }) => {
     return (
         <div>
             <div className="h-full flex flex-col relative overflow-hidden rounded border border-lnk-gray bg-lnk-white">
@@ -18,7 +18,7 @@ const PeopleCard = ({ firstName, lastName, headline, address, profileUrl, userna
                     <img className=" w-full h-full object-cover" src={isNull(profileUrl) ? profilePlacholder : SERVER_URL + profileUrl} alt="" />
                 </div>
                 <div className=" pt-8 px-2 mb-4 flex-1">
-                    <h4 className=" font-bold text-lg">{isNull(firstName) || isNull(lastName) ? username : firstName + ' ' + lastName}</h4>
+                    <h4 className=" font-bold text-lg">{isNull(fullName) ? username : fullName}</h4>
                     <p className=" font-normal text-xs">{isNull(headline) ? 'Not available' : headline}</p>
                     <p className=" font-light text-xs text-lnk-dark-gray">{isNull(address) ? null : address}</p>
                 </div>

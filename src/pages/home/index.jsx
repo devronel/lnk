@@ -201,6 +201,7 @@ const Home = () => {
                             username={value.username}
                             firstName={value.first_name}
                             lastName={value.last_name}
+                            fullName={value.full_name}
                             headline={value.headline}
                             createdAt={value.created_at}
                             profilPicUrl={value.url}
