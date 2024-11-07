@@ -1,13 +1,17 @@
 import { AiFillLike, AiOutlineComment, AiOutlineLike } from "react-icons/ai"
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { FaHeart } from "react-icons/fa"
-import { IoMdTime } from "react-icons/io"
+import { IoMdTime, IoMdClose } from "react-icons/io"
 import { MdOutlineEmojiEmotions } from "react-icons/md"
 
-const PostImageViewer = () => {
+const PostImageViewer = ({ viewPostImage, setViewPostImage }) => {
+
     return (
-        <section className=" fixed inset-0  z-50 grid grid-cols-[70%_1fr]">
-            <div className="bg-lnk-dark">
+        <section className={`fixed inset-0 z-50 ${viewPostImage ? 'grid' : 'hidden'} grid-cols-[70%_1fr]`}>
+            <div className="bg-lnk-dark relative">
+                <button onClick={() => setViewPostImage(false)} className="absolute top-3 left-3 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
+                    <IoMdClose className="" />
+                </button>
                 <img className=" w-full h-full object-contain" src="https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
             </div>
             <div className=" bg-lnk-white py-6 px-5">

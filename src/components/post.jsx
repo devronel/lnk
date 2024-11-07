@@ -12,7 +12,7 @@ import { diffInDays, isNull } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ content, fullName, username, headline, createdAt, profilPicUrl, postPhotos }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postPhotos, showPostImage }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -27,13 +27,13 @@ const Post = ({ content, fullName, username, headline, createdAt, profilPicUrl, 
 
             if (photos.length === 1) {
                 return (
-                    <div className=''>
+                    <div onClick={() => showPostImage(postId)} tabindex="0" role="button" aria-pressed="true">
                         <img className="w-full h-full object-contain" src={SERVER_URL + photos[0]} alt={photos[0]} />
                     </div>
                 )
             } else if (photos.length === 2) {
                 return (
-                    <div className="grid grid-cols-2">
+                    <div onClick={() => showPostImage(postId)} tabindex="0" role="button" aria-pressed="true" className="grid grid-cols-2">
                         {
                             photos.map(value => (
                                 <div key={value} className=''>
@@ -55,7 +55,7 @@ const Post = ({ content, fullName, username, headline, createdAt, profilPicUrl, 
 
 
                 return (
-                    <div className="grid grid-cols-2 h-full">
+                    <div onClick={() => showPostImage(postId)} tabindex="0" role="button" aria-pressed="true" className="grid grid-cols-2 h-full">
                         <div className='h-[300px]'>
                             <img className="w-full h-full object-cover" src={SERVER_URL + photos[0]} alt={photos[0]} />
                         </div>

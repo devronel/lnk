@@ -24,6 +24,7 @@ const Home = () => {
     let [posts, setPosts] = useState([])
     let [setErrors, errorExist] = useError()
     let [filesPreview, setFilesPreview] = useState([])
+    let [viewPostImage, setViewPostImage] = useState(false)
 
 
     /*
@@ -124,6 +125,10 @@ const Home = () => {
         })
     }
 
+    const showPostImage = (id) => {
+        setViewPostImage(true)
+        console.log(id)
+    }
 
     /*
         Initialize useEffect
@@ -194,6 +199,7 @@ const Home = () => {
                     return (
                         <Post
                             key={value.id}
+                            postId={value.id}
                             content={value.content}
                             username={value.username}
                             firstName={value.first_name}
@@ -203,12 +209,13 @@ const Home = () => {
                             createdAt={value.created_at}
                             profilPicUrl={value.url}
                             postPhotos={value.post_photos}
+                            showPostImage={showPostImage}
                         />
                     )
                 })
             }
 
-            {/* <PostImageViewer /> */}
+            <PostImageViewer viewPostImage={viewPostImage} setViewPostImage={setViewPostImage} />
 
         </>
     )
