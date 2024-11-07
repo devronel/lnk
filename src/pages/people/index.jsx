@@ -20,7 +20,9 @@ const People = () => {
 
             if (result.data.success) {
 
-                setUsers(result.data.data.users);
+                console.log(result)
+
+                setUsers(result.data.payload.users);
 
             }
 

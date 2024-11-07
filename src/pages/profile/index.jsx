@@ -31,7 +31,7 @@ const Profile = () => {
 
     const [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
     const [photo, setPhoto] = useState(null)
-    const [displayPhoto, setDisplayPhoto] = useState(!isNull(user) ? SERVER_URL + user.url : null)
+    const [displayPhoto, setDisplayPhoto] = useState(!isNull(user) ? !isNull(user.url) ? SERVER_URL + user.url : null : null)
     const [profileError, setProfileError] = useState(null);
 
     const [userData, setUserData] = useState({
@@ -226,7 +226,7 @@ const Profile = () => {
                 <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
             </div>
             <section>
-                <Post />
+                {/* <Post /> */}
             </section>
         </>
     )
