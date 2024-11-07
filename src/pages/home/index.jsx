@@ -2,12 +2,12 @@ import { useState, useEffect, useContext } from "react"
 import axiosInstance from "../../utils/axios";
 import useError from "../../hooks/useError";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
-import { FcAddImage, FcDocument } from "react-icons/fc";
-import { AiFillMinusCircle } from "react-icons/ai";
+import { FcAddImage } from "react-icons/fc";
 import { RiCloseCircleFill } from "react-icons/ri";
 import LnkTextarea from "../../components/forms/lnk-textarea"
 import Modal from "../../components/modal"
 import Post from "../../components/post"
+import PostImageViewer from "../../components/post-image-viewer";
 
 
 const Home = () => {
@@ -181,9 +181,6 @@ const Home = () => {
                         <FcAddImage />
                         <input onChange={handleOnchange} type="file" multiple name="files" id="files" hidden />
                     </label>
-                    {/* <button className=" hover:text-lnk-orange text-xl">
-                        <FcDocument />
-                    </button> */}
                 </div>
             </Modal>
             <section className=" flex items-center gap-3 p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
@@ -210,6 +207,9 @@ const Home = () => {
                     )
                 })
             }
+
+            {/* <PostImageViewer /> */}
+
         </>
     )
 }
