@@ -152,7 +152,7 @@ const Home = () => {
 
         getPost()
 
-    }, [])
+    }, [postLimit])
 
     useEffect(() => {
 
@@ -165,15 +165,22 @@ const Home = () => {
     }, [post])
 
     useEffect(() => {
+
         const onScroll = debounce(function () {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                setPostLimit(postLimit += 3)
-                getPost()
+                setPostLimit(prevState => prevState += 3)
             }
         }, 500)
+
         window.addEventListener('scroll', onScroll)
+
         return () => window.removeEventListener('scroll', onScroll)
+
     }, [])
+
+    useEffect(() => {
+        document.body.style.overflow = viewPostImage ? 'hidden' : 'auto'
+    }, [viewPostImage])
 
     return (
         <>
