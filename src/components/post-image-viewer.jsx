@@ -1,3 +1,4 @@
+import useEmblaCarousel from "embla-carousel-react"
 import { AiFillLike, AiOutlineComment, AiOutlineLike } from "react-icons/ai"
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { FaHeart } from "react-icons/fa"
@@ -8,16 +9,28 @@ import { diffInDays, isNull } from "../utils/functions"
 
 const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => {
 
+    let [emblaRef] = useEmblaCarousel()
+
     return (
         <section className={`fixed inset-0 z-50 grid grid-cols-[70%_1fr]`}>
             <div className="bg-lnk-dark relative overflow-hidden flex items-center justify-center">
-                <button onClick={() => setViewPostImage(false)} className="absolute top-3 left-3 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
-                    <IoMdClose className="" />
+                <button onClick={() => setViewPostImage(false)} className="absolute top-3 left-3 z-20 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
+                    <IoMdClose />
                 </button>
-                <div className=" w-[60%] h-auto">
-                    <img className="w-full h-full object-contain"
-                        src={!isNull(postImageView) ? SERVER_URL + postImageView.post_photos.split(',')[0] : null}
-                        alt="" />
+                <div className="embla" ref={emblaRef}>
+                    <div className="embla__container items-center">
+                        {
+                            postImageView?.post_photos.split(',').map(value => {
+                                return (
+                                    <div key={value} className="embla__slide flex items-center justify-center ">
+                                        <img className=" w-[60%] h-auto object-contain"
+                                            src={SERVER_URL + value}
+                                            alt={value} />
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
                 </div>
             </div>
             <div className=" bg-lnk-white py-6 px-5">
@@ -42,7 +55,7 @@ const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => 
                 <div className="mb-3">
                     <div className=" mb-1">
                         <p className=" text-sm font-light whitespace-pre-line">
-                            {postImageView.content}
+                            {postImageView?.content}
                         </p>
                     </div>
                 </div>

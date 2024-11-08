@@ -26,3 +26,19 @@
     border-right: 0.5rem solid transparent;
     border-bottom: 0.5rem solid #F5F5F7;
 }
+
+/* 
+    Emble styles
+*/
+.embla {
+    overflow: hidden;
+}
+
+.embla__container {
+    display: flex;
+}
+
+.embla__slide {
+    flex: 0 0 100%;
+    min-width: 0;
+}
