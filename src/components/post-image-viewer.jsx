@@ -3,16 +3,22 @@ import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { FaHeart } from "react-icons/fa"
 import { IoMdTime, IoMdClose } from "react-icons/io"
 import { MdOutlineEmojiEmotions } from "react-icons/md"
+import { SERVER_URL } from "../utils/axios"
+import { diffInDays, isNull } from "../utils/functions"
 
-const PostImageViewer = ({ viewPostImage, setViewPostImage }) => {
+const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => {
 
     return (
-        <section className={`fixed inset-0 z-50 ${viewPostImage ? 'grid' : 'hidden'} grid-cols-[70%_1fr]`}>
-            <div className="bg-lnk-dark relative">
+        <section className={`fixed inset-0 z-50 grid grid-cols-[70%_1fr]`}>
+            <div className="bg-lnk-dark relative overflow-hidden flex items-center justify-center">
                 <button onClick={() => setViewPostImage(false)} className="absolute top-3 left-3 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
                     <IoMdClose className="" />
                 </button>
-                <img className=" w-full h-full object-contain" src="https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                <div className=" w-[60%] h-auto">
+                    <img className="w-full h-full object-contain"
+                        src={!isNull(postImageView) ? SERVER_URL + postImageView.post_photos.split(',')[0] : null}
+                        alt="" />
+                </div>
             </div>
             <div className=" bg-lnk-white py-6 px-5">
                 <div className=" flex items-start gap-2 mb-3">
@@ -20,15 +26,23 @@ const PostImageViewer = ({ viewPostImage, setViewPostImage }) => {
                         <img className=" w-full h-full object-cover" src='https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' alt="" />
                     </div>
                     <div>
-                        <h5 className=" text-base font-bold">Ronel Florida</h5>
-                        <p className=" text-xs font-light">Frontend Developer | Laravel | Nodejs | React</p>
-                        <p className=" text-xs font-light">12h <IoMdTime className=" inline" /></p>
+                        {
+                            !isNull(postImageView) ? (
+                                <>
+                                    <h5 className=" text-base font-bold">{postImageView.full_name ?? postImageView.username}</h5>
+                                    {
+                                        postImageView.headline ? <p className=" text-xs font-light">{postImageView.headline}</p> : null
+                                    }
+                                    <p className=" text-xs font-light">{diffInDays(postImageView.created_at)} <IoMdTime className=" inline" /></p>
+                                </>
+                            ) : null
+                        }
                     </div>
                 </div>
                 <div className="mb-3">
                     <div className=" mb-1">
                         <p className=" text-sm font-light whitespace-pre-line">
-                            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution
+                            {postImageView.content}
                         </p>
                     </div>
                 </div>
@@ -116,7 +130,7 @@ const PostImageViewer = ({ viewPostImage, setViewPostImage }) => {
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     )
 }
 

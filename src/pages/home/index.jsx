@@ -24,7 +24,9 @@ const Home = () => {
     let [posts, setPosts] = useState([])
     let [setErrors, errorExist] = useError()
     let [filesPreview, setFilesPreview] = useState([])
+
     let [viewPostImage, setViewPostImage] = useState(false)
+    let [postImageView, setPostImageView] = useState(null)
 
 
     /*
@@ -125,9 +127,20 @@ const Home = () => {
         })
     }
 
-    const showPostImage = (id) => {
-        setViewPostImage(true)
-        console.log(id)
+    const showPostImage = async (id) => {
+        try {
+            setViewPostImage(true)
+            let result = await axiosInstance(`/post/${id}`, {
+                withCredentials: true
+            })
+
+            if (result.data.success) {
+                setPostImageView(result.data.payload.result)
+            }
+
+        } catch (error) {
+            console.log(error.message)
+        }
     }
 
     /*
@@ -215,7 +228,15 @@ const Home = () => {
                 })
             }
 
-            <PostImageViewer viewPostImage={viewPostImage} setViewPostImage={setViewPostImage} />
+            {
+                viewPostImage ? (
+                    <PostImageViewer
+                        viewPostImage={viewPostImage}
+                        setViewPostImage={setViewPostImage}
+                        postImageView={postImageView}
+                    />
+                ) : null
+            }
 
         </>
     )

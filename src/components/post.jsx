@@ -27,13 +27,13 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
             if (photos.length === 1) {
                 return (
-                    <div onClick={() => showPostImage(postId)} tabindex="0" role="button" aria-pressed="true">
+                    <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true">
                         <img className="w-full h-full object-contain" src={SERVER_URL + photos[0]} alt={photos[0]} />
                     </div>
                 )
             } else if (photos.length === 2) {
                 return (
-                    <div onClick={() => showPostImage(postId)} tabindex="0" role="button" aria-pressed="true" className="grid grid-cols-2">
+                    <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2">
                         {
                             photos.map(value => (
                                 <div key={value} className=''>
@@ -55,7 +55,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
 
                 return (
-                    <div onClick={() => showPostImage(postId)} tabindex="0" role="button" aria-pressed="true" className="grid grid-cols-2 h-full">
+                    <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2 h-full">
                         <div className='h-[300px]'>
                             <img className="w-full h-full object-cover" src={SERVER_URL + photos[0]} alt={photos[0]} />
                         </div>
