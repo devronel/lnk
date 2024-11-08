@@ -23,7 +23,7 @@ const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => 
                             postImageView?.post_photos.split(',').map(value => {
                                 return (
                                     <div key={value} className="embla__slide flex items-center justify-center ">
-                                        <img className=" w-[60%] h-auto object-contain"
+                                        <img className=" w-[70%] h-auto object-contain"
                                             src={SERVER_URL + value}
                                             alt={value} />
                                     </div>

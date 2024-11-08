@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import axiosInstance from "../../utils/axios";
+import { debounce } from "lodash";
 import useError from "../../hooks/useError";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 import { FcAddImage } from "react-icons/fc";
@@ -21,6 +22,7 @@ const Home = () => {
         content: '',
         files: []
     })
+    let [postLimit, setPostLimit] = useState(5)
     let [posts, setPosts] = useState([])
     let [setErrors, errorExist] = useError()
     let [filesPreview, setFilesPreview] = useState([])
@@ -86,7 +88,7 @@ const Home = () => {
 
     const getPost = async () => {
         try {
-            let result = await axiosInstance.get('/post', {
+            let result = await axiosInstance.get(`/post/all/${postLimit}`, {
                 withCredentials: true
             });
             if (result.data.success) {
@@ -161,6 +163,17 @@ const Home = () => {
         };
 
     }, [post])
+
+    useEffect(() => {
+        const onScroll = debounce(function () {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                setPostLimit(postLimit += 3)
+                getPost()
+            }
+        }, 500)
+        window.addEventListener('scroll', onScroll)
+        return () => window.removeEventListener('scroll', onScroll)
+    }, [])
 
     return (
         <>
