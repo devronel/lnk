@@ -70,7 +70,6 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             setIsLogin(false)
-            console.log(error.message)
         }
     }
 

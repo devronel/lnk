@@ -5,11 +5,17 @@ import useError from "../../hooks/useError";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 import { FcAddImage } from "react-icons/fc";
 import { RiCloseCircleFill } from "react-icons/ri";
+import { TbLoaderQuarter } from "react-icons/tb";
 import LnkTextarea from "../../components/forms/lnk-textarea"
 import Modal from "../../components/modal"
 import Post from "../../components/post"
 import PostImageViewer from "../../components/post-image-viewer";
 
+
+/*
+    Import images
+*/
+import empty from "../../assets/empty.svg"
 
 const Home = () => {
 
@@ -24,6 +30,7 @@ const Home = () => {
     })
     let [postLimit, setPostLimit] = useState(5)
     let [posts, setPosts] = useState([])
+    let [isFetchingPost, setIsFetchingPost] = useState(false)
     let [setErrors, errorExist] = useError()
     let [filesPreview, setFilesPreview] = useState([])
 
@@ -88,11 +95,13 @@ const Home = () => {
 
     const getPost = async () => {
         try {
+            setIsFetchingPost(true)
             let result = await axiosInstance.get(`/post/all/${postLimit}`, {
                 withCredentials: true
             });
             if (result.data.success) {
                 setPosts(result.data.payload.result)
+                setIsFetchingPost(false)
             }
 
         } catch (error) {
@@ -179,8 +188,8 @@ const Home = () => {
     }, [])
 
     useEffect(() => {
-        document.body.style.overflow = viewPostImage ? 'hidden' : 'auto'
-    }, [viewPostImage])
+        document.body.style.overflow = viewPostImage || postModal ? 'hidden' : 'auto'
+    }, [viewPostImage, postModal])
 
     return (
         <>
@@ -228,24 +237,50 @@ const Home = () => {
                 <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-3 rounded text-left bg-white">Start post</button>
             </section>
             {
-                posts.map(value => {
-                    return (
-                        <Post
-                            key={value.id}
-                            postId={value.id}
-                            content={value.content}
-                            username={value.username}
-                            firstName={value.first_name}
-                            lastName={value.last_name}
-                            fullName={value.full_name}
-                            headline={value.headline}
-                            createdAt={value.created_at}
-                            profilPicUrl={value.url}
-                            postPhotos={value.post_photos}
-                            showPostImage={showPostImage}
-                        />
-                    )
-                })
+                posts.length > 0 ? (
+                    posts.map(value => {
+                        return (
+                            <Post
+                                key={value.id}
+                                postId={value.id}
+                                content={value.content}
+                                username={value.username}
+                                firstName={value.first_name}
+                                lastName={value.last_name}
+                                fullName={value.full_name}
+                                headline={value.headline}
+                                createdAt={value.created_at}
+                                profilPicUrl={value.url}
+                                postPhotos={value.post_photos}
+                                showPostImage={showPostImage}
+                            />
+                        )
+                    })
+                ) : (
+                    <>
+                        <div className=" mt-4 flex items-center justify-center">
+                            <img src={empty} width={250} height={250} alt="empty" />
+                        </div>
+                        <p className=" text-sm text-center text-lnk-dark-gray">No post!</p>
+                    </>
+                )
+            }
+
+            {
+                isFetchingPost ? (
+                    <div>
+                        <p className="  text-center text-sm text-lnk-dark-gray">
+                            <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
+                            Loading more post...
+                        </p>
+                    </div>
+                ) : (
+                    <div>
+                        <p className=" text-center text-sm text-lnk-dark-gray">
+                            You reach the bottom
+                        </p>
+                    </div>
+                )
             }
 
             {
