@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
 import { SERVER_URL } from "../../utils/axios";
@@ -18,21 +18,24 @@ import LnkTextarea from "../../components/forms/lnk-textarea";
     Import photos
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
+import empty from "../../assets/empty.svg"
 
 const Profile = () => {
 
     /*
         Initialize React hooks like states, context api and etc.
     */
-    const { user, setUser, refreshUser } = useContext(AuthContext)
-    const [openModal, setOpenModal] = useState(false)
-    const [editProfilePhoto, setEditProfilePhoto] = useState(false)
-    const [loading, setLoading] = useState(false)
+    let { user, setUser, refreshUser } = useContext(AuthContext)
+    let [openModal, setOpenModal] = useState(false)
+    let [editProfilePhoto, setEditProfilePhoto] = useState(false)
+    let [loading, setLoading] = useState(false)
 
-    const [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
-    const [photo, setPhoto] = useState(null)
-    const [displayPhoto, setDisplayPhoto] = useState(!isNull(user) ? !isNull(user.url) ? SERVER_URL + user.url : null : null)
-    const [profileError, setProfileError] = useState(null);
+    let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
+    let [photo, setPhoto] = useState(null)
+    let [displayPhoto, setDisplayPhoto] = useState(!isNull(user) ? !isNull(user.url) ? SERVER_URL + user.url : null : null)
+    let [profileError, setProfileError] = useState(null);
+
+    let [posts, setPosts] = useState([])
 
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
@@ -128,6 +131,26 @@ const Profile = () => {
             console.log(error.message)
         }
     }
+
+    const getPost = async () => {
+        try {
+            let result = await axiosInstance.get(`/post/user-post`, {
+                withCredentials: true
+            });
+            if (result.data.success) {
+                setPosts(result.data.payload.result)
+            }
+
+        } catch (error) {
+            console.log(error.message)
+        }
+    }
+
+    useEffect(() => {
+
+        getPost()
+
+    }, [])
 
     return (
         <>
@@ -226,7 +249,35 @@ const Profile = () => {
                 <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
             </div>
             <section>
-                {/* <Post /> */}
+                {
+                    posts.length > 0 ? (
+                        posts.map(value => {
+                            return (
+                                <Post
+                                    key={value.id}
+                                    postId={value.id}
+                                    content={value.content}
+                                    username={value.username}
+                                    firstName={value.first_name}
+                                    lastName={value.last_name}
+                                    fullName={value.full_name}
+                                    headline={value.headline}
+                                    createdAt={value.created_at}
+                                    profilPicUrl={value.url}
+                                    postPhotos={value.post_photos}
+                                // showPostImage={showPostImage}
+                                />
+                            )
+                        })
+                    ) : (
+                        <>
+                            <div className=" mt-4 flex items-center justify-center">
+                                <img src={empty} width={250} height={250} alt="empty" />
+                            </div>
+                            <p className=" text-sm text-center text-lnk-dark-gray">No post!</p>
+                        </>
+                    )
+                }
             </section>
         </>
     )
