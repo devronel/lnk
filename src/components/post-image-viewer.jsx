@@ -5,7 +5,7 @@ import { FaHeart } from "react-icons/fa"
 import { IoMdTime, IoMdClose } from "react-icons/io"
 import { MdOutlineEmojiEmotions } from "react-icons/md"
 import { SERVER_URL } from "../utils/axios"
-import { diffInDays, isNull } from "../utils/functions"
+import { diffInDays, isNull, parseJson } from "../utils/functions"
 
 const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => {
 
@@ -20,15 +20,17 @@ const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => 
                 <div className="embla" ref={emblaRef}>
                     <div className="embla__container items-center">
                         {
-                            postImageView?.post_photos.split(',').map(value => {
-                                return (
-                                    <div key={value} className="embla__slide flex items-center justify-center ">
-                                        <img className=" w-[70%] h-auto object-contain"
-                                            src={SERVER_URL + value}
-                                            alt={value} />
-                                    </div>
-                                )
-                            })
+                            !isNull(postImageView) ? (
+                                parseJson(postImageView.post_files).map(value => {
+                                    return (
+                                        <div key={value.id} className="embla__slide flex items-center justify-center ">
+                                            <img className=" w-[70%] h-auto object-contain"
+                                                src={SERVER_URL + value.url}
+                                                alt={value.filename} />
+                                        </div>
+                                    )
+                                })
+                            ) : null
                         }
                     </div>
                 </div>
