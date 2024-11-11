@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
                 }
             })
 
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.access_token}`
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.auth_token}`
 
             if (user.data.success) {
                 setIsLogin(true)
@@ -62,9 +62,13 @@ export const AuthProvider = ({ children }) => {
             let user = await axiosInstance.get('/user/validate-user', {
                 withCredentials: true
             });
+
             if (user.data.success) {
+
                 setUser(user.data.payload.authUser)
+
                 setIsLogin(true)
+
             } else {
                 setIsLogin(false)
             }

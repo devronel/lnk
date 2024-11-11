@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(response => response, async error => {
 
                 if (response.status === 200) {
 
-                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.payload.access_token}`;
+                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.payload.auth_token}`;
 
                     return axiosInstance(originalConfig);
                 }
