@@ -12,7 +12,7 @@ import { diffInDays, isNull } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postPhotos, showPostImage }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -21,55 +21,55 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     }
 
     const postImageDisplay = () => {
-        if (!isNull(postPhotos)) {
 
-            let photos = postPhotos.split(',');
+        let postImages = JSON.parse(postFiles)
 
-            if (photos.length === 1) {
+        if (!isNull(postImages[0].url)) {
+
+            if (postImages.length === 1) {
                 return (
                     <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true">
-                        <img className="w-full h-full object-contain" src={SERVER_URL + photos[0]} alt={photos[0]} />
+                        <img className="w-full h-full object-contain" src={SERVER_URL + postImages[0].url} alt={postImages[0].url} />
                     </div>
                 )
-            } else if (photos.length === 2) {
+            } else if (postImages.length === 2) {
                 return (
                     <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2">
                         {
-                            photos.map(value => (
-                                <div key={value} className=''>
-                                    <img className="w-full h-full object-contain" src={SERVER_URL + value} alt={value} />
+                            postImages.map(value => (
+                                <div key={value.id} className=''>
+                                    <img className="w-full h-full object-contain" src={SERVER_URL + value.url} alt={value.url} />
                                 </div>
                             ))
                         }
                     </div>
                 )
-            } else if (photos.length >= 3) {
+            } else if (postImages.length >= 3) {
 
                 let twoPhotos
 
-                if (photos.length > 3) {
-                    twoPhotos = photos.slice(1, 3);
+                if (postImages.length > 3) {
+                    twoPhotos = postImages.slice(1, 3);
                 } else {
-                    twoPhotos = photos.splice(1)
+                    twoPhotos = postImages.splice(1)
                 }
-
 
                 return (
                     <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2 h-full">
                         <div className='h-[300px]'>
-                            <img className="w-full h-full object-cover" src={SERVER_URL + photos[0]} alt={photos[0]} />
+                            <img className="w-full h-full object-cover" src={SERVER_URL + postImages[0].url} alt={postImages[0].url} />
                         </div>
                         <div className=" grid grid-cols-1 grid-rows-2 h-[300px]">
                             {
                                 twoPhotos.map(value => (
-                                    <div key={value} className='h-full relative'>
+                                    <div key={value.id} className='h-full relative'>
                                         {
-                                            twoPhotos[twoPhotos.length - 1] === value && photos.length > 1 ? (
+                                            twoPhotos[twoPhotos.length - 1] === value && postImages.length > 1 ? (
                                                 <div className=" bg-lnk-dark opacity-55 absolute inset-0 flex items-center justify-center">
-                                                    <p className=" text-lnk-white">{photos.length - 3} more</p>
+                                                    <p className=" text-lnk-white">{postImages.length - 3} more</p>
                                                 </div>) : null
                                         }
-                                        <img className="w-full h-full object-cover" src={SERVER_URL + value} alt={value} />
+                                        <img className="w-full h-full object-cover" src={SERVER_URL + value.url} alt={value.url} />
                                     </div>
                                 ))
                             }

@@ -265,6 +265,7 @@ const Profile = () => {
                                     createdAt={value.created_at}
                                     profilPicUrl={value.url}
                                     postPhotos={value.post_photos}
+                                    postFiles={value.post_files}
                                 // showPostImage={showPostImage}
                                 />
                             )
