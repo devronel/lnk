@@ -67,3 +67,11 @@ export const diffInDays = (date) => {
         return day + " " + month + year;
     }
 }
+
+/*
+    Functions for parse JSON to Javascript Object
+*/
+export const parseJson = (value) => {
+    let jsonToObject = JSON.parse(value)
+    return jsonToObject
+}

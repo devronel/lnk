@@ -22,14 +22,19 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
     const postImageDisplay = () => {
 
-        let postImages = JSON.parse(postFiles)
 
-        if (!isNull(postImages[0].url)) {
+        if (!isNull(postFiles)) {
+
+            let postImages = JSON.parse(postFiles)
 
             if (postImages.length === 1) {
                 return (
                     <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true">
-                        <img className="w-full h-full object-contain" src={SERVER_URL + postImages[0].url} alt={postImages[0].url} />
+                        <img
+                            className="w-full h-full object-contain"
+                            src={SERVER_URL + postImages[0].url}
+                            alt={postImages[0].filename}
+                        />
                     </div>
                 )
             } else if (postImages.length === 2) {
@@ -38,7 +43,11 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                         {
                             postImages.map(value => (
                                 <div key={value.id} className=''>
-                                    <img className="w-full h-full object-contain" src={SERVER_URL + value.url} alt={value.url} />
+                                    <img
+                                        className="w-full h-full object-contain"
+                                        src={SERVER_URL + value.url}
+                                        alt={value.filename}
+                                    />
                                 </div>
                             ))
                         }
@@ -57,7 +66,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 return (
                     <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2 h-full">
                         <div className='h-[300px]'>
-                            <img className="w-full h-full object-cover" src={SERVER_URL + postImages[0].url} alt={postImages[0].url} />
+                            <img className="w-full h-full object-cover" src={SERVER_URL + postImages[0].url} alt={postImages[0].filename} />
                         </div>
                         <div className=" grid grid-cols-1 grid-rows-2 h-[300px]">
                             {
@@ -69,7 +78,11 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                                                     <p className=" text-lnk-white">{postImages.length - 3} more</p>
                                                 </div>) : null
                                         }
-                                        <img className="w-full h-full object-cover" src={SERVER_URL + value.url} alt={value.url} />
+                                        <img
+                                            className="w-full h-full object-cover"
+                                            src={SERVER_URL + value.url}
+                                            alt={value.filename}
+                                        />
                                     </div>
                                 ))
                             }
