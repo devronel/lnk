@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineEmojiEmotions } from "react-icons/md";
-import { SERVER_URL } from "../utils/axios";
+import axiosInstance, { SERVER_URL } from "../utils/axios";
 import { diffInDays, isNull } from "../utils/functions";
 
 /*
@@ -20,6 +20,9 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         setShowComment(true)
     }
 
+    /*
+        Post images display
+    */
     const postImageDisplay = () => {
 
 
@@ -98,6 +101,20 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         }
     }
 
+    const likePost = async (reaction) => {
+        try {
+
+            let result = await axiosInstance.post(`/post/like/${postId}/${reaction}`, {}, {
+                withCredentials: true
+            })
+
+            console.log(result)
+
+        } catch (error) {
+            throw error
+        }
+    }
+
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
             <div className=" flex items-start gap-2 px-5 mb-3">
@@ -140,13 +157,13 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                         </button>
                         <div className="animate__animated animate__fadeIn absolute -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
                             <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
-                                <button className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <FaHeart className=" text-red-500 text-xl" />
                                 </button>
-                                <button className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                <button onClick={() => likePost('like')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <AiFillLike className=" text-blue-500 text-xl" />
                                 </button>
-                                <button className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                <button onClick={() => likePost('wow')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <BsFillEmojiSurpriseFill className=" text-yellow-500 text-xl" />
                                 </button>
                             </div>
