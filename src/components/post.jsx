@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdTime } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import axiosInstance, { SERVER_URL } from "../utils/axios";
-import { diffInDays, isNull } from "../utils/functions";
+import { diffInDays, isNull, parseJson } from "../utils/functions";
 
 /*
     Import assets like image and etc.
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -101,6 +101,54 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         }
     }
 
+    /*
+        Display react and count
+    */
+    const postReaction = () => {
+
+        if (!isNull(postReactions)) {
+
+            let reaction = parseJson(postReactions)
+            let reactions = []
+            let reactionSet = new Set()
+
+            reaction.map(value => {
+                if (!reactionSet.has(value.reaction)) {
+                    if (value.reaction === 'heart') {
+                        reactions.push(<FaHeart className="text-red-500" />);
+                    }
+                    if (value.reaction === 'wow') {
+                        reactions.push(<AiFillLike className="text-blue-500" />);
+                    }
+                    if (value.reaction === 'like') {
+                        reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500" />);
+                    }
+                    reactionSet.add(value.reaction);
+                }
+            })
+
+            return (
+                <div className=" flex items-center gap-2">
+                    <div className="flex items-center">
+                        {
+                            reactions.map((icon, index) => (
+                                <div key={index}>
+                                    {icon}
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <p className=" text-sm">{parseJson(postReactions).length}</p>
+                </div>
+            )
+
+
+        } else {
+            return <p className=" text-sm">No one react to your post.</p>
+        }
+
+    }
+
     const likePost = async (reaction) => {
         try {
 
@@ -114,6 +162,10 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
             throw error
         }
     }
+
+    // useEffect(() => {
+    //     postReaction()
+    // }, [])
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -136,14 +188,9 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 }
             </div>
             <div className="px-5 flex items-center justify-between mb-3">
-                <div className=" flex items-center gap-2">
-                    <div className="flex items-center">
-                        <FaHeart className=" text-red-500" />
-                        <AiFillLike className=" text-blue-500" />
-                        <BsFillEmojiSurpriseFill className=" text-yellow-500" />
-                    </div>
-                    <p className=" text-sm">100</p>
-                </div>
+                {
+                    postReaction()
+                }
                 <div>
                     <button onClick={commentShow} className=" text-sm text-lnk-dark-gray hover:underline">23 comments</button>
                 </div>

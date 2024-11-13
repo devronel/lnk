@@ -252,6 +252,7 @@ const Home = () => {
                                 createdAt={value.created_at}
                                 profilPicUrl={value.url}
                                 postFiles={value.post_files}
+                                postReactions={value.post_reactions}
                                 showPostImage={showPostImage}
                             />
                         )
