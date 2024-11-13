@@ -117,10 +117,10 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     if (value.reaction === 'heart') {
                         reactions.push(<FaHeart className="text-red-500" />);
                     }
-                    if (value.reaction === 'wow') {
+                    if (value.reaction === 'like') {
                         reactions.push(<AiFillLike className="text-blue-500" />);
                     }
-                    if (value.reaction === 'like') {
+                    if (value.reaction === 'wow') {
                         reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500" />);
                     }
                     reactionSet.add(value.reaction);
