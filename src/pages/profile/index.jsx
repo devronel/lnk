@@ -266,6 +266,8 @@ const Profile = () => {
                                     profilPicUrl={value.url}
                                     postPhotos={value.post_photos}
                                     postFiles={value.post_files}
+                                    postReactions={value.post_reactions}
+                                    isReact={value.user_reaction}
                                 // showPostImage={showPostImage}
                                 />
                             )

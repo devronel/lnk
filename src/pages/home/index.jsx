@@ -253,6 +253,8 @@ const Home = () => {
                                 profilPicUrl={value.url}
                                 postFiles={value.post_files}
                                 postReactions={value.post_reactions}
+                                isReact={value.user_reaction}
+                                refreshPost={getPost}
                                 showPostImage={showPostImage}
                             />
                         )

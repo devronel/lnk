@@ -12,7 +12,7 @@ import { diffInDays, isNull, parseJson } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions, isReact, refreshPost }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -144,9 +144,39 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
 
         } else {
-            return <p className=" text-sm">No one react to your post.</p>
+            return <p className=" text-sm">No one react to this post.</p>
         }
 
+    }
+
+    /*
+        Display reaction icon
+    */
+    const userReaction = () => {
+        if (isReact === 'like') {
+            return (
+                <>
+                    <AiFillLike className="text-blue-500" />
+                    <span>{isReact}</span>
+                </>
+            )
+        }
+        else if (isReact === 'heart') {
+            return (
+                <>
+                    <FaHeart className="text-red-500" />
+                    <span>{isReact}</span>
+                </>
+            )
+        }
+        else {
+            return (
+                <>
+                    <BsFillEmojiSurpriseFill className="text-yellow-500" />
+                    <span>{isReact}</span>
+                </>
+            )
+        }
     }
 
     const likePost = async (reaction) => {
@@ -156,16 +186,14 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 withCredentials: true
             })
 
-            console.log(result)
+            if (result.data.success) {
+                refreshPost()
+            }
 
         } catch (error) {
             throw error
         }
     }
-
-    // useEffect(() => {
-    //     postReaction()
-    // }, [])
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -199,8 +227,15 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 <ul className=" flex items-center gap-5 py-2 border-t border-lnk-gray">
                     <li className="relative group">
                         <button className=" flex items-center gap-1 py-3 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
-                            <AiOutlineLike className=" text-xl" />
-                            <span>React</span>
+                            {
+                                isNull(isReact) ? (
+                                    <>
+                                        <AiOutlineLike className=" text-xl" />
+                                        <span>React</span>
+
+                                    </>
+                                ) : userReaction()
+                            }
                         </button>
                         <div className="animate__animated animate__fadeIn absolute -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
                             <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
