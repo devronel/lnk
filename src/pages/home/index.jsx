@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { debounce } from "lodash";
 import useError from "../../hooks/useError";
@@ -109,6 +110,65 @@ const Home = () => {
         }
     }
 
+    const queryClient = useQueryClient()
+    const mutation = useMutation({
+        mutationFn: async (post) => {
+            let formData = new FormData()
+            let files = Array.from(post.files)
+            files.forEach(value => {
+                formData.append(`files`, value)
+            })
+            formData.append('content', post.content)
+            let result = await axiosInstance.post('/post/create', formData, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+            if (result.data.success) {
+                return result
+            } else {
+                throw new Error(JSON.stringify(result.data.payload));
+            }
+
+        },
+        onSuccess: async () => {
+            queryClient.invalidateQueries(['post'])
+            setPostModal(false)
+            setPostLoading(false)
+            setPost({
+                ...post,
+                content: '',
+                files: []
+            })
+            setFilesPreview([])
+        },
+        onError: (error) => {
+            setPostLoading(false)
+            setErrors(JSON.parse(error.message))
+        }
+    })
+
+    const submitPost = (e) => {
+        e.preventDefault()
+        mutation.mutate(post)
+    }
+
+    const examplePost = async () => {
+
+        let result = await axiosInstance.get(`/post/all/10`, {
+            withCredentials: true
+        })
+
+        return result.data.payload.result
+    }
+
+    const { data } = useQuery({
+        queryKey: ['post'],
+        queryFn: examplePost,
+    })
+
     const imagePreview = () => {
 
         if (post.files.length > 0) {
@@ -193,7 +253,7 @@ const Home = () => {
 
     return (
         <>
-            <Modal submit={saveData} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
+            <Modal submit={submitPost} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
                 <div className=" mb-3">
                     <LnkTextarea
                         name='content'
@@ -238,7 +298,7 @@ const Home = () => {
             </section>
             {
                 posts.length > 0 ? (
-                    posts.map(value => {
+                    data?.map(value => {
                         return (
                             <Post
                                 key={value.id}
