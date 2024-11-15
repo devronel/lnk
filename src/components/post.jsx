@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IoMdTime } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
@@ -14,6 +15,7 @@ import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
 const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions, isReact }) => {
 
+    const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
 
     const commentShow = () => {
@@ -24,7 +26,6 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         Post images display
     */
     const postImageDisplay = () => {
-
 
         if (!isNull(postFiles)) {
 
@@ -115,20 +116,20 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
             reaction.map(value => {
                 if (!reactionSet.has(value.reaction)) {
                     if (value.reaction === 'heart') {
-                        reactions.push(<FaHeart className="text-red-500" />);
+                        reactions.push(<FaHeart className="text-red-500 text-sm" />);
                     }
                     if (value.reaction === 'like') {
-                        reactions.push(<AiFillLike className="text-blue-500" />);
+                        reactions.push(<AiFillLike className="text-blue-500 text-sm" />);
                     }
                     if (value.reaction === 'wow') {
-                        reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500" />);
+                        reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />);
                     }
                     reactionSet.add(value.reaction);
                 }
             })
 
             return (
-                <div className=" flex items-center gap-2">
+                <div className=" flex items-center gap-1">
                     <div className="flex items-center">
                         {
                             reactions.map((icon, index) => (
@@ -138,13 +139,13 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                             ))
                         }
                     </div>
-                    <p className=" text-sm">{parseJson(postReactions).length}</p>
+                    <p className=" text-xs">{parseJson(postReactions).length}</p>
                 </div>
             )
 
 
         } else {
-            return <p className=" text-sm">No one react to this post.</p>
+            return <p className=" text-xs">No one react to this post.</p>
         }
 
     }
@@ -180,24 +181,30 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     }
 
     const likePost = async (reaction) => {
-        try {
+        mutation.mutate({ postId: postId, reaction: reaction })
+    }
 
-            let result = await axiosInstance.post(`/post/like/${postId}/${reaction}`, {}, {
+    const mutation = useMutation({
+        mutationFn: async (reaction) => {
+            let result = await axiosInstance.post(`/post/like/${reaction.postId}/${reaction.reaction}`, {}, {
                 withCredentials: true
             })
 
             if (result.data.success) {
-                console.log('Yuo react to the post')
+                return result
             }
-
-        } catch (error) {
-            throw error
+        },
+        onSuccess: async () => {
+            queryClient.invalidateQueries(['posts'])
+        },
+        onError: (error) => {
+            console.log(error.message)
         }
-    }
+    })
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
-            <div className=" flex items-start gap-2 px-5 mb-3">
+            <div className=" flex items-start gap-2 px-5 mb-4">
                 <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                     <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? (SERVER_URL + profilPicUrl) : profilePlaceholder} alt="" />
                 </div>
@@ -207,7 +214,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     <p className=" text-xs font-light">{diffInDays(createdAt)} <IoMdTime className=" inline" /></p>
                 </div>
             </div>
-            <div className="mb-3">
+            <div className="mb-4">
                 <div className=" px-5 mb-1">
                     <p className=" text-sm font-light whitespace-pre-line">{content}</p>
                 </div>
@@ -215,22 +222,22 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     postImageDisplay()
                 }
             </div>
-            <div className="px-5 flex items-center justify-between mb-3">
+            <div className="px-5 flex items-center justify-between mb-2">
                 {
                     postReaction()
                 }
                 <div>
-                    <button onClick={commentShow} className=" text-sm text-lnk-dark-gray hover:underline">23 comments</button>
+                    <button onClick={commentShow} className=" text-xs text-lnk-dark-gray hover:underline">23 comments</button>
                 </div>
             </div>
             <div className="px-5">
-                <ul className=" flex items-center gap-5 py-2 border-t border-lnk-gray">
+                <ul className=" flex items-center gap-5 py-1 border-t border-lnk-gray">
                     <li className="relative group">
-                        <button className=" flex items-center gap-1 py-3 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                        <button className="text-sm flex items-center gap-1 py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
                             {
                                 isNull(isReact) ? (
                                     <>
-                                        <AiOutlineLike className=" text-xl" />
+                                        <AiOutlineLike className="" />
                                         <span>React</span>
 
                                     </>
@@ -252,8 +259,8 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                         </div>
                     </li>
                     <li>
-                        <button onClick={commentShow} className=" flex items-center gap-1  py-3 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
-                            <AiOutlineComment className=" text-xl" />
+                        <button onClick={commentShow} className="text-sm flex items-center gap-1  py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                            <AiOutlineComment className="" />
                             <span>Comment</span>
                         </button>
                     </li>

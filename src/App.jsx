@@ -13,7 +13,13 @@ import Notifications from './pages/notifications'
 import { AuthProvider } from './context/AuthContext'
 
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false
+    }
+  }
+})
 
 function App() {
 

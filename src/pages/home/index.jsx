@@ -17,6 +17,7 @@ import PostImageViewer from "../../components/post-image-viewer";
     Import images
 */
 import empty from "../../assets/empty.svg"
+import { isNull } from "../../utils/functions";
 
 const Home = () => {
 
@@ -30,9 +31,6 @@ const Home = () => {
         content: '',
         files: []
     })
-    let [postLimit, setPostLimit] = useState(0)
-    let [posts, setPosts] = useState([])
-    let [isFetchingPost, setIsFetchingPost] = useState(false)
     let [setErrors, errorExist] = useError()
     let [filesPreview, setFilesPreview] = useState([])
 
@@ -63,23 +61,20 @@ const Home = () => {
     }
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ['post'],
+        queryKey: ['posts'],
         queryFn: async ({ pageParam }) => {
-            let result = await axiosInstance.get(`/post/all?_pages=${pageParam}`, {
+            let result = await axiosInstance.get(`/post/all?pages=${pageParam}`, {
                 withCredentials: true
             })
 
-            return result.data.payload.result
+            return result.data.payload
+
         },
+        retry: 2,
         initialPageParam: 0,
         getNextPageParam: (lastPage, pages) => {
-            console.log({ lastPage, pages })
-            if (pages.length > 1) {
-                return pages.length + 2
-            } else {
-                return pages.length + 1
-            }
-        }
+            return lastPage.next_page
+        },
     })
 
     const mutation = useMutation({
@@ -105,7 +100,7 @@ const Home = () => {
 
         },
         onSuccess: async () => {
-            queryClient.invalidateQueries(['post'])
+            queryClient.invalidateQueries(['posts'])
             setPostModal(false)
             setPostLoading(false)
             setPost({
@@ -183,8 +178,7 @@ const Home = () => {
 
         const onScroll = debounce(function () {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                // setPostLimit(prevState => prevState++)
-                // fetchNextPage()
+                fetchNextPage()
             }
         }, 500)
 
@@ -245,7 +239,7 @@ const Home = () => {
             </section>
             {
                 data?.pages.map(dt => (
-                    dt.map(value => (
+                    dt.result.map(value => (
                         <Post
                             key={value.id}
                             postId={value.id}
@@ -265,67 +259,27 @@ const Home = () => {
                     ))
                 ))
             }
-
-            <button
-                onClick={() => fetchNextPage()}
-                disabled={!hasNextPage || isFetchingNextPage}
-            >
-                {isFetchingNextPage
-                    ? 'Loading more...'
-                    : hasNextPage
-                        ? 'Load More'
-                        : 'Nothing more to load'}
-            </button>
-            {/* {
-                data?.pages.length > 0 ? (
-                    data?.pages.map(value => {
-                        return (
-                            <Post
-                                key={value.id}
-                                postId={value.id}
-                                content={value.content}
-                                username={value.username}
-                                firstName={value.first_name}
-                                lastName={value.last_name}
-                                fullName={value.full_name}
-                                headline={value.headline}
-                                createdAt={value.created_at}
-                                profilPicUrl={value.url}
-                                postFiles={value.post_files}
-                                postReactions={value.post_reactions}
-                                isReact={value.user_reaction}
-                                showPostImage={showPostImage}
-                            />
-                        )
-                    })
-                ) : (
-                    <>
-                        <div className=" mt-4 flex items-center justify-center">
-                            <img src={empty} width={250} height={250} alt="empty" />
-                        </div>
-                        <p className=" text-sm text-center text-lnk-dark-gray">No post!</p>
-                    </>
+            {isFetchingNextPage
+                ? (
+                    <div>
+                        <p className="  text-center text-xs text-lnk-dark-gray">
+                            <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
+                            Loading more post...
+                        </p>
+                    </div>
                 )
-            } */}
-
-            {/* {
-                data?.pages.length > 0 ? (
-                    isFetchingPost ? (
-                        <div>
-                            <p className="  text-center text-sm text-lnk-dark-gray">
-                                <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
-                                Loading more post...
-                            </p>
-                        </div>
-                    ) : (
-                        <div>
-                            <p className=" text-center text-sm text-lnk-dark-gray">
-                                You reach the bottom
-                            </p>
-                        </div>
+                : hasNextPage
+                    ? (
+                        <p className="  text-center text-xs text-lnk-dark-gray">
+                            Nothing more to load
+                        </p>
                     )
-                ) : null
-            } */}
+                    : (
+                        <p className="  text-center text-xs text-lnk-dark-gray">
+                            Nothing more to load
+                        </p>
+                    )
+            }
 
             {
                 viewPostImage ? (
