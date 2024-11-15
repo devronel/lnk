@@ -12,7 +12,7 @@ import { diffInDays, isNull, parseJson } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions, isReact, refreshPost }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions, isReact }) => {
 
     const [showComment, setShowComment] = useState(false)
 
@@ -187,7 +187,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
             })
 
             if (result.data.success) {
-                refreshPost()
+                console.log('Yuo react to the post')
             }
 
         } catch (error) {

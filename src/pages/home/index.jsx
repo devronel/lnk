@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { debounce } from "lodash";
 import useError from "../../hooks/useError";
@@ -23,13 +23,14 @@ const Home = () => {
     /*
         Initialize react hooks
     */
+    let queryClient = useQueryClient()
     let [postModal, setPostModal] = useState(false)
     let [postLoading, setPostLoading] = useState(false)
     let [post, setPost] = useState({
         content: '',
         files: []
     })
-    let [postLimit, setPostLimit] = useState(5)
+    let [postLimit, setPostLimit] = useState(0)
     let [posts, setPosts] = useState([])
     let [isFetchingPost, setIsFetchingPost] = useState(false)
     let [setErrors, errorExist] = useError()
@@ -56,61 +57,31 @@ const Home = () => {
         setPostModal(true)
     }
 
-    const saveData = async () => {
-        try {
-
-            let formData = new FormData()
-            let files = Array.from(post.files)
-            files.forEach(value => {
-                formData.append(`files`, value)
-            })
-            formData.append('content', post.content)
-
-            setPostLoading(true)
-            let result = await axiosInstance.post('/post/create', formData, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-
-            if (result.data.success) {
-                setPostModal(false)
-                setPostLoading(false)
-                setPost({
-                    ...post,
-                    content: '',
-                    files: []
-                })
-                setFilesPreview([])
-                getPost()
-            } else {
-                setPostLoading(false)
-                setErrors(result.data.payload)
-            }
-
-        } catch (error) {
-            console.log(error.message)
-        }
+    const saveData = (e) => {
+        e.preventDefault()
+        mutation.mutate(post)
     }
 
-    const getPost = async () => {
-        try {
-            setIsFetchingPost(true)
-            let result = await axiosInstance.get(`/post/all/${postLimit}`, {
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+        queryKey: ['post'],
+        queryFn: async ({ pageParam }) => {
+            let result = await axiosInstance.get(`/post/all?_pages=${pageParam}`, {
                 withCredentials: true
-            });
-            if (result.data.success) {
-                setPosts(result.data.payload.result)
-                setIsFetchingPost(false)
+            })
+
+            return result.data.payload.result
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, pages) => {
+            console.log({ lastPage, pages })
+            if (pages.length > 1) {
+                return pages.length + 2
+            } else {
+                return pages.length + 1
             }
-
-        } catch (error) {
-            console.log(error.message)
         }
-    }
+    })
 
-    const queryClient = useQueryClient()
     const mutation = useMutation({
         mutationFn: async (post) => {
             let formData = new FormData()
@@ -148,25 +119,6 @@ const Home = () => {
             setPostLoading(false)
             setErrors(JSON.parse(error.message))
         }
-    })
-
-    const submitPost = (e) => {
-        e.preventDefault()
-        mutation.mutate(post)
-    }
-
-    const examplePost = async () => {
-
-        let result = await axiosInstance.get(`/post/all/10`, {
-            withCredentials: true
-        })
-
-        return result.data.payload.result
-    }
-
-    const { data } = useQuery({
-        queryKey: ['post'],
-        queryFn: examplePost,
     })
 
     const imagePreview = () => {
@@ -219,12 +171,6 @@ const Home = () => {
     */
     useEffect(() => {
 
-        getPost()
-
-    }, [postLimit])
-
-    useEffect(() => {
-
         imagePreview()
 
         return () => {
@@ -237,7 +183,8 @@ const Home = () => {
 
         const onScroll = debounce(function () {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                setPostLimit(prevState => prevState += 3)
+                // setPostLimit(prevState => prevState++)
+                // fetchNextPage()
             }
         }, 500)
 
@@ -253,7 +200,7 @@ const Home = () => {
 
     return (
         <>
-            <Modal submit={submitPost} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
+            <Modal submit={saveData} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
                 <div className=" mb-3">
                     <LnkTextarea
                         name='content'
@@ -297,8 +244,41 @@ const Home = () => {
                 <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-3 rounded text-left bg-white">Start post</button>
             </section>
             {
-                posts.length > 0 ? (
-                    data?.map(value => {
+                data?.pages.map(dt => (
+                    dt.map(value => (
+                        <Post
+                            key={value.id}
+                            postId={value.id}
+                            content={value.content}
+                            username={value.username}
+                            firstName={value.first_name}
+                            lastName={value.last_name}
+                            fullName={value.full_name}
+                            headline={value.headline}
+                            createdAt={value.created_at}
+                            profilPicUrl={value.url}
+                            postFiles={value.post_files}
+                            postReactions={value.post_reactions}
+                            isReact={value.user_reaction}
+                            showPostImage={showPostImage}
+                        />
+                    ))
+                ))
+            }
+
+            <button
+                onClick={() => fetchNextPage()}
+                disabled={!hasNextPage || isFetchingNextPage}
+            >
+                {isFetchingNextPage
+                    ? 'Loading more...'
+                    : hasNextPage
+                        ? 'Load More'
+                        : 'Nothing more to load'}
+            </button>
+            {/* {
+                data?.pages.length > 0 ? (
+                    data?.pages.map(value => {
                         return (
                             <Post
                                 key={value.id}
@@ -314,7 +294,6 @@ const Home = () => {
                                 postFiles={value.post_files}
                                 postReactions={value.post_reactions}
                                 isReact={value.user_reaction}
-                                refreshPost={getPost}
                                 showPostImage={showPostImage}
                             />
                         )
@@ -327,24 +306,26 @@ const Home = () => {
                         <p className=" text-sm text-center text-lnk-dark-gray">No post!</p>
                     </>
                 )
-            }
+            } */}
 
-            {
-                isFetchingPost ? (
-                    <div>
-                        <p className="  text-center text-sm text-lnk-dark-gray">
-                            <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
-                            Loading more post...
-                        </p>
-                    </div>
-                ) : (
-                    <div>
-                        <p className=" text-center text-sm text-lnk-dark-gray">
-                            You reach the bottom
-                        </p>
-                    </div>
-                )
-            }
+            {/* {
+                data?.pages.length > 0 ? (
+                    isFetchingPost ? (
+                        <div>
+                            <p className="  text-center text-sm text-lnk-dark-gray">
+                                <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
+                                Loading more post...
+                            </p>
+                        </div>
+                    ) : (
+                        <div>
+                            <p className=" text-center text-sm text-lnk-dark-gray">
+                                You reach the bottom
+                            </p>
+                        </div>
+                    )
+                ) : null
+            } */}
 
             {
                 viewPostImage ? (
