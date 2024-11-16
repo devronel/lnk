@@ -1,4 +1,6 @@
 import { useState, useContext, useEffect } from "react";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { debounce } from "lodash";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
 import { SERVER_URL } from "../../utils/axios";
@@ -19,6 +21,7 @@ import LnkTextarea from "../../components/forms/lnk-textarea";
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 import empty from "../../assets/empty.svg"
+import { TbLoaderQuarter } from "react-icons/tb";
 
 const Profile = () => {
 
@@ -132,25 +135,42 @@ const Profile = () => {
         }
     }
 
-    const getPost = async () => {
-        try {
-            let result = await axiosInstance.get(`/post/user-post`, {
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+        queryKey: ['user-posts', user?.username],
+        queryFn: async ({ pageParam }) => {
+            let result = await axiosInstance.get(`/post/user-post?pages=${pageParam}`, {
                 withCredentials: true
             });
             if (result.data.success) {
-                setPosts(result.data.payload.result)
+                return result.data.payload
             }
 
-        } catch (error) {
-            console.log(error.message)
-        }
-    }
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, pages) => {
+            return lastPage.next_page
+        },
+    })
 
     useEffect(() => {
 
-        getPost()
+        const onScroll = debounce(function () {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                fetchNextPage()
+            }
+        }, 500)
+
+        window.addEventListener('scroll', onScroll)
+
+        return () => window.removeEventListener('scroll', onScroll)
 
     }, [])
+
+    // const queryClient = useQueryClient()
+    // useEffect(() => {
+    //     queryClient.invalidateQueries('user-posts')
+    // }, [])
+
 
     return (
         <>
@@ -250,36 +270,47 @@ const Profile = () => {
             </div>
             <section>
                 {
-                    posts.length > 0 ? (
-                        posts.map(value => {
-                            return (
-                                <Post
-                                    key={value.id}
-                                    postId={value.id}
-                                    content={value.content}
-                                    username={value.username}
-                                    firstName={value.first_name}
-                                    lastName={value.last_name}
-                                    fullName={value.full_name}
-                                    headline={value.headline}
-                                    createdAt={value.created_at}
-                                    profilPicUrl={value.url}
-                                    postPhotos={value.post_photos}
-                                    postFiles={value.post_files}
-                                    postReactions={value.post_reactions}
-                                    isReact={value.user_reaction}
-                                // showPostImage={showPostImage}
-                                />
-                            )
-                        })
-                    ) : (
-                        <>
-                            <div className=" mt-4 flex items-center justify-center">
-                                <img src={empty} width={250} height={250} alt="empty" />
-                            </div>
-                            <p className=" text-sm text-center text-lnk-dark-gray">No post!</p>
-                        </>
+                    data?.pages.map(dt => (
+                        dt.result.map(value => (
+                            <Post
+                                key={value.id}
+                                postId={value.id}
+                                content={value.content}
+                                username={value.username}
+                                firstName={value.first_name}
+                                lastName={value.last_name}
+                                fullName={value.full_name}
+                                headline={value.headline}
+                                createdAt={value.created_at}
+                                profilPicUrl={value.url}
+                                postFiles={value.post_files}
+                                postReactions={value.post_reactions}
+                                isReact={value.user_reaction}
+                            // showPostImage={showPostImage}
+                            />
+                        ))
+                    ))
+                }
+                {isFetchingNextPage
+                    ? (
+                        <div>
+                            <p className="  text-center text-xs text-lnk-dark-gray">
+                                <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
+                                Loading more post...
+                            </p>
+                        </div>
                     )
+                    : hasNextPage
+                        ? (
+                            <p className="  text-center text-xs text-lnk-dark-gray">
+                                Nothing more to load
+                            </p>
+                        )
+                        : (
+                            <p className="  text-center text-xs text-lnk-dark-gray">
+                                Nothing more to load
+                            </p>
+                        )
                 }
             </section>
         </>

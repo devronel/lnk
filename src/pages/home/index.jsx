@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react"
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
+import { AuthContext } from "../../context/AuthContext";
 import { debounce } from "lodash";
 import useError from "../../hooks/useError";
 import { BsFileEarmarkPostFill } from "react-icons/bs"
@@ -25,6 +26,7 @@ const Home = () => {
         Initialize react hooks
     */
     let queryClient = useQueryClient()
+    let { user, setUser, refreshUser } = useContext(AuthContext)
     let [postModal, setPostModal] = useState(false)
     let [postLoading, setPostLoading] = useState(false)
     let [post, setPost] = useState({
@@ -70,7 +72,6 @@ const Home = () => {
             return result.data.payload
 
         },
-        retry: 2,
         initialPageParam: 0,
         getNextPageParam: (lastPage, pages) => {
             return lastPage.next_page
