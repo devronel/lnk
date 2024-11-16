@@ -50,7 +50,6 @@ export const AuthProvider = ({ children }) => {
             });
             if (response.data.success) {
                 setIsLogin(false)
-                queryClient.clear()
             }
         } catch (error) {
             console.log(error.message)

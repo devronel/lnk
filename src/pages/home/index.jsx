@@ -63,7 +63,7 @@ const Home = () => {
     }
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ['posts'],
+        queryKey: ['posts', user?.username],
         queryFn: async ({ pageParam }) => {
             let result = await axiosInstance.get(`/post/all?pages=${pageParam}`, {
                 withCredentials: true
