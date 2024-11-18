@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { AuthContext } from "../../context/AuthContext";
 import { debounce } from "lodash";
@@ -255,6 +255,7 @@ const Home = () => {
                             postFiles={value.post_files}
                             postReactions={value.post_reactions}
                             isReact={value.user_reaction}
+                            reactionCount={value.reaction_count}
                             showPostImage={showPostImage}
                         />
                     ))
@@ -272,12 +273,12 @@ const Home = () => {
                 : hasNextPage
                     ? (
                         <p className="  text-center text-xs text-lnk-dark-gray">
-                            Nothing more to load
+                            Load more
                         </p>
                     )
                     : (
                         <p className="  text-center text-xs text-lnk-dark-gray">
-                            Nothing more to load
+                            No more post
                         </p>
                     )
             }

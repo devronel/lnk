@@ -166,11 +166,6 @@ const Profile = () => {
 
     }, [])
 
-    // const queryClient = useQueryClient()
-    // useEffect(() => {
-    //     queryClient.invalidateQueries('user-posts')
-    // }, [])
-
 
     return (
         <>
@@ -286,6 +281,7 @@ const Profile = () => {
                                 postFiles={value.post_files}
                                 postReactions={value.post_reactions}
                                 isReact={value.user_reaction}
+                                reactionCount={value.reaction_count}
                             // showPostImage={showPostImage}
                             />
                         ))
@@ -303,12 +299,12 @@ const Profile = () => {
                     : hasNextPage
                         ? (
                             <p className="  text-center text-xs text-lnk-dark-gray">
-                                Nothing more to load
+                                Load more
                             </p>
                         )
                         : (
                             <p className="  text-center text-xs text-lnk-dark-gray">
-                                Nothing more to load
+                                No more post
                             </p>
                         )
                 }

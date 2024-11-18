@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axios";
@@ -8,7 +7,6 @@ export const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
 
-    let queryClient = useQueryClient()
     const navigate = useNavigate()
     const [isLogin, setIsLogin] = useState(null);
     const [user, setUser] = useState(null)
@@ -36,7 +34,6 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             setIsLogin(false)
-            console.log(error.message)
         }
     }
 

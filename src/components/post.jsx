@@ -13,7 +13,7 @@ import { diffInDays, isNull, parseJson } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions, isReact }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions, isReact, reactionCount }) => {
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
@@ -109,37 +109,43 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
         if (!isNull(postReactions)) {
 
-            let reaction = parseJson(postReactions)
+            let reaction = postReactions.split(',')
             let reactions = []
             let reactionSet = new Set()
 
+            // reaction.map(value => {
+            //     if (!reactionSet.has(value.reaction)) {
+            //         if (value.reaction === 'heart') {
+            //             reactions.push(<FaHeart className="text-red-500 text-sm" />);
+            //         }
+            //         if (value.reaction === 'like') {
+            //             reactions.push(<AiFillLike className="text-blue-500 text-sm" />);
+            //         }
+            //         if (value.reaction === 'wow') {
+            //             reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />);
+            //         }
+            //         reactionSet.add(value.reaction);
+            //     }
+            // })
+
             reaction.map(value => {
-                if (!reactionSet.has(value.reaction)) {
-                    if (value.reaction === 'heart') {
-                        reactions.push(<FaHeart className="text-red-500 text-sm" />);
-                    }
-                    if (value.reaction === 'like') {
-                        reactions.push(<AiFillLike className="text-blue-500 text-sm" />);
-                    }
-                    if (value.reaction === 'wow') {
-                        reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />);
-                    }
-                    reactionSet.add(value.reaction);
-                }
+                if (value === 'heart') reactions.push(<FaHeart className="text-red-500 text-sm" />)
+                if (value === 'like') reactions.push(<AiFillLike className="text-blue-500 text-sm" />)
+                if (value === 'wow') reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />)
             })
 
             return (
                 <div className=" flex items-center gap-1">
                     <div className="flex items-center">
                         {
-                            reactions.map((icon, index) => (
-                                <div key={index}>
+                            reactions.map((icon) => (
+                                <div key={icon}>
                                     {icon}
                                 </div>
                             ))
                         }
                     </div>
-                    <p className=" text-xs">{parseJson(postReactions).length}</p>
+                    <p className=" text-xs">{reactionCount}</p>
                 </div>
             )
 
