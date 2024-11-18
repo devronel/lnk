@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.transition {
+    @apply transition-all duration-150 ease-linear
+}
+
 .triangle-wrapper {
     position: relative;
     display: inline-block;

@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { IoMdTime } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
+import { GrSend } from "react-icons/gr";
 import { MdOutlineEmojiEmotions } from "react-icons/md";
 import axiosInstance, { SERVER_URL } from "../utils/axios";
-import { diffInDays, isNull, parseJson } from "../utils/functions";
+import { diffInDays, isNull } from "../utils/functions";
 
 /*
     Import assets like image and etc.
@@ -17,6 +18,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
+    const [comment, setComment] = useState(null)
 
     const commentShow = () => {
         setShowComment(true)
@@ -111,22 +113,6 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
             let reaction = postReactions.split(',')
             let reactions = []
-            let reactionSet = new Set()
-
-            // reaction.map(value => {
-            //     if (!reactionSet.has(value.reaction)) {
-            //         if (value.reaction === 'heart') {
-            //             reactions.push(<FaHeart className="text-red-500 text-sm" />);
-            //         }
-            //         if (value.reaction === 'like') {
-            //             reactions.push(<AiFillLike className="text-blue-500 text-sm" />);
-            //         }
-            //         if (value.reaction === 'wow') {
-            //             reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />);
-            //         }
-            //         reactionSet.add(value.reaction);
-            //     }
-            // })
 
             reaction.map(value => {
                 if (value === 'heart') reactions.push(<FaHeart className="text-red-500 text-sm" />)
@@ -138,8 +124,8 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 <div className=" flex items-center gap-1">
                     <div className="flex items-center">
                         {
-                            reactions.map((icon) => (
-                                <div key={icon}>
+                            reactions.map((icon, index) => (
+                                <div key={index}>
                                     {icon}
                                 </div>
                             ))
@@ -207,6 +193,13 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
             console.log(error.message)
         }
     })
+
+    /*
+        Comment functions
+    */
+    const getComment = (e) => {
+        setComment(e.target.value)
+    }
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -278,8 +271,10 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                         <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                     </div>
                     <div className=" flex-grow relative">
-                        <input className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
-                        <MdOutlineEmojiEmotions className="text-lg text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2" />
+                        <input onChange={getComment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
+                        <button className=" group">
+                            <GrSend className="text-base text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2 group-hover:text-lnk-orange transition" />
+                        </button>
                     </div>
                 </div>
                 <div>
