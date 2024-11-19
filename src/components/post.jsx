@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { IoMdTime } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
@@ -19,10 +19,11 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
     const [comment, setComment] = useState(null)
+    const [commentList, setCommentList] = useState([])
 
-    const commentShow = () => {
-        setShowComment(true)
-    }
+    // const commentShow = () => {
+    //     setShowComment(true)
+    // }
 
     /*
         Post images display
@@ -220,7 +221,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
         },
         onSuccess: () => {
-            console.log('Success')
+            fetchAllComment()
         },
         onError: (error) => {
             console.log(error.message)
@@ -229,6 +230,21 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
     const sendComment = () => {
         commentMutation.mutate({ postId: postId, comment: comment })
+    }
+
+    const fetchAllComment = async () => {
+        try {
+
+            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}`)
+
+            if (result.data.success) {
+                setShowComment(true)
+                setCommentList(result.data.payload.result)
+            }
+
+        } catch (error) {
+            console.log(error.message)
+        }
     }
 
     return (
@@ -256,7 +272,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     postReaction()
                 }
                 <div>
-                    <button onClick={commentShow} className=" text-xs text-lnk-dark-gray hover:underline">23 comments</button>
+                    <button onClick={fetchAllComment} className=" text-xs text-lnk-dark-gray hover:underline">23 comments</button>
                 </div>
             </div>
             <div className="px-5">
@@ -288,7 +304,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                         </div>
                     </li>
                     <li>
-                        <button onClick={commentShow} className="text-sm flex items-center gap-1  py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                        <button onClick={fetchAllComment} className="text-sm flex items-center gap-1  py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
                             <AiOutlineComment className="" />
                             <span>Comment</span>
                         </button>
@@ -308,34 +324,32 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     </div>
                 </div>
                 <div>
-                    <div className=" mb-5">
-                        <div className=" flex items-start gap-2 mb-2">
-                            <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" />
-                            </div>
-                            <div>
-                                <p className=" text-sm">Kevin Caluag</p>
-                                <p className=" text-xs font-light">Sr Software Engineer</p>
-                            </div>
-                        </div>
-                        <div className=" pl-9">
-                            <p className=" text-sm">Hey, that's great, keep up the good work!</p>
-                        </div>
-                    </div>
-                    <div className=" mb-5">
-                        <div className=" flex items-start gap-2 mb-2">
-                            <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" />
-                            </div>
-                            <div>
-                                <p className=" text-sm">Kevin Caluag</p>
-                                <p className=" text-xs font-light">Sr Software Engineer</p>
-                            </div>
-                        </div>
-                        <div className=" pl-9">
-                            <p className=" text-sm">Hey, that's great, keep up the good work!</p>
-                        </div>
-                    </div>
+                    {
+                        commentList.length > 0 ? (
+                            commentList.map(value => (
+                                <div key={value.id} className=" mb-5">
+                                    <div className=" flex items-center gap-2 mb-2">
+                                        <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
+                                            <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
+                                        </div>
+                                        <div>
+                                            <p className=" text-xs">{value.full_name}</p>
+                                            {
+                                                !isNull(value.headline) ? (
+                                                    <p className=" text-[10px] font-light">{value.headline}</p>
+                                                ) : null
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className=" pl-9">
+                                        <div className="border border-lnk-gray py-1 rounded-md px-2">
+                                            <p className=" text-xs font-bold">{value.comment}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        ) : null
+                    }
                 </div>
             </div>
         </section>
