@@ -201,6 +201,36 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         setComment(e.target.value)
     }
 
+    const commentMutation = useMutation({
+        mutationFn: async (data) => {
+
+            let result = await axiosInstance.post('/post/send/comment', {
+                post_id: data.postId,
+                comment_value: data.comment
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if (result.data.success) {
+                return result
+            }
+
+        },
+        onSuccess: () => {
+            console.log('Success')
+        },
+        onError: (error) => {
+            console.log(error.message)
+        }
+    })
+
+    const sendComment = () => {
+        commentMutation.mutate({ postId: postId, comment: comment })
+    }
+
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
             <div className=" flex items-start gap-2 px-5 mb-4">
@@ -272,7 +302,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     </div>
                     <div className=" flex-grow relative">
                         <input onChange={getComment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
-                        <button className=" group">
+                        <button onClick={sendComment} className=" group">
                             <GrSend className="text-base text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2 group-hover:text-lnk-orange transition" />
                         </button>
                     </div>
