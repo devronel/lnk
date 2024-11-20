@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IoMdTime } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
@@ -18,7 +18,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
-    const [comment, setComment] = useState(null)
+    const [comment, setComment] = useState('')
     const [commentList, setCommentList] = useState([])
 
     // const commentShow = () => {
@@ -221,7 +221,10 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
         },
         onSuccess: () => {
-            fetchAllComment()
+            setComment('')
+            queryClient.invalidateQueries({
+                queryKey: ['comments', postId]
+            })
         },
         onError: (error) => {
             console.log(error.message)
@@ -233,19 +236,24 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     }
 
     const fetchAllComment = async () => {
-        try {
+        setShowComment(true)
+    }
 
+    const { data } = useInfiniteQuery({
+        queryKey: ['comments', postId],
+        queryFn: async () => {
             let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}`)
 
             if (result.data.success) {
-                setShowComment(true)
-                setCommentList(result.data.payload.result)
+                return result.data.payload
             }
-
-        } catch (error) {
-            console.log(error.message)
-        }
-    }
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, pages) => {
+            return lastPage
+        },
+        enabled: showComment
+    })
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -311,13 +319,13 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     </li>
                 </ul>
             </div>
-            <div className={`px-5 pb-2 ${showComment ? 'block' : 'hidden'}`}>
+            <div className={`px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
                 <div className=" flex items-center gap-2 mb-5">
                     <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                         <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                     </div>
                     <div className=" flex-grow relative">
-                        <input onChange={getComment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
+                        <input onChange={getComment} value={comment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
                         <button onClick={sendComment} className=" group">
                             <GrSend className="text-base text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2 group-hover:text-lnk-orange transition" />
                         </button>
@@ -325,28 +333,30 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 </div>
                 <div>
                     {
-                        commentList.length > 0 ? (
-                            commentList.map(value => (
-                                <div key={value.id} className=" mb-5">
-                                    <div className=" flex items-center gap-2 mb-2">
-                                        <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                            <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
+                        data !== undefined ? (
+                            data.pages.map(dt => (
+                                dt.result.map(value => (
+                                    <div key={value.id} className=" mb-5">
+                                        <div className=" flex items-center gap-2 mb-2">
+                                            <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
+                                                <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
+                                            </div>
+                                            <div>
+                                                <p className=" text-xs">{value.full_name}</p>
+                                                {
+                                                    !isNull(value.headline) ? (
+                                                        <p className=" text-[10px] font-light">{value.headline}</p>
+                                                    ) : null
+                                                }
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className=" text-xs">{value.full_name}</p>
-                                            {
-                                                !isNull(value.headline) ? (
-                                                    <p className=" text-[10px] font-light">{value.headline}</p>
-                                                ) : null
-                                            }
+                                        <div className=" pl-9">
+                                            <div className="border border-lnk-gray py-1 rounded-md px-2">
+                                                <p className=" text-xs font-bold">{value.comment}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className=" pl-9">
-                                        <div className="border border-lnk-gray py-1 rounded-md px-2">
-                                            <p className=" text-xs font-bold">{value.comment}</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                ))
                             ))
                         ) : null
                     }
