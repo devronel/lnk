@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IoMdTime } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { GrSend } from "react-icons/gr";
-import { MdOutlineEmojiEmotions } from "react-icons/md";
+import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb";
+import { MdOutlineCommentsDisabled } from "react-icons/md";
 import axiosInstance, { SERVER_URL } from "../utils/axios";
 import { diffInDays, isNull } from "../utils/functions";
 
@@ -19,7 +20,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
     const [comment, setComment] = useState('')
-    const [commentList, setCommentList] = useState([])
+    const [commentPage, setCommentPage] = useState(0)
 
     // const commentShow = () => {
     //     setShowComment(true)
@@ -239,21 +240,20 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         setShowComment(true)
     }
 
-    const { data } = useInfiniteQuery({
-        queryKey: ['comments', postId],
+    const { data, isPlaceholderData } = useQuery({
+        queryKey: ['comments', postId, commentPage],
         queryFn: async () => {
-            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}`)
+            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}`)
 
             if (result.data.success) {
                 return result.data.payload
             }
         },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage, pages) => {
-            return lastPage
-        },
+        placeholderData: keepPreviousData,
         enabled: showComment
     })
+
+    console.log(data)
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -333,33 +333,55 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 </div>
                 <div>
                     {
-                        data !== undefined ? (
-                            data.pages.map(dt => (
-                                dt.result.map(value => (
-                                    <div key={value.id} className=" mb-5">
-                                        <div className=" flex items-center gap-2 mb-2">
-                                            <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                                <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
-                                            </div>
-                                            <div>
-                                                <p className=" text-xs">{value.full_name}</p>
-                                                {
-                                                    !isNull(value.headline) ? (
-                                                        <p className=" text-[10px] font-light">{value.headline}</p>
-                                                    ) : null
-                                                }
-                                            </div>
+                        data?.result.length > 0 ? (
+                            data.result.map(value => (
+                                <div key={value.id} className=" mb-5">
+                                    <div className=" flex items-center gap-2 mb-2">
+                                        <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
+                                            <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
                                         </div>
-                                        <div className=" pl-9">
-                                            <div className="border border-lnk-gray py-1 rounded-md px-2">
-                                                <p className=" text-xs font-bold">{value.comment}</p>
-                                            </div>
+                                        <div>
+                                            <p className=" text-xs">{value.full_name}</p>
+                                            {
+                                                !isNull(value.headline) ? (
+                                                    <p className=" text-[10px] font-light">{value.headline}</p>
+                                                ) : null
+                                            }
                                         </div>
                                     </div>
-                                ))
+                                    <div className=" pl-9">
+                                        <div className="border border-lnk-gray py-1 rounded-md px-2">
+                                            <p className=" text-xs font-bold">{value.comment}</p>
+                                        </div>
+                                    </div>
+                                </div>
                             ))
-                        ) : null
+                        ) : (
+                            <p className=" text-center text-sm text-lnk-dark-gray flex items-center justify-center gap-1">
+                                <MdOutlineCommentsDisabled className=" text-base" />
+                                No comment available
+                            </p>
+
+                        )
                     }
+                    <div className=" flex items-center justify-end">
+                        <button
+                            onClick={() => setCommentPage((old) => Math.max(old - 5, 0))}
+                            disabled={commentPage === 0}
+                        >
+                            <TbSquareChevronLeft className={`text-2xl ${commentPage === 0 ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
+                        </button>
+                        <button
+                            onClick={() => {
+                                if (!isPlaceholderData && !isNull(data.next_page)) {
+                                    setCommentPage((old) => old + 5)
+                                }
+                            }}
+                            disabled={isPlaceholderData || isNull(data?.next_page)}
+                        >
+                            <TbSquareChevronRight className={`text-2xl ${isNull(data?.next_page) ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
