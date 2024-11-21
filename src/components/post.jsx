@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import moment from "moment";
 import { IoMdTime } from "react-icons/io";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaGlobeAsia } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { GrSend } from "react-icons/gr";
@@ -263,7 +264,10 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 <div>
                     <h5 className=" text-base font-bold">{isNull(fullName) ? username : fullName}</h5>
                     <p className=" text-xs font-light">{headline}</p>
-                    <p className=" text-xs font-light">{diffInDays(createdAt)} <IoMdTime className=" inline" /></p>
+                    <p className=" text-xs font-light text-lnk-dark-gray">
+                        <span className="inline-block">{diffInDays(createdAt)}</span>
+                        <FaGlobeAsia className=" inline-block align-middle ml-1" />
+                    </p>
                 </div>
             </div>
             <div className="mb-4">

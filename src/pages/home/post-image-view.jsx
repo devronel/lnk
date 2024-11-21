@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useParams, Link, useNavigate } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import useEmblaCarousel from "embla-carousel-react"
 import axiosInstance, { SERVER_URL } from "../../utils/axios"
 import { IoMdClose, IoMdTime } from "react-icons/io"

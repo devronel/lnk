@@ -1,3 +1,4 @@
+import moment from "moment"
 
 /*
     Null checking
@@ -47,25 +48,28 @@ export const concatName = (firstName, lastName, username) => {
     Convert date into relative date
 */
 export const diffInDays = (date) => {
-    let timeStamp = new Date(date);
-    let now = new Date()
-    let secondsPast = (now.getTime() - timeStamp) / 1000;
+    moment.updateLocale('en', {
+        relativeTime: {
+            future: "in %s",
+            past: "%s ago",
+            s: '%d seconds',
+            ss: '%d seconds',
+            m: "%d minute",
+            mm: "%d minutes",
+            h: "%d hour",
+            hh: "%d hours",
+            d: "%d day",
+            dd: "%d days",
+            w: "%d week",
+            ww: "%d weeks",
+            M: "%d month",
+            MM: "%d months",
+            y: "%d year",
+            yy: "%d years"
+        }
+    })
+    return moment(date).startOf(getTime(date)).fromNow();
 
-    if (secondsPast < 60) {
-        return parseInt(secondsPast) + 's';
-    }
-    if (secondsPast < 3600) {
-        return parseInt(secondsPast / 60) + 'm';
-    }
-    if (secondsPast <= 86400) {
-        return parseInt(secondsPast / 3600) + 'h';
-    }
-    if (secondsPast > 86400) {
-        let day = timeStamp.getDate();
-        let month = timeStamp.toDateString().match(/ [a-zA-Z]*/)[0].replace(" ", "");
-        let year = timeStamp.getFullYear() == now.getFullYear() ? "" : " " + timeStamp.getFullYear();
-        return day + " " + month + year;
-    }
 }
 
 /*
@@ -74,4 +78,16 @@ export const diffInDays = (date) => {
 export const parseJson = (value) => {
     let jsonToObject = JSON.parse(value)
     return jsonToObject
+}
+
+
+/*
+    Get time in the data
+*/
+export const getTime = (value) => {
+    let dt = new Date(value)
+    let hours = dt.getHours()
+    let minutes = dt.getMinutes()
+    let seconds = dt.getSeconds()
+    return `${hours}:${minutes}:${seconds}`
 }

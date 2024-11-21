@@ -16,8 +16,6 @@ import Post from "../../components/post"
 /*
     Import images
 */
-import empty from "../../assets/empty.svg"
-import { isNull } from "../../utils/functions";
 
 const Home = () => {
 
