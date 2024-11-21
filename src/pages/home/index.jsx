@@ -146,10 +146,10 @@ const Home = () => {
         })
     }
 
-    const showPostImage = async (id) => {
+    const showPostImage = async (id, username) => {
         try {
             setViewPostImage(true)
-            let result = await axiosInstance(`/post/${id}`, {
+            let result = await axiosInstance(`/post/${id}/${username}`, {
                 withCredentials: true
             })
 

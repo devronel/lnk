@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import MainLayout from './layouts/mainLayout'
 import AuthLayout from './layouts/authLayout'
 import Home from './pages/home'
+import PostImage from './pages/home/post-image-view'
 import Profile from './pages/profile'
 import People from './pages/people'
 import Login from './pages/auth/login'
@@ -35,6 +36,7 @@ function App() {
               <Route path='/people' element={<People />} />
               <Route path='/notifications' element={<Notifications />} />
             </Route>
+            <Route path='/post-image/:post_id/:username' element={<PostImage />} />
             <Route path='/' element={<AuthLayout />}>
               <Route path='/login' element={<Login />} />
               <Route path='/signup' element={<Signup />} />
