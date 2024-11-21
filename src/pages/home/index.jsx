@@ -11,7 +11,6 @@ import { TbLoaderQuarter } from "react-icons/tb";
 import LnkTextarea from "../../components/forms/lnk-textarea"
 import Modal from "../../components/modal"
 import Post from "../../components/post"
-import PostImageViewer from "../../components/post-image-viewer";
 
 
 /*
@@ -35,9 +34,6 @@ const Home = () => {
     })
     let [setErrors, errorExist] = useError()
     let [filesPreview, setFilesPreview] = useState([])
-
-    let [viewPostImage, setViewPostImage] = useState(false)
-    let [postImageView, setPostImageView] = useState(null)
 
 
     /*
@@ -146,22 +142,6 @@ const Home = () => {
         })
     }
 
-    const showPostImage = async (id, username) => {
-        try {
-            setViewPostImage(true)
-            let result = await axiosInstance(`/post/${id}/${username}`, {
-                withCredentials: true
-            })
-
-            if (result.data.success) {
-                setPostImageView(result.data.payload.result)
-            }
-
-        } catch (error) {
-            console.log(error.message)
-        }
-    }
-
     /*
         Initialize useEffect
     */
@@ -188,10 +168,6 @@ const Home = () => {
         return () => window.removeEventListener('scroll', onScroll)
 
     }, [])
-
-    useEffect(() => {
-        document.body.style.overflow = viewPostImage || postModal ? 'hidden' : 'auto'
-    }, [viewPostImage, postModal])
 
     return (
         <>
@@ -256,7 +232,6 @@ const Home = () => {
                             postReactions={value.post_reactions}
                             isReact={value.user_reaction}
                             reactionCount={value.reaction_count}
-                            showPostImage={showPostImage}
                         />
                     ))
                 ))
@@ -281,16 +256,6 @@ const Home = () => {
                             No more post
                         </p>
                     )
-            }
-
-            {
-                viewPostImage ? (
-                    <PostImageViewer
-                        viewPostImage={viewPostImage}
-                        setViewPostImage={setViewPostImage}
-                        postImageView={postImageView}
-                    />
-                ) : null
             }
 
         </>

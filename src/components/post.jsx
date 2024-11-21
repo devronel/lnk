@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { IoMdTime } from "react-icons/io";
 import { FaHeart } from "react-icons/fa";
@@ -15,7 +16,7 @@ import { diffInDays, isNull } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, showPostImage, postReactions, isReact, reactionCount }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount }) => {
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
@@ -33,7 +34,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
             if (postImages.length === 1) {
                 return (
-                    <div onClick={() => showPostImage(postId, username)} tabIndex="0" role="button" aria-pressed="true" className=" bg-lnk-gray p-1 h-[18.75rem]">
+                    <Link to={`/post-image/${postId}/${username}`} className=" bg-lnk-gray p-1 h-[18.75rem]">
                         <div className="w-full h-full">
                             <img
                                 className="w-full h-full object-contain"
@@ -41,11 +42,11 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                                 alt={postImages[0].filename}
                             />
                         </div>
-                    </div>
+                    </Link>
                 )
             } else if (postImages.length === 2) {
                 return (
-                    <div onClick={() => showPostImage(postId, username)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2">
+                    <Link to={`/post-image/${postId}/${username}`} className="grid grid-cols-2">
                         {
                             postImages.map(value => (
                                 <div key={value.id} className='bg-lnk-gray p-1'>
@@ -59,7 +60,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                                 </div>
                             ))
                         }
-                    </div>
+                    </Link>
                 )
             } else if (postImages.length >= 3) {
 
@@ -72,7 +73,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                 }
 
                 return (
-                    <div onClick={() => showPostImage(postId, username)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2 h-full">
+                    <Link to={`/post-image/${postId}/${username}`} className="grid grid-cols-2 h-full">
                         <div className='h-[300px]'>
                             <img className="w-full h-full object-cover" src={SERVER_URL + postImages[0].url} alt={postImages[0].filename} />
                         </div>
@@ -95,7 +96,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                                 ))
                             }
                         </div>
-                    </div>
+                    </Link>
                 )
             }
             else {
