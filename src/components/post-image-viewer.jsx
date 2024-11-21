@@ -7,6 +7,11 @@ import { MdOutlineEmojiEmotions } from "react-icons/md"
 import { SERVER_URL } from "../utils/axios"
 import { diffInDays, isNull, parseJson } from "../utils/functions"
 
+/*
+    Import assets like image and etc.
+*/
+import profilePlaceholder from "../assets/profile-placeholder.jpg"
+
 const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => {
 
     let [emblaRef] = useEmblaCarousel()
@@ -24,9 +29,11 @@ const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => 
                                 parseJson(postImageView.post_files).map(value => {
                                     return (
                                         <div key={value.id} className="embla__slide flex items-center justify-center ">
-                                            <img className=" w-[70%] h-auto object-contain"
-                                                src={SERVER_URL + value.url}
-                                                alt={value.filename} />
+                                            <div className="h-[400px] w-[80%]">
+                                                <img className=" w-full h-full object-contain"
+                                                    src={SERVER_URL + value.url}
+                                                    alt={value.filename} />
+                                            </div>
                                         </div>
                                     )
                                 })
@@ -38,13 +45,13 @@ const PostImageViewer = ({ viewPostImage, setViewPostImage, postImageView }) => 
             <div className=" bg-lnk-white py-6 px-5">
                 <div className=" flex items-start gap-2 mb-3">
                     <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                        <img className=" w-full h-full object-cover" src='https://images.pexels.com/photos/1040881/pexels-photo-1040881.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1' alt="" />
+                        <img className=" w-full h-full object-cover" src={isNull(postImageView?.url) ? profilePlaceholder : SERVER_URL + postImageView?.url} alt={postImageView?.full_name} />
                     </div>
                     <div>
                         {
                             !isNull(postImageView) ? (
                                 <>
-                                    <h5 className=" text-base font-bold">{postImageView.full_name ?? postImageView.username}</h5>
+                                    <h5 className=" text-base font-bold">{postImageView.full_name}</h5>
                                     {
                                         postImageView.headline ? <p className=" text-xs font-light">{postImageView.headline}</p> : null
                                     }

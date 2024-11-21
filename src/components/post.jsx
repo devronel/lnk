@@ -22,10 +22,6 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     const [comment, setComment] = useState('')
     const [commentPage, setCommentPage] = useState(0)
 
-    // const commentShow = () => {
-    //     setShowComment(true)
-    // }
-
     /*
         Post images display
     */
@@ -37,12 +33,14 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
             if (postImages.length === 1) {
                 return (
-                    <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true">
-                        <img
-                            className="w-full h-full object-contain"
-                            src={SERVER_URL + postImages[0].url}
-                            alt={postImages[0].filename}
-                        />
+                    <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true" className=" bg-lnk-gray p-1 h-[18.75rem]">
+                        <div className="w-full h-full">
+                            <img
+                                className="w-full h-full object-contain"
+                                src={SERVER_URL + postImages[0].url}
+                                alt={postImages[0].filename}
+                            />
+                        </div>
                     </div>
                 )
             } else if (postImages.length === 2) {
@@ -50,12 +48,14 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     <div onClick={() => showPostImage(postId)} tabIndex="0" role="button" aria-pressed="true" className="grid grid-cols-2">
                         {
                             postImages.map(value => (
-                                <div key={value.id} className=''>
-                                    <img
-                                        className="w-full h-full object-contain"
-                                        src={SERVER_URL + value.url}
-                                        alt={value.filename}
-                                    />
+                                <div key={value.id} className='bg-lnk-gray p-1'>
+                                    <div className=" w-full h-full">
+                                        <img
+                                            className="w-full h-full object-contain"
+                                            src={SERVER_URL + value.url}
+                                            alt={value.filename}
+                                        />
+                                    </div>
                                 </div>
                             ))
                         }
@@ -252,8 +252,6 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         placeholderData: keepPreviousData,
         enabled: showComment
     })
-
-    console.log(data)
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
