@@ -72,6 +72,8 @@ const Home = () => {
         },
     })
 
+    console.log(data)
+
     const mutation = useMutation({
         mutationFn: async (post) => {
             let formData = new FormData()
@@ -220,8 +222,6 @@ const Home = () => {
                             postId={value.id}
                             content={value.content}
                             username={value.username}
-                            firstName={value.first_name}
-                            lastName={value.last_name}
                             fullName={value.full_name}
                             headline={value.headline}
                             createdAt={value.created_at}
