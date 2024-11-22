@@ -17,7 +17,7 @@ import { diffInDays, isNull } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount }) => {
+const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
@@ -245,7 +245,9 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     const { data, isPlaceholderData } = useQuery({
         queryKey: ['comments', postId, commentPage],
         queryFn: async () => {
-            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}`)
+            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}`, {
+                withCredentials: true
+            })
 
             if (result.data.success) {
                 return result.data.payload
@@ -254,6 +256,8 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         placeholderData: keepPreviousData,
         enabled: showComment
     })
+
+    console.log(data)
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -283,7 +287,11 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     postReaction()
                 }
                 <div>
-                    <button onClick={fetchAllComment} className=" text-xs text-lnk-dark-gray hover:underline">23 comments</button>
+                    <button onClick={fetchAllComment} className=" text-xs text-lnk-dark-gray hover:underline">
+                        {
+                            isNull(commentCount) ? 'No comment' : `${commentCount} ${commentCount > 1 ? 'comments' : 'comment'}`
+                        }
+                    </button>
                 </div>
             </div>
             <div className="px-5">

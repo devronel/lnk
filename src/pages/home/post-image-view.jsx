@@ -23,7 +23,7 @@ const PostImage = () => {
 
     const getPost = async () => {
         try {
-            let result = await axiosInstance(`/post/${post_id}/${username}`, {
+            let result = await axiosInstance(`/post/view-images/${post_id}/${username}`, {
                 withCredentials: true
             })
 
