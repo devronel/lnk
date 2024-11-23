@@ -21,6 +21,90 @@ const PostImage = () => {
     let navigate = useNavigate()
     let [post, setPost] = useState(null)
 
+    /*
+        Display react and count
+    */
+    const postReaction = () => {
+
+        if (!isNull(post)) {
+
+            let reaction = post.reactions.split(',')
+            let reactions = []
+
+            reaction.map(value => {
+                if (value === 'heart') reactions.push(<FaHeart className="text-red-500 text-sm" />)
+                if (value === 'like') reactions.push(<AiFillLike className="text-blue-500 text-sm" />)
+                if (value === 'wow') reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />)
+            })
+
+            return (
+                <div className=" flex items-center gap-1">
+                    <div className="flex items-center">
+                        {
+                            reactions.map((icon, index) => (
+                                <div key={index}>
+                                    {icon}
+                                </div>
+                            ))
+                        }
+                    </div>
+                    <p className=" text-xs">{post?.reaction_count}</p>
+                </div>
+            )
+
+
+        } else {
+            return <p className=" text-xs">No one react to this post.</p>
+        }
+
+    }
+
+    /*
+        Display reaction icon
+    */
+    const userReaction = () => {
+        if (!isNull(post)) {
+            if (post.is_reacted === 'like') {
+                return (
+                    <>
+                        <AiFillLike className="text-blue-500" />
+                        <span className="text-blue-500 font-bold">{post.is_reacted}</span>
+                    </>
+                )
+            }
+            else if (post.is_reacted === 'heart') {
+                return (
+                    <>
+                        <FaHeart className="text-red-500" />
+                        <span className="text-red-500 font-bold" >{post.is_reacted}</span>
+                    </>
+                )
+            }
+            else {
+                return (
+                    <>
+                        <BsFillEmojiSurpriseFill className="text-yellow-500" />
+                        <span className="text-yellow-500 font-bold">{post.is_reacted}</span>
+                    </>
+                )
+            }
+        }
+    }
+
+    const likePost = async (reaction) => {
+        try {
+            let result = await axiosInstance.post(`/post/like/${post_id}/${reaction}`, {}, {
+                withCredentials: true
+            })
+
+            if (result.data.success) {
+                getPost()
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const getPost = async () => {
         try {
             let result = await axiosInstance(`/post/view-images/${post_id}/${username}`, {
@@ -68,7 +152,7 @@ const PostImage = () => {
                 </div>
             </div>
             <div className=" bg-lnk-white py-6 px-5">
-                <div className=" flex items-start gap-2 mb-3">
+                <div className=" flex items-start gap-2 mb-4">
                     <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                         <img className=" w-full h-full object-cover" src={isNull(post?.url) ? profilePlaceholder : SERVER_URL + post?.url} alt={post?.full_name} />
                     </div>
@@ -82,50 +166,52 @@ const PostImage = () => {
                         </>
                     </div>
                 </div>
-                <div className="mb-3">
+                <div className="mb-4">
                     <div className=" mb-1">
                         <p className=" text-sm font-light whitespace-pre-line">
                             {post?.content}
                         </p>
                     </div>
                 </div>
-                <div className=" flex items-center justify-between mb-3">
-                    <div className=" flex items-center gap-2">
-                        <div className="flex items-center">
-                            <FaHeart className=" text-red-500" />
-                            <AiFillLike className=" text-blue-500" />
-                            <BsFillEmojiSurpriseFill className=" text-yellow-500" />
-                        </div>
-                        <p className=" text-sm">100</p>
-                    </div>
+                <div className=" flex items-center justify-between mb-1">
+                    {
+                        postReaction()
+                    }
                     <div>
-                        <button className=" text-sm text-lnk-dark-gray hover:underline">23 comments</button>
+                        <button className=" text-xs text-lnk-dark-gray hover:underline">23 comments</button>
                     </div>
                 </div>
-                <div className="">
-                    <ul className=" flex items-center gap-5 py-2 border-t border-lnk-gray">
+                <div className="mb-1">
+                    <ul className=" flex items-center gap-5 py-1 border-t border-lnk-gray">
                         <li className="relative group">
-                            <button className=" flex items-center gap-1 py-3 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
-                                <AiOutlineLike className=" text-xl" />
-                                <span>React</span>
+                            <button className=" text-sm flex items-center gap-1 py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                                {
+                                    isNull(post?.is_reacted) ? (
+                                        <>
+                                            <AiOutlineLike className="" />
+                                            <span>React</span>
+
+                                        </>
+                                    ) : userReaction()
+                                }
                             </button>
                             <div className="animate__animated animate__fadeIn absolute -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
                                 <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
-                                    <button className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                    <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                         <FaHeart className=" text-red-500 text-xl" />
                                     </button>
-                                    <button className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                    <button onClick={() => likePost('like')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                         <AiFillLike className=" text-blue-500 text-xl" />
                                     </button>
-                                    <button className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                    <button onClick={() => likePost('wow')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                         <BsFillEmojiSurpriseFill className=" text-yellow-500 text-xl" />
                                     </button>
                                 </div>
                             </div>
                         </li>
                         <li>
-                            <button className=" flex items-center gap-1  py-3 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
-                                <AiOutlineComment className=" text-xl" />
+                            <button className="text-sm flex items-center gap-1  py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                                <AiOutlineComment className=" text-lg" />
                                 <span>Comment</span>
                             </button>
                         </li>
