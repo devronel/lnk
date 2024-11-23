@@ -72,8 +72,6 @@ const Home = () => {
         },
     })
 
-    console.log(data)
-
     const mutation = useMutation({
         mutationFn: async (post) => {
             let formData = new FormData()

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import axiosInstance, { SERVER_URL } from "../../utils/axios"
 import { IoMdClose, IoMdTime } from "react-icons/io"
@@ -7,7 +8,7 @@ import { diffInDays, isNull, parseJson } from "../../utils/functions"
 import { FaHeart } from "react-icons/fa"
 import { AiFillLike, AiOutlineComment, AiOutlineLike } from "react-icons/ai"
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
-import { MdOutlineEmojiEmotions } from "react-icons/md"
+import { MdOutlineCommentsDisabled, MdOutlineEmojiEmotions } from "react-icons/md"
 
 /*
     Import assets like image and etc.
@@ -18,6 +19,7 @@ const PostImage = () => {
 
     let [emblaRef] = useEmblaCarousel()
     let { post_id, username } = useParams()
+    let [commentPage, setCommentPage] = useState(0)
     let navigate = useNavigate()
     let [post, setPost] = useState(null)
 
@@ -26,7 +28,7 @@ const PostImage = () => {
     */
     const postReaction = () => {
 
-        if (!isNull(post)) {
+        if (!isNull(post && post.reactions)) {
 
             let reaction = post.reactions.split(',')
             let reactions = []
@@ -120,6 +122,20 @@ const PostImage = () => {
         }
     }
 
+    const { data, isPlaceholderData } = useQuery({
+        queryKey: ['view-image-comment', post_id, commentPage],
+        queryFn: async () => {
+            let result = await axiosInstance.get(`/post/comment/list?post_id=${post_id}&page=${commentPage}`, {
+                withCredentials: true
+            })
+
+            if (result.data.success) {
+                return result.data.payload
+            }
+        },
+        placeholderData: keepPreviousData
+    })
+
     useEffect(() => {
         getPost()
     }, [])
@@ -178,7 +194,7 @@ const PostImage = () => {
                         postReaction()
                     }
                     <div>
-                        <button className=" text-xs text-lnk-dark-gray hover:underline">23 comments</button>
+                        <button className=" text-xs text-lnk-dark-gray hover:underline">{post?.comment_count} {post?.comment_count > 0 ? 'comments' : 'comment'}</button>
                     </div>
                 </div>
                 <div className="mb-1">
@@ -228,34 +244,38 @@ const PostImage = () => {
                         </div>
                     </div>
                     <div>
-                        <div className=" mb-5">
-                            <div className=" flex items-start gap-2 mb-2">
-                                <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                    <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" />
-                                </div>
-                                <div>
-                                    <p className=" text-sm">Kevin Caluag</p>
-                                    <p className=" text-xs font-light">Sr Software Engineer</p>
-                                </div>
-                            </div>
-                            <div className=" pl-9">
-                                <p className=" text-sm">Hey, that's great, keep up the good work!</p>
-                            </div>
-                        </div>
-                        <div className=" mb-5">
-                            <div className=" flex items-start gap-2 mb-2">
-                                <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                    <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3785079/pexels-photo-3785079.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" />
-                                </div>
-                                <div>
-                                    <p className=" text-sm">Kevin Caluag</p>
-                                    <p className=" text-xs font-light">Sr Software Engineer</p>
-                                </div>
-                            </div>
-                            <div className=" pl-9">
-                                <p className=" text-sm">Hey, that's great, keep up the good work!</p>
-                            </div>
-                        </div>
+                        {
+                            data?.result.length > 0 ? (
+                                data.result.map(value => (
+                                    <div key={value.id} className=" mb-5">
+                                        <div className=" flex items-center gap-2 mb-2">
+                                            <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
+                                                <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
+                                            </div>
+                                            <div>
+                                                <p className=" text-xs">{value.full_name}</p>
+                                                {
+                                                    !isNull(value.headline) ? (
+                                                        <p className=" text-[10px] font-light">{value.headline}</p>
+                                                    ) : null
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className=" pl-9">
+                                            <div className="border border-lnk-gray py-1 rounded-md px-2">
+                                                <p className=" text-xs font-bold">{value.comment}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className=" text-center text-sm text-lnk-dark-gray flex items-center justify-center gap-1">
+                                    <MdOutlineCommentsDisabled className=" text-base" />
+                                    No comment available
+                                </p>
+
+                            )
+                        }
                     </div>
                 </div>
             </div>

@@ -257,8 +257,6 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
         enabled: showComment
     })
 
-    console.log(data)
-
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
             <div className=" flex items-start gap-2 px-5 mb-4">
