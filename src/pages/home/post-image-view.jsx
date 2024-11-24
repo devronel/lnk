@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import axiosInstance, { SERVER_URL } from "../../utils/axios"
 import { IoMdClose, IoMdTime } from "react-icons/io"
@@ -9,18 +9,21 @@ import { FaHeart } from "react-icons/fa"
 import { AiFillLike, AiOutlineComment, AiOutlineLike } from "react-icons/ai"
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineCommentsDisabled, MdOutlineEmojiEmotions } from "react-icons/md"
+import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
+import { GrSend } from "react-icons/gr"
 
 /*
     Import assets like image and etc.
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
-import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
 
 const PostImage = () => {
 
     let [emblaRef] = useEmblaCarousel()
+    let queryClient = useQueryClient()
     let { post_id, username } = useParams()
     let [commentPage, setCommentPage] = useState(0)
+    let [comment, setComment] = useState('')
     let navigate = useNavigate()
     let [post, setPost] = useState(null)
 
@@ -137,17 +140,54 @@ const PostImage = () => {
         placeholderData: keepPreviousData
     })
 
+    /*
+        Send Comment
+    */
+    const commentMutation = useMutation({
+        mutationFn: async (data) => {
+
+            let result = await axiosInstance.post('/post/send/comment', {
+                post_id: data.post_id,
+                comment_value: data.comment
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            if (result.data.success) {
+                return result
+            }
+
+        },
+        onSuccess: () => {
+            setComment('')
+            setCommentPage(0)
+            queryClient.invalidateQueries({
+                queryKey: ['view-image-comment', post_id, commentPage]
+            })
+        },
+        onError: (error) => {
+            console.log(error.message)
+        }
+    })
+
+    const sendComment = () => {
+        commentMutation.mutate({ post_id: post_id, comment: comment })
+    }
+
     useEffect(() => {
         getPost()
     }, [])
 
 
     return (
-        <section className={`min-h-screen h-auto grid grid-cols-[70%_1fr]`}>
-            <div className="bg-lnk-dark relative overflow-hidden flex items-center justify-center">
-                <button onClick={() => navigate(-1)} className="absolute top-3 left-3 z-20 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
-                    <IoMdClose />
-                </button>
+        <section className={`min-h-screen h-auto overflow-hidden pr-[400px]`}>
+            <button onClick={() => navigate(-1)} className="fixed top-3 left-3 z-20 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
+                <IoMdClose />
+            </button>
+            <div className="bg-lnk-dark min-h-screen h-auto overflow-hidden flex items-center justify-center p-2">
                 <div className="embla" ref={emblaRef}>
                     <div className="embla__container items-center">
                         {
@@ -155,8 +195,8 @@ const PostImage = () => {
                                 parseJson(post.post_files).map(value => {
                                     return (
                                         <div key={value.id} className="embla__slide flex items-center justify-center ">
-                                            <div className="h-[400px] w-[80%]">
-                                                <img className=" w-full h-full object-contain"
+                                            <div>
+                                                <img className="w-full h-full object-contain aspect-auto"
                                                     src={SERVER_URL + value.url}
                                                     alt={value.filename} />
                                             </div>
@@ -168,8 +208,8 @@ const PostImage = () => {
                     </div>
                 </div>
             </div>
-            <div className="relative bg-lnk-white overflow-y-auto">
-                <div className="absolute inset-0 py-6 px-5">
+            <div className="fixed top-0 bottom-0 right-0 w-[400px] bg-lnk-white overflow-y-auto">
+                <div className=" py-6 px-5">
                     <div className=" flex items-start gap-2 mb-4">
                         <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                             <img className=" w-full h-full object-cover" src={isNull(post?.url) ? profilePlaceholder : SERVER_URL + post?.url} alt={post?.full_name} />
@@ -241,8 +281,10 @@ const PostImage = () => {
                                 <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                             </div>
                             <div className=" flex-grow relative">
-                                <input className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
-                                <MdOutlineEmojiEmotions className="text-lg text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2" />
+                                <input onChange={(e) => setComment(e.target.value)} value={comment} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
+                                <button onClick={sendComment} className=" group">
+                                    <GrSend className="text-base text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2 group-hover:text-lnk-orange transition" />
+                                </button>
                             </div>
                         </div>
                         <div className="">
