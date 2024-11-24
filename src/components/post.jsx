@@ -245,7 +245,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
     const { data, isPlaceholderData } = useQuery({
         queryKey: ['comments', postId, commentPage],
         queryFn: async () => {
-            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}`, {
+            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}&limit=${4}`, {
                 withCredentials: true
             })
 
@@ -375,7 +375,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                     }
                     <div className=" flex items-center justify-end">
                         <button
-                            onClick={() => setCommentPage((old) => Math.max(old - 5, 0))}
+                            onClick={() => setCommentPage((old) => Math.max(old - 4, 0))}
                             disabled={commentPage === 0}
                         >
                             <TbSquareChevronLeft className={`text-2xl ${commentPage === 0 ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
@@ -383,7 +383,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
                         <button
                             onClick={() => {
                                 if (!isPlaceholderData && !isNull(data.next_page)) {
-                                    setCommentPage((old) => old + 5)
+                                    setCommentPage((old) => old + 4)
                                 }
                             }}
                             disabled={isPlaceholderData || isNull(data?.next_page)}
