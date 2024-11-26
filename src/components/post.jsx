@@ -17,7 +17,7 @@ import { diffInDays, isNull } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Post = ({ postId, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
+const Post = ({ postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
@@ -331,7 +331,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
             <div className={`px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
                 <div className=" flex items-center gap-2 mb-5">
                     <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                        <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                        <img className=" w-full h-full rounded-full object-cover" src={isNull(authUserProfile) ? profilePlaceholder : SERVER_URL + authUserProfile} alt="" />
                     </div>
                     <div className=" flex-grow relative">
                         <input onChange={getComment} value={comment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { MdDynamicFeed, MdNotifications, MdPeopleAlt } from "react-icons/md";
+import { TbBrandFeedly } from "react-icons/tb";
+import { SiFeedly } from "react-icons/si";
 import { IoIosChatbubbles } from "react-icons/io";
 import { isNull } from "../utils/functions";
 import { SERVER_URL } from "../utils/axios";
@@ -33,9 +35,9 @@ const Navigation = (props) => {
                 <nav className="max-w-[80rem] w-[90%] mx-auto flex items-center justify-between">
                     <Link to="/" className=" font-bold text-lg text-lnk-orange">Lnk</Link>
                     <div className=" flex items-center gap-8">
-                        <ul className=" flex items-center gap-8">
+                        <ul className=" flex items-center gap-5">
                             <li>
-                                <Link to="/"><MdDynamicFeed className={`${route === '/' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
+                                <Link to="/"><SiFeedly className={`${route === '/' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
                                 <Link to="/people"><MdPeopleAlt className={`${route === '/people' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
@@ -52,7 +54,9 @@ const Navigation = (props) => {
                             <button onClick={openMenu} className=" flex items-center gap-3 hover:bg-lnk-gray px-3 py-2 rounded transition-colors ease-linear duration-150">
                                 <div className=" w-6 h-6 rounded-full overflow-hidden border border-lnk-dark-gray">
                                     <img
-                                        className="w-full h-full object-cover"
+                                        height='24'
+                                        width='24'
+                                        className=" aspect-square object-cover"
                                         src={!isNull(props.user) ? (props.user.url && SERVER_URL + props.user.url) ?? profilePlaceholder : null}
                                         alt={!isNull(props.user) ? isNull(props.user.full_name) ? props.user.username : props.user.full_name : null}
                                     />

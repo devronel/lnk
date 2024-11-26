@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
+import toast from "react-hot-toast";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { AuthContext } from "../../context/AuthContext";
@@ -12,12 +13,14 @@ import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaRegImage } from "react-icons/fa";
 import { AiFillPicture } from "react-icons/ai";
+import { BiSolidError } from "react-icons/bi";
 import { dateFormat, dataURLtoFile } from "../../utils/functions";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnk-input";
 import LnkTextarea from "../../components/forms/lnk-textarea";
 import { TbLoaderQuarter } from "react-icons/tb";
+import { PiCoffeeDuotone } from "react-icons/pi";
 
 /*
     Import photos
@@ -65,7 +68,25 @@ const Profile = () => {
     const profilePhoto = (e) => {
 
         if (e.target.files && e.target.files[0]) {
-            // setPhoto(e.target.files[0])
+
+            const MAX_SIZE = 1 * 1000 * 1000;
+
+            if (e.target.files[0].size > MAX_SIZE) {
+                toast.error(`The file size exceeds the maximum limit of 1mb. Please upload a smaller file.`, {
+                    duration: 5000,
+                    style: {
+                        width: 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1px',
+                        color: 'rgb(239,68,68)',
+                        fontSize: '14px',
+                        fontFamily: 'Ubuntu'
+                    },
+                    icon: <BiSolidError className=" flex-grow text-4xl text-red-500" />
+                })
+                return
+            }
 
             let reader = new FileReader()
 
@@ -113,6 +134,8 @@ const Profile = () => {
     const updateProfilePhoto = async () => {
         try {
             setSubmitPhotoLoading(true)
+            let generatedName = window.crypto.randomUUID()
+            let photo = dataURLtoFile(cropImage, generatedName)
             let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
                 {
                     withCredentials: true,
@@ -126,7 +149,7 @@ const Profile = () => {
                 setEditProfilePhoto(false)
                 setSubmitPhotoLoading(false)
                 setProfileError(null)
-                setPhoto(null)
+                setDisplayPhoto(null)
                 setCropImage(null)
                 refreshUser()
 
@@ -175,9 +198,6 @@ const Profile = () => {
         let cropper = cropperRef.current?.cropper;
         let base64Img = cropper.getCroppedCanvas().toDataURL()
         setCropImage(base64Img);
-        let generatedName = window.crypto.randomUUID()
-        let image = dataURLtoFile(base64Img, generatedName)
-        setPhoto(image)
     };
 
     useEffect(() => {
@@ -206,15 +226,15 @@ const Profile = () => {
                     <Cropper
                         src={displayPhoto}
                         style={{ height: 400, width: "100%" }}
-                        initialAspectRatio={16 / 9}
+                        initialAspectRatio={1 / 1}
                         guides={false}
                         crop={onCrop}
                         ref={cropperRef}
                     />
                     {
                         cropImage !== null ? (
-                            <div className=" w-[144px] h-[144px] rounded-full">
-                                <img src={cropImage} className=" w-full h-full object-contain rounded-full" alt="" />
+                            <div className=" rounded-full aspect-square">
+                                <img src={cropImage} width='144' height='144' className=" object-cover rounded-full aspect-square" alt="" />
                             </div>
                         ) : null
                     }
@@ -233,9 +253,11 @@ const Profile = () => {
                         </button>
                     </div>
                     <div className="  absolute top-28 left-5">
-                        <div className="w-36 h-36 group rounded-full border border-lnk-white relative">
+                        <div className=" w-36 h-36 group rounded-full border border-lnk-white relative">
                             <img
-                                className="rounded-full w-full h-full object-cover"
+                                height='144'
+                                width='144'
+                                className="aspect-square rounded-full object-cover"
                                 src={(user?.url && SERVER_URL + user?.url) ?? profilePlaceholder}
                                 alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                             />
@@ -334,7 +356,8 @@ const Profile = () => {
                             </p>
                         )
                         : (
-                            <p className="  text-center text-xs text-lnk-dark-gray">
+                            <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
+                                <PiCoffeeDuotone className=" text-base " />
                                 No more post
                             </p>
                         )
