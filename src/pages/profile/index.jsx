@@ -111,7 +111,6 @@ const Profile = () => {
         }
     }
     const updateProfilePhoto = async () => {
-        // console.log(photo)
         try {
             setSubmitPhotoLoading(true)
             let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
@@ -176,9 +175,19 @@ const Profile = () => {
         let cropper = cropperRef.current?.cropper;
         let base64Img = cropper.getCroppedCanvas().toDataURL()
         setCropImage(base64Img);
-        let image = dataURLtoFile(base64Img, 'Test')
+        let generatedName = window.crypto.randomUUID()
+        let image = dataURLtoFile(base64Img, generatedName)
         setPhoto(image)
     };
+
+    useEffect(() => {
+        if (!isNull(displayPhoto)) {
+            setEditProfilePhoto(true)
+        } else {
+            setEditProfilePhoto(false)
+            setDisplayPhoto(null)
+        }
+    }, [displayPhoto])
 
     return (
         <>
@@ -194,26 +203,20 @@ const Profile = () => {
             {/* edit profile picture modal */}
             <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
                 <div className=" flex flex-col items-center justify-center">
-                    {/* <label htmlFor="profile__photo" className=" cursor-pointer">
-                        <div className=" w-80 h-80 rounded-full border border-lnk-orange">
-                            <img className=" w-full h-full object-cover rounded-full" src={displayPhoto ?? profilePlaceholder} />
-                        </div>
-                    </label> */}
-                    <input onChange={profilePhoto} type="file" id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
+                    <Cropper
+                        src={displayPhoto}
+                        style={{ height: 400, width: "100%" }}
+                        initialAspectRatio={16 / 9}
+                        guides={false}
+                        crop={onCrop}
+                        ref={cropperRef}
+                    />
                     {
-                        displayPhoto !== null ? (
-                            <Cropper
-                                src={displayPhoto}
-                                style={{ height: 400, width: "100%" }}
-                                initialAspectRatio={16 / 9}
-                                guides={false}
-                                crop={onCrop}
-                                ref={cropperRef}
-                            />
+                        cropImage !== null ? (
+                            <div className=" w-[144px] h-[144px] rounded-full">
+                                <img src={cropImage} className=" w-full h-full object-contain rounded-full" alt="" />
+                            </div>
                         ) : null
-                    }
-                    {
-                        cropImage !== null ? <img src={cropImage} alt="" /> : null
                     }
                 </div>
                 {
@@ -237,9 +240,10 @@ const Profile = () => {
                                 alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                             />
                             <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">
-                                <button onClick={profileUpdateModal} className="group-hover:block hidden text-lnk-gray text-2xl" >
+                                <label htmlFor="profile__photo" className="cursor-pointer group-hover:block hidden text-lnk-gray text-2xl" >
                                     <FaRegImage />
-                                </button>
+                                </label>
+                                <input onChange={profilePhoto} hidden type="file" id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
                             </div>
                         </div>
                     </div>
