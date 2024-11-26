@@ -35,7 +35,7 @@ const Post = ({ postId, content, fullName, username, headline, createdAt, profil
 
             if (postImages.length === 1) {
                 return (
-                    <Link to={`/post-image/${postId}/${username}`} className=" bg-lnk-gray p-1 h-[18.75rem]">
+                    <Link to={`/post-image/${postId}/${username}`} className="block bg-lnk-gray p-1 h-[18.75rem]">
                         <div className="w-full h-full">
                             <img
                                 className="w-full h-full object-contain"

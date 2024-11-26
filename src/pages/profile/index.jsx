@@ -1,6 +1,8 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
 import { SERVER_URL } from "../../utils/axios";
@@ -10,24 +12,25 @@ import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaRegImage } from "react-icons/fa";
 import { AiFillPicture } from "react-icons/ai";
-import { dateFormat } from "../../utils/functions";
+import { dateFormat, dataURLtoFile } from "../../utils/functions";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnk-input";
 import LnkTextarea from "../../components/forms/lnk-textarea";
+import { TbLoaderQuarter } from "react-icons/tb";
 
 /*
     Import photos
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 import empty from "../../assets/empty.svg"
-import { TbLoaderQuarter } from "react-icons/tb";
 
 const Profile = () => {
 
     /*
         Initialize React hooks like states, context api and etc.
     */
+    let cropperRef = useRef(null)
     let { user, setUser, refreshUser } = useContext(AuthContext)
     let [openModal, setOpenModal] = useState(false)
     let [editProfilePhoto, setEditProfilePhoto] = useState(false)
@@ -35,8 +38,9 @@ const Profile = () => {
 
     let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
     let [photo, setPhoto] = useState(null)
-    let [displayPhoto, setDisplayPhoto] = useState(!isNull(user) ? !isNull(user.url) ? SERVER_URL + user.url : null : null)
+    let [displayPhoto, setDisplayPhoto] = useState(null)
     let [profileError, setProfileError] = useState(null);
+    let [cropImage, setCropImage] = useState(null)
 
     let [posts, setPosts] = useState([])
 
@@ -61,7 +65,7 @@ const Profile = () => {
     const profilePhoto = (e) => {
 
         if (e.target.files && e.target.files[0]) {
-            setPhoto(e.target.files[0])
+            // setPhoto(e.target.files[0])
 
             let reader = new FileReader()
 
@@ -107,6 +111,7 @@ const Profile = () => {
         }
     }
     const updateProfilePhoto = async () => {
+        // console.log(photo)
         try {
             setSubmitPhotoLoading(true)
             let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
@@ -123,6 +128,7 @@ const Profile = () => {
                 setSubmitPhotoLoading(false)
                 setProfileError(null)
                 setPhoto(null)
+                setCropImage(null)
                 refreshUser()
 
             } else {
@@ -166,6 +172,13 @@ const Profile = () => {
 
     }, [])
 
+    const onCrop = () => {
+        let cropper = cropperRef.current?.cropper;
+        let base64Img = cropper.getCroppedCanvas().toDataURL()
+        setCropImage(base64Img);
+        let image = dataURLtoFile(base64Img, 'Test')
+        setPhoto(image)
+    };
 
     return (
         <>
@@ -180,13 +193,28 @@ const Profile = () => {
             </Modal>
             {/* edit profile picture modal */}
             <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
-                <div className=" flex items-center justify-center">
-                    <label htmlFor="profile__photo" className=" cursor-pointer">
+                <div className=" flex flex-col items-center justify-center">
+                    {/* <label htmlFor="profile__photo" className=" cursor-pointer">
                         <div className=" w-80 h-80 rounded-full border border-lnk-orange">
                             <img className=" w-full h-full object-cover rounded-full" src={displayPhoto ?? profilePlaceholder} />
                         </div>
-                    </label>
-                    <input onChange={profilePhoto} type="file" hidden id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
+                    </label> */}
+                    <input onChange={profilePhoto} type="file" id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
+                    {
+                        displayPhoto !== null ? (
+                            <Cropper
+                                src={displayPhoto}
+                                style={{ height: 400, width: "100%" }}
+                                initialAspectRatio={16 / 9}
+                                guides={false}
+                                crop={onCrop}
+                                ref={cropperRef}
+                            />
+                        ) : null
+                    }
+                    {
+                        cropImage !== null ? <img src={cropImage} alt="" /> : null
+                    }
                 </div>
                 {
                     !isNull(profileError) ? <p className="text-center text-xs mt-3 text-red-500 italic">{profileError}</p> : null
@@ -282,7 +310,6 @@ const Profile = () => {
                                 postReactions={value.post_reactions}
                                 isReact={value.user_reaction}
                                 reactionCount={value.reaction_count}
-                            // showPostImage={showPostImage}
                             />
                         ))
                     ))
