@@ -15,6 +15,7 @@ import { diffInDays, isNull, path } from "../utils/functions";
     Import assets like image and etc.
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
+import PostReaction from "./post-reactions";
 
 const Post = ({ postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
 
@@ -105,44 +106,6 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
         } else {
             return null
         }
-    }
-
-    /*
-        Display react and count
-    */
-    const postReaction = () => {
-
-        if (!isNull(postReactions)) {
-
-            let reaction = postReactions.split(',')
-            let reactions = []
-
-            reaction.map(value => {
-                if (value === 'heart') reactions.push(<FaHeart className="text-red-500 text-sm" />)
-                if (value === 'like') reactions.push(<AiFillLike className="text-blue-500 text-sm" />)
-                if (value === 'wow') reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />)
-            })
-
-            return (
-                <div className=" flex items-center gap-1">
-                    <div className="flex items-center">
-                        {
-                            reactions.map((icon, index) => (
-                                <div key={index} className="[&:nth-child(2n)]:-ml-[6px] [&:nth-child(2n)]:z-[2] [&:nth-child(1n)]:z-[3] [&:nth-child(3n)]:z-[1] [&:nth-child(3n)]:-ml-[6px] border border-lnk-gray bg-lnk-white p-[2px] rounded-full">
-                                    {icon}
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <p className=" text-xs">{reactionCount}</p>
-                </div>
-            )
-
-
-        } else {
-            return <p className=" text-xs">No one react to this post.</p>
-        }
-
     }
 
     /*
@@ -280,9 +243,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 }
             </div>
             <div className="px-5 flex items-center justify-between mb-2">
-                {
-                    postReaction()
-                }
+                <PostReaction postReactions={postReactions} reactionCount={reactionCount} />
                 <div>
                     <button onClick={fetchAllComment} className=" text-xs text-lnk-dark-gray hover:underline">
                         {

@@ -16,6 +16,7 @@ import { GrSend } from "react-icons/gr"
     Import assets like image and etc.
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
+import PostReaction from "../../components/post-reactions"
 
 const PostImage = () => {
 
@@ -26,44 +27,6 @@ const PostImage = () => {
     let [comment, setComment] = useState('')
     let navigate = useNavigate()
     let [post, setPost] = useState(null)
-
-    /*
-        Display react and count
-    */
-    const postReaction = () => {
-
-        if (!isNull(post && post.reactions)) {
-
-            let reaction = post.reactions.split(',')
-            let reactions = []
-
-            reaction.map(value => {
-                if (value === 'heart') reactions.push(<FaHeart className="text-red-500 text-sm" />)
-                if (value === 'like') reactions.push(<AiFillLike className="text-blue-500 text-sm" />)
-                if (value === 'wow') reactions.push(<BsFillEmojiSurpriseFill className="text-yellow-500 text-sm" />)
-            })
-
-            return (
-                <div className=" flex items-center gap-1">
-                    <div className="flex items-center">
-                        {
-                            reactions.map((icon, index) => (
-                                <div key={index}>
-                                    {icon}
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <p className=" text-xs">{post?.reaction_count}</p>
-                </div>
-            )
-
-
-        } else {
-            return <p className=" text-xs">No one react to this post.</p>
-        }
-
-    }
 
     /*
         Display reaction icon
@@ -232,9 +195,7 @@ const PostImage = () => {
                         </div>
                     </div>
                     <div className=" flex items-center justify-between mb-1">
-                        {
-                            postReaction()
-                        }
+                        <PostReaction postReactions={post?.reactions} reactionCount={post?.reaction_count} />
                         <div>
                             <button className=" text-xs text-lnk-dark-gray hover:underline">{post?.comment_count} {post?.comment_count > 0 ? 'comments' : 'comment'}</button>
                         </div>
@@ -253,7 +214,7 @@ const PostImage = () => {
                                         ) : userReaction()
                                     }
                                 </button>
-                                <div className="animate__animated animate__fadeIn absolute -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
+                                <div className="animate__animated animate__fadeIn absolute z-10 -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
                                     <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
                                         <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                             <FaHeart className=" text-red-500 text-xl" />
