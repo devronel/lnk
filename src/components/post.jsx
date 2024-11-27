@@ -1,16 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import moment from "moment";
-import { IoMdTime } from "react-icons/io";
+import { _ } from 'lodash'
+import axiosInstance from "../utils/axios";
 import { FaHeart, FaGlobeAsia } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { GrSend } from "react-icons/gr";
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb";
 import { MdOutlineCommentsDisabled } from "react-icons/md";
-import axiosInstance, { SERVER_URL } from "../utils/axios";
-import { diffInDays, isNull } from "../utils/functions";
+import { diffInDays, isNull, path } from "../utils/functions";
 
 /*
     Import assets like image and etc.
@@ -39,7 +38,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                         <div className="w-full h-full">
                             <img
                                 className="w-full h-full object-contain"
-                                src={SERVER_URL + postImages[0].url}
+                                src={path(postImages[0].url)}
                                 alt={postImages[0].filename}
                             />
                         </div>
@@ -54,7 +53,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                                     <div className=" w-full h-full">
                                         <img
                                             className="w-full h-full object-contain"
-                                            src={SERVER_URL + value.url}
+                                            src={path(value.url)}
                                             alt={value.filename}
                                         />
                                     </div>
@@ -76,7 +75,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 return (
                     <Link to={`/post-image/${postId}/${username}`} className="grid grid-cols-2 h-full">
                         <div className='h-[300px]'>
-                            <img className="w-full h-full object-cover" src={SERVER_URL + postImages[0].url} alt={postImages[0].filename} />
+                            <img className="w-full h-full object-cover" src={path(postImages[0].url)} alt={postImages[0].filename} />
                         </div>
                         <div className=" grid grid-cols-1 grid-rows-2 h-[300px]">
                             {
@@ -90,7 +89,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                                         }
                                         <img
                                             className="w-full h-full object-cover"
-                                            src={SERVER_URL + value.url}
+                                            src={path(value.url)}
                                             alt={value.filename}
                                         />
                                     </div>
@@ -129,7 +128,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                     <div className="flex items-center">
                         {
                             reactions.map((icon, index) => (
-                                <div key={index}>
+                                <div key={index} className="[&:nth-child(2n)]:-ml-[6px] [&:nth-child(2n)]:z-[2] [&:nth-child(1n)]:z-[3] [&:nth-child(3n)]:z-[1] [&:nth-child(3n)]:-ml-[6px] border border-lnk-gray bg-lnk-white p-[2px] rounded-full">
                                     {icon}
                                 </div>
                             ))
@@ -154,7 +153,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             return (
                 <>
                     <AiFillLike className="text-blue-500" />
-                    <span>{isReact}</span>
+                    <span className="text-blue-500 font-medium">{_.capitalize(isReact)}</span>
                 </>
             )
         }
@@ -162,7 +161,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             return (
                 <>
                     <FaHeart className="text-red-500" />
-                    <span>{isReact}</span>
+                    <span className="text-red-500 font-medium">{_.capitalize(isReact)}</span>
                 </>
             )
         }
@@ -170,7 +169,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             return (
                 <>
                     <BsFillEmojiSurpriseFill className="text-yellow-500" />
-                    <span>{isReact}</span>
+                    <span className="text-yellow-500 font-medium">{_.capitalize(isReact)}</span>
                 </>
             )
         }
@@ -261,7 +260,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
             <div className=" flex items-start gap-2 px-5 mb-4">
                 <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                    <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? (SERVER_URL + profilPicUrl) : profilePlaceholder} alt="" />
+                    <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? path(profilPicUrl) : profilePlaceholder} alt="" />
                 </div>
                 <div>
                     <h5 className=" text-base font-bold">{isNull(fullName) ? username : fullName}</h5>
@@ -306,7 +305,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                                 ) : userReaction()
                             }
                         </button>
-                        <div className="animate__animated animate__fadeIn absolute -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
+                        <div className="animate__animated animate__fadeIn absolute -top-12 z-10 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
                             <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
                                 <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <FaHeart className=" text-red-500 text-xl" />
@@ -331,7 +330,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             <div className={`px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
                 <div className=" flex items-center gap-2 mb-5">
                     <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                        <img className=" w-full h-full rounded-full object-cover" src={isNull(authUserProfile) ? profilePlaceholder : SERVER_URL + authUserProfile} alt="" />
+                        <img className=" w-full h-full rounded-full object-cover" src={isNull(authUserProfile) ? profilePlaceholder : path(authUserProfile)} alt="" />
                     </div>
                     <div className=" flex-grow relative">
                         <input onChange={getComment} value={comment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
@@ -347,7 +346,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                                 <div key={value.id} className=" mb-5">
                                     <div className=" flex items-center gap-2 mb-2">
                                         <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                            <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
+                                            <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : path(value.profile_photo_url)} alt={value.full_name} />
                                         </div>
                                         <div>
                                             <p className=" text-xs">{value.full_name}</p>

@@ -1,5 +1,4 @@
-import { isNull } from '../utils/functions'
-import { SERVER_URL } from '../utils/axios'
+import { isNull, path } from '../utils/functions'
 
 /*
     Import assets (images, videos etc.)
@@ -18,7 +17,7 @@ const LeftSidebar = ({ firstName, lastName, username, headline, address, profile
                         width='64'
                         height='64'
                         className=" aspect-square object-cover"
-                        src={isNull(profileUrl) ? profilePlacholder : SERVER_URL + profileUrl}
+                        src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)}
                         alt={isNull(firstName) || isNull(lastName) ? username : firstName + ' ' + lastName}
                     />
                 </div>

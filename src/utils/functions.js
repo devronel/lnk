@@ -1,4 +1,5 @@
 import moment from "moment"
+import { SERVER_URL } from "./axios"
 
 /*
     Null checking
@@ -110,4 +111,11 @@ export const dataURLtoFile = (dataurl, filename) => {
     }
 
     return new File([u8arr], filename, { type: mime });
+}
+
+/*
+    Concat path
+*/
+export const path = (path) => {
+    return SERVER_URL + path
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { useMutation, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
-import axiosInstance, { SERVER_URL } from "../../utils/axios";
+import axiosInstance from "../../utils/axios";
 import { AuthContext } from "../../context/AuthContext";
 import { debounce } from "lodash";
 import useError from "../../hooks/useError";
@@ -12,7 +12,7 @@ import { PiCoffeeDuotone } from "react-icons/pi";
 import LnkTextarea from "../../components/forms/lnk-textarea"
 import Modal from "../../components/modal"
 import Post from "../../components/post"
-import { isNull } from "../../utils/functions";
+import { isNull, path } from "../../utils/functions";
 
 
 /*
@@ -210,7 +210,7 @@ const Home = (props) => {
             </Modal>
             <section className=" flex items-center gap-3 p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
                 <div className=" w-12 h-12 rounded-full overflow-hidden border border-lnk-dark-gray">
-                    <img className=" w-full h-full object-cover" src={isNull(user?.url) ? profilePlaceholder : SERVER_URL + user?.url} alt="" />
+                    <img className=" w-full h-full object-cover" src={isNull(user?.url) ? profilePlaceholder : path(user?.url)} alt="" />
                 </div>
                 <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-3 rounded text-left bg-white">Start post</button>
             </section>

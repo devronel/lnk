@@ -1,6 +1,5 @@
 import { MdOutlinePersonAdd } from "react-icons/md";
-import { SERVER_URL } from '../utils/axios'
-import { isNull } from '../utils/functions'
+import { isNull, path } from '../utils/functions'
 
 /*
     Import assets (images, videos etc.)
@@ -15,7 +14,7 @@ const PeopleCard = ({ fullName, headline, address, profileUrl, username }) => {
                     <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/633409/pexels-photo-633409.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                 </div>
                 <div className=" w-14 h-14 rounded-full overflow-hidden border border-lnk-white absolute top-8 left-2">
-                    <img className=" w-full h-full object-cover" src={isNull(profileUrl) ? profilePlacholder : SERVER_URL + profileUrl} alt="" />
+                    <img className=" w-full h-full object-cover" src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)} alt="" />
                 </div>
                 <div className=" pt-8 px-2 mb-4 flex-1">
                     <h4 className=" font-bold text-lg">{isNull(fullName) ? username : fullName}</h4>

@@ -2,13 +2,13 @@ import { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
-import axiosInstance, { SERVER_URL } from "../../utils/axios"
+import axiosInstance from "../../utils/axios"
 import { IoMdClose, IoMdTime } from "react-icons/io"
-import { diffInDays, isNull, parseJson } from "../../utils/functions"
+import { diffInDays, isNull, parseJson, path } from "../../utils/functions"
 import { FaHeart } from "react-icons/fa"
 import { AiFillLike, AiOutlineComment, AiOutlineLike } from "react-icons/ai"
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
-import { MdOutlineCommentsDisabled, MdOutlineEmojiEmotions } from "react-icons/md"
+import { MdOutlineCommentsDisabled } from "react-icons/md"
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
 import { GrSend } from "react-icons/gr"
 
@@ -197,7 +197,7 @@ const PostImage = () => {
                                         <div key={value.id} className="embla__slide flex items-center justify-center ">
                                             <div>
                                                 <img className="w-full h-full object-contain aspect-auto"
-                                                    src={SERVER_URL + value.url}
+                                                    src={path(value.url)}
                                                     alt={value.filename} />
                                             </div>
                                         </div>
@@ -212,7 +212,7 @@ const PostImage = () => {
                 <div className=" py-6 px-5">
                     <div className=" flex items-start gap-2 mb-4">
                         <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                            <img className=" w-full h-full object-cover" src={isNull(post?.url) ? profilePlaceholder : SERVER_URL + post?.url} alt={post?.full_name} />
+                            <img className=" w-full h-full object-cover" src={isNull(post?.url) ? profilePlaceholder : path(post?.url)} alt={post?.full_name} />
                         </div>
                         <div>
                             <>
@@ -294,7 +294,7 @@ const PostImage = () => {
                                         <div key={value.id} className=" mb-5">
                                             <div className=" flex items-center gap-2 mb-2">
                                                 <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                                    <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : SERVER_URL + value.profile_photo_url} alt={value.full_name} />
+                                                    <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : path(value.profile_photo_url)} alt={value.full_name} />
                                                 </div>
                                                 <div>
                                                     <p className=" text-xs">{value.full_name}</p>

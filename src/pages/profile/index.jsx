@@ -6,8 +6,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
-import { SERVER_URL } from "../../utils/axios";
-import { isNull } from "../../utils/functions";
+import { isNull, path } from "../../utils/functions";
 import { FcAbout } from "react-icons/fc";
 import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
@@ -258,7 +257,7 @@ const Profile = () => {
                                 height='144'
                                 width='144'
                                 className="aspect-square rounded-full object-cover"
-                                src={(user?.url && SERVER_URL + user?.url) ?? profilePlaceholder}
+                                src={(user?.url && path(user?.url)) ?? profilePlaceholder}
                                 alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                             />
                             <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">

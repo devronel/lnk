@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { MdDynamicFeed, MdNotifications, MdPeopleAlt } from "react-icons/md";
-import { TbBrandFeedly } from "react-icons/tb";
+import { MdNotifications, MdPeopleAlt } from "react-icons/md";
 import { SiFeedly } from "react-icons/si";
 import { IoIosChatbubbles } from "react-icons/io";
-import { isNull } from "../utils/functions";
-import { SERVER_URL } from "../utils/axios";
+import { isNull, path } from "../utils/functions";
 import NavMenu from "./nav-menu";
 
 /*
@@ -57,7 +55,7 @@ const Navigation = (props) => {
                                         height='24'
                                         width='24'
                                         className=" aspect-square object-cover"
-                                        src={!isNull(props.user) ? (props.user.url && SERVER_URL + props.user.url) ?? profilePlaceholder : null}
+                                        src={!isNull(props.user) ? (props.user.url && path(props.user.url)) ?? profilePlaceholder : null}
                                         alt={!isNull(props.user) ? isNull(props.user.full_name) ? props.user.username : props.user.full_name : null}
                                     />
                                 </div>
