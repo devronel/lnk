@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { _ } from 'lodash'
+import { isNull, capitalize } from 'lodash'
 import axiosInstance from "../utils/axios";
 import { FaHeart, FaGlobeAsia } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
@@ -9,7 +9,7 @@ import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { GrSend } from "react-icons/gr";
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb";
 import { MdOutlineCommentsDisabled } from "react-icons/md";
-import { diffInDays, isNull, path } from "../utils/functions";
+import { diffInDays, path } from "../utils/functions";
 
 /*
     Import assets like image and etc.
@@ -109,14 +109,14 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
     }
 
     /*
-        Display reaction icon
+        Display user reaction for current authenticated user
     */
     const userReaction = () => {
         if (isReact === 'like') {
             return (
                 <>
                     <AiFillLike className="text-blue-500" />
-                    <span className="text-blue-500 font-medium">{_.capitalize(isReact)}</span>
+                    <span className="text-blue-500 font-medium">{capitalize(isReact)}</span>
                 </>
             )
         }
@@ -124,7 +124,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             return (
                 <>
                     <FaHeart className="text-red-500" />
-                    <span className="text-red-500 font-medium">{_.capitalize(isReact)}</span>
+                    <span className="text-red-500 font-medium">{capitalize(isReact)}</span>
                 </>
             )
         }
@@ -132,17 +132,17 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             return (
                 <>
                     <BsFillEmojiSurpriseFill className="text-yellow-500" />
-                    <span className="text-yellow-500 font-medium">{_.capitalize(isReact)}</span>
+                    <span className="text-yellow-500 font-medium">{capitalize(isReact)}</span>
                 </>
             )
         }
     }
 
     const likePost = async (reaction) => {
-        mutation.mutate({ postId: postId, reaction: reaction })
+        likePostMutation.mutate({ postId: postId, reaction: reaction })
     }
 
-    const mutation = useMutation({
+    const likePostMutation = useMutation({
         mutationFn: async (reaction) => {
             let result = await axiosInstance.post(`/post/like/${reaction.postId}/${reaction.reaction}`, {}, {
                 withCredentials: true
@@ -167,7 +167,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
         setComment(e.target.value)
     }
 
-    const commentMutation = useMutation({
+    const postCommentMutation = useMutation({
         mutationFn: async (data) => {
 
             let result = await axiosInstance.post('/post/send/comment', {
@@ -197,7 +197,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
     })
 
     const sendComment = () => {
-        commentMutation.mutate({ postId: postId, comment: comment })
+        postCommentMutation.mutate({ postId: postId, comment: comment })
     }
 
     const fetchAllComment = async () => {

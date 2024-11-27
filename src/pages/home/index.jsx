@@ -20,7 +20,7 @@ import { isNull, path } from "../../utils/functions";
 */
 import profilePlaceholder from '../../assets/profile-placeholder.jpg'
 
-const Home = (props) => {
+const Home = () => {
 
     /*
         Initialize react hooks
@@ -156,7 +156,6 @@ const Home = (props) => {
     }, [post])
 
     useEffect(() => {
-
         const onScroll = debounce(function () {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
                 fetchNextPage()
