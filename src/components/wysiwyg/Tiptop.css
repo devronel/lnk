@@ -3,10 +3,6 @@
     outline: none;
 }
 
-.ProseMirror{
-    min-height: 150px;
-}
-
 .parent:has(.ProseMirror:focus){
     outline: 2px solid orange;
     /* border: 1px solid orange */

@@ -1,14 +1,16 @@
 import { useEditor, EditorContent } from "@tiptap/react";
+import { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 
 import './Tiptop.css'
+import { useEffect } from "react";
 
 /*
     Extension array
 */
 const TIPTOP_EXTENSIONS = [StarterKit, Link.configure({
-    openOnClick: true,
+    openOnClick: false,
     autolink: true,
     protocols: ['http', 'https'],
     HTMLAttributes: {
@@ -16,10 +18,15 @@ const TIPTOP_EXTENSIONS = [StarterKit, Link.configure({
     }
 })]
 
-const Tiptop = ({ content, setContent }) => {
+const Tiptop = ({ content, setContent, setErrors }) => {
     let editor = useEditor({
         extensions: TIPTOP_EXTENSIONS,
-        content: content.post,
+        editorProps: {
+            attributes: {
+                class: 'text-sm min-h-[150px]'
+            }
+        },
+        content: content.content,
         onUpdate: ({ editor }) => {
             if (editor.getHTML() === "<p></p>") {
                 setContent({
@@ -34,6 +41,14 @@ const Tiptop = ({ content, setContent }) => {
             }
         }
     })
+
+    useEffect(() => {
+        if (content.content === '') {
+            editor.commands.setContent('')
+        } else {
+            setErrors([])
+        }
+    }, [content.content])
 
     return (
         <>

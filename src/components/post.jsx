@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isNull, capitalize } from 'lodash'
 import axiosInstance from "../utils/axios";
+import TiptopView from "./wysiwyg/TiptopView";
 import { FaHeart, FaGlobeAsia } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
@@ -236,7 +237,8 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             </div>
             <div className="mb-4">
                 <div className=" px-5 mb-1">
-                    <p className=" text-sm font-light whitespace-pre-line">{content}</p>
+                    {/* <p className=" text-sm font-light whitespace-pre-line">{content}</p> */}
+                    <TiptopView content={content} />
                 </div>
                 {
                     postImageDisplay()

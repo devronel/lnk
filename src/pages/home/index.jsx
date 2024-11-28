@@ -51,13 +51,12 @@ const Home = () => {
 
     const startPost = () => {
         setErrors([])
+        setPost({
+            ...post,
+            content: '',
+            files: []
+        })
         setPostModal(true)
-    }
-
-    const saveData = (e) => {
-        e.preventDefault()
-        console.log(post)
-        // mutation.mutate(post)
     }
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
@@ -76,7 +75,12 @@ const Home = () => {
         },
     })
 
-    const mutation = useMutation({
+    const saveData = (e) => {
+        e.preventDefault()
+        uploadPostMutation.mutate(post)
+    }
+
+    const uploadPostMutation = useMutation({
         mutationFn: async (post) => {
             let formData = new FormData()
             let files = Array.from(post.files)
@@ -182,9 +186,9 @@ const Home = () => {
                         placeholder='Write here...'
                         error={errorExist('content')}
                     /> */}
-                    <Tiptop content={post} setContent={setPost} />
+                    <Tiptop content={post} setContent={setPost} setErrors={setErrors} />
                     {
-                        errorExist('content') ? <p className=" text-red-500 text-xs">{errorExist('content').msg}</p> : null
+                        errorExist('content') ? <p className=" text-red-500 text-xs mt-1 italic">{errorExist('content').msg}</p> : null
                     }
                 </div>
                 <div className=" flex items-center flex-wrap gap-2">
