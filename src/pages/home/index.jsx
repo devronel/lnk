@@ -10,6 +10,7 @@ import { RiCloseCircleFill } from "react-icons/ri";
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
 import LnkTextarea from "../../components/forms/lnk-textarea"
+import Tiptop from "../../components/wysiwyg/Tiptop";
 import Modal from "../../components/modal"
 import Post from "../../components/post"
 import { isNull, path } from "../../utils/functions";
@@ -55,7 +56,8 @@ const Home = () => {
 
     const saveData = (e) => {
         e.preventDefault()
-        mutation.mutate(post)
+        console.log(post)
+        // mutation.mutate(post)
     }
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
@@ -172,14 +174,15 @@ const Home = () => {
         <>
             <Modal submit={saveData} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
                 <div className=" mb-3">
-                    <LnkTextarea
+                    {/* <LnkTextarea
                         name='content'
                         onChange={handleOnchange}
                         value={post.content}
                         label='Share your thoughts'
                         placeholder='Write here...'
                         error={errorExist('content')}
-                    />
+                    /> */}
+                    <Tiptop content={post} setContent={setPost} />
                     {
                         errorExist('content') ? <p className=" text-red-500 text-xs">{errorExist('content').msg}</p> : null
                     }
@@ -203,7 +206,7 @@ const Home = () => {
                 <div className=" flex items-center gap-2 justify-end">
                     <label htmlFor="files" className="cursor-pointer hover:text-lnk-orange text-xl">
                         <FcAddImage />
-                        <input onChange={handleOnchange} type="file" multiple name="files" id="files" hidden />
+                        <input onChange={handleOnchange} type="file" multiple name="files" id="files" hidden accept=".png,.webp,.jpeg,.jpg" />
                     </label>
                 </div>
             </Modal>
