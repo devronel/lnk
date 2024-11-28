@@ -1,10 +1,9 @@
+import { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
-import { Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 
 import './Tiptop.css'
-import { useEffect } from "react";
 
 /*
     Extension array

@@ -335,6 +335,7 @@ const Profile = () => {
                                 postReactions={value.post_reactions}
                                 isReact={value.user_reaction}
                                 reactionCount={value.reaction_count}
+                                commentCount={value.comment_count}
                             />
                         ))
                     ))
