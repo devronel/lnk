@@ -33,6 +33,7 @@ const Profile = () => {
         Initialize React hooks like states, context api and etc.
     */
     let cropperRef = useRef(null)
+    let cropCoverPhotoRef = useRef(null)
     let { user, setUser, refreshUser } = useContext(AuthContext)
     let [openModal, setOpenModal] = useState(false)
     let [editProfilePhoto, setEditProfilePhoto] = useState(false)
@@ -55,6 +56,10 @@ const Profile = () => {
         about: user?.about ? user.about : ''
     })
 
+    let [coverPhotoModal, setCoverPhotoModal] = useState(false)
+    let [coverPhoto, setCoverPhoto] = useState(null)
+    let [cropCover, setCropCover] = useState(null)
+
     /*
         Onchange handler
     */
@@ -64,9 +69,12 @@ const Profile = () => {
             [e.target.name]: e.target.value
         })
     }
+
     const profilePhoto = (e) => {
 
         if (e.target.files && e.target.files[0]) {
+
+            let targetAttr = e.target.name
 
             const MAX_SIZE = 1 * 1000 * 1000;
 
@@ -90,8 +98,13 @@ const Profile = () => {
             let reader = new FileReader()
 
             reader.onload = function (e) {
-                setDisplayPhoto(e.target.result);
+                if (targetAttr === 'profile__photo') {
+                    setDisplayPhoto(e.target.result);
+                } else {
+                    setCoverPhoto(e.target.result)
+                }
             };
+
 
             reader.readAsDataURL(e.target.files[0])
         }
@@ -195,8 +208,17 @@ const Profile = () => {
 
     const onCrop = () => {
         let cropper = cropperRef.current?.cropper;
-        let base64Img = cropper.getCroppedCanvas().toDataURL()
-        setCropImage(base64Img);
+        let cropperCover = cropCoverPhotoRef.current?.cropper
+        if (!isNull(cropper.getCroppedCanvas())) {
+            let base64Img = cropper.getCroppedCanvas().toDataURL()
+            setCropImage(base64Img);
+            return
+        }
+        if (!isNull(cropperCover.getCroppedCanvas())) {
+            let base64Img = cropperCover.getCroppedCanvas().toDataURL()
+            setCropCover(base64Img)
+            return
+        }
     };
 
     useEffect(() => {
@@ -207,6 +229,16 @@ const Profile = () => {
             setDisplayPhoto(null)
         }
     }, [displayPhoto])
+
+    useEffect(() => {
+        if (!isNull(coverPhoto)) {
+            setCoverPhotoModal(true)
+        }
+    }, [coverPhoto])
+
+    useEffect(() => {
+        console.log('cover ' + cropCover, 'profile ' + cropImage)
+    }, [cropCover, cropImage])
 
     return (
         <>
@@ -219,6 +251,7 @@ const Profile = () => {
                 <LnkInput onChange={handleOnChange} value={userData.address} name='address' type='text' className='mb-3' label='Address' />
                 <LnkTextarea onChange={handleOnChange} value={userData.about} name='about' className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
             </Modal>
+
             {/* edit profile picture modal */}
             <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
                 <div className=" flex flex-col items-center justify-center">
@@ -228,10 +261,11 @@ const Profile = () => {
                         initialAspectRatio={1 / 1}
                         guides={false}
                         crop={onCrop}
+                        name="profilePhoto"
                         ref={cropperRef}
                     />
                     {
-                        cropImage !== null ? (
+                        !isNull(cropImage) ? (
                             <div className=" rounded-full aspect-square">
                                 <img src={cropImage} width='144' height='144' className=" object-cover rounded-full aspect-square" alt="" />
                             </div>
@@ -242,14 +276,38 @@ const Profile = () => {
                     !isNull(profileError) ? <p className="text-center text-xs mt-3 text-red-500 italic">{profileError}</p> : null
                 }
             </Modal>
+
+            {/* Upload cover photo */}
+            <Modal openModal={coverPhotoModal} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-2xl">
+                <>
+                    <Cropper
+                        src={coverPhoto}
+                        style={{ height: 200, width: "100%" }}
+                        initialAspectRatio={4 / 1}
+                        guides={false}
+                        crop={onCrop}
+                        name="coverPhoto"
+                        ref={cropCoverPhotoRef}
+                    />
+                    {
+                        cropCover !== null ? (
+                            <div className=" aspect-[4/1] mt-3">
+                                <img src={cropCover} height='191' className="w-full object-contain aspect-[4/1]" alt="" />
+                            </div>
+                        ) : null
+                    }
+                </>
+            </Modal>
+
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative">
                     <div className="relative h-52 w-full">
                         <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/633409/pexels-photo-633409.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
                         <div className=" absolute inset-0 bg-lnk-dark opacity-50"></div>
-                        <button className=" absolute top-3 text-lnk-gray right-3 border border-lnk-gray hover:bg-lnk-gray hover:text-lnk-dark p-2 rounded-full transition-colors ease-linear duration-150">
+                        <label htmlFor="cover__photo" className=" absolute top-3 text-lnk-gray right-3 border border-lnk-gray hover:bg-lnk-gray hover:text-lnk-dark p-2 rounded-full transition-colors ease-linear duration-150">
                             <FaRegImage />
-                        </button>
+                        </label>
+                        <input onChange={profilePhoto} hidden type="file" name="cover__photo" id="cover__photo" accept=".png,.webp,.jpeg,.jpg" />
                     </div>
                     <div className="  absolute top-28 left-5">
                         <div className=" w-36 h-36 group rounded-full border border-lnk-white relative">
@@ -264,7 +322,7 @@ const Profile = () => {
                                 <label htmlFor="profile__photo" className="cursor-pointer group-hover:block hidden text-lnk-gray text-2xl" >
                                     <FaRegImage />
                                 </label>
-                                <input onChange={profilePhoto} hidden type="file" id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
+                                <input onChange={profilePhoto} name="profile__photo" hidden type="file" id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
                             </div>
                         </div>
                     </div>

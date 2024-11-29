@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import axiosInstance from "../../utils/axios"
+import TiptopView from '../../components/wysiwyg/TiptopView'
 import { IoMdClose, IoMdTime } from "react-icons/io"
 import { diffInDays, isNull, parseJson, path } from "../../utils/functions"
 import { FaHeart } from "react-icons/fa"
@@ -189,9 +190,9 @@ const PostImage = () => {
                     </div>
                     <div className="mb-4">
                         <div className=" mb-1">
-                            <p className=" text-sm font-light whitespace-pre-line">
-                                {post?.content}
-                            </p>
+                            {
+                                post?.content !== undefined ? <TiptopView content={post?.content} /> : null
+                            }
                         </div>
                     </div>
                     <div className=" flex items-center justify-between mb-1">
