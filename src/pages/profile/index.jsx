@@ -26,6 +26,7 @@ import { PiCoffeeDuotone } from "react-icons/pi";
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 import empty from "../../assets/empty.svg"
+import coverPhotoPlaceholder from "../../assets/cover-photo-placeholder.png"
 
 const Profile = () => {
 
@@ -39,7 +40,6 @@ const Profile = () => {
     let [loading, setLoading] = useState(false)
 
     let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
-    let [profileError, setProfileError] = useState(null);
 
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
@@ -54,11 +54,13 @@ const Profile = () => {
     let [editProfilePhoto, setEditProfilePhoto] = useState(false)
     let [displayPhoto, setDisplayPhoto] = useState(null)
     let [cropImage, setCropImage] = useState(null)
+    let [profileError, setProfileError] = useState(null);
 
     // Cover photo state
     let [coverPhotoModal, setCoverPhotoModal] = useState(false)
     let [coverPhoto, setCoverPhoto] = useState(null)
     let [cropCover, setCropCover] = useState(null)
+    let [coverPhotoError, setCoverPhotoError] = useState(null);
 
     /*
         Onchange handler
@@ -78,7 +80,7 @@ const Profile = () => {
 
             const MAX_SIZE = 1 * 1000 * 1000;
 
-            if (e.target.files[0].size > MAX_SIZE) {
+            if (e.target.files[0].size >= MAX_SIZE) {
                 toast.error(`The file size exceeds the maximum limit of 1mb. Please upload a smaller file.`, {
                     duration: 5000,
                     style: {
@@ -185,9 +187,26 @@ const Profile = () => {
         }
     }
     const updateCoverPhoto = async () => {
-        let generatedName = window.crypto.randomUUID()
-        let photo = dataURLtoFile(cropCover, generatedName)
-        console.log(photo)
+        try {
+            let generatedName = window.crypto.randomUUID()
+            let photo = dataURLtoFile(cropCover, generatedName)
+            console.log(photo)
+            let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            if (response.data.success) {
+                setCoverPhotoModal(false)
+                setCoverPhoto(null)
+                setCropCover(null)
+                refreshUser()
+            }
+        } catch (error) {
+            console.log(error.response)
+            setCoverPhotoError(error.response.data.message)
+        }
     }
 
     /*
@@ -290,6 +309,9 @@ const Profile = () => {
 
             {/* Upload cover photo */}
             <Modal submit={updateCoverPhoto} openModal={coverPhotoModal} closeModal={() => closePhotoModal('coverPhoto')} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+                {
+                    !isNull(coverPhotoError) ? <p className="text-left text-xs mb-2 text-red-500 italic">{coverPhotoError}</p> : null
+                }
                 <>
                     <Cropper
                         src={coverPhoto}
@@ -313,8 +335,12 @@ const Profile = () => {
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative">
                     <div className="relative h-52 w-full">
-                        <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/633409/pexels-photo-633409.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
-                        <div className=" absolute inset-0 bg-lnk-dark opacity-50"></div>
+                        <img
+                            className=" w-full h-full object-cover"
+                            src={(user?.cover_photo && path(user?.cover_photo)) ?? coverPhotoPlaceholder}
+                            alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
+                        />
+                        <div className=" absolute inset-0 bg-lnk-dark opacity-25"></div>
                         <label htmlFor="cover__photo" className=" absolute top-3 text-lnk-gray right-3 border border-lnk-gray hover:bg-lnk-gray hover:text-lnk-dark p-2 rounded-full transition-colors ease-linear duration-150">
                             <FaRegImage />
                         </label>
