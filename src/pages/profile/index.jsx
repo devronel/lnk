@@ -36,16 +36,10 @@ const Profile = () => {
     let cropCoverPhotoRef = useRef(null)
     let { user, setUser, refreshUser } = useContext(AuthContext)
     let [openModal, setOpenModal] = useState(false)
-    let [editProfilePhoto, setEditProfilePhoto] = useState(false)
     let [loading, setLoading] = useState(false)
 
     let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
-    let [photo, setPhoto] = useState(null)
-    let [displayPhoto, setDisplayPhoto] = useState(null)
     let [profileError, setProfileError] = useState(null);
-    let [cropImage, setCropImage] = useState(null)
-
-    let [posts, setPosts] = useState([])
 
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
@@ -56,6 +50,12 @@ const Profile = () => {
         about: user?.about ? user.about : ''
     })
 
+    // Profile photo state
+    let [editProfilePhoto, setEditProfilePhoto] = useState(false)
+    let [displayPhoto, setDisplayPhoto] = useState(null)
+    let [cropImage, setCropImage] = useState(null)
+
+    // Cover photo state
     let [coverPhotoModal, setCoverPhotoModal] = useState(false)
     let [coverPhoto, setCoverPhoto] = useState(null)
     let [cropCover, setCropCover] = useState(null)
@@ -118,8 +118,18 @@ const Profile = () => {
     const modalOpen = () => {
         setOpenModal(prevState => !prevState)
     }
-    const profileUpdateModal = () => {
-        setEditProfilePhoto(prevState => !prevState)
+    const closePhotoModal = (modalName) => {
+        if (modalName === 'profile') {
+            setEditProfilePhoto(false)
+            setCropImage(null)
+            setDisplayPhoto(null)
+        } else if (modalName === 'coverPhoto') {
+            setCoverPhotoModal(false)
+            setCropCover(null)
+            setCoverPhoto(null)
+        } else {
+            return
+        }
     }
 
     /*
@@ -174,6 +184,27 @@ const Profile = () => {
             console.log(error.message)
         }
     }
+    const updateCoverPhoto = async () => {
+        let generatedName = window.crypto.randomUUID()
+        let photo = dataURLtoFile(cropCover, generatedName)
+        console.log(photo)
+    }
+
+    /*
+        Crop image functions
+    */
+    const onCrop = () => {
+        let cropper = cropperRef.current?.cropper;
+        let base64Img = cropper.getCroppedCanvas().toDataURL()
+        setCropImage(base64Img);
+    };
+
+    const onCropCoverPhoto = () => {
+        let cropperCover = cropCoverPhotoRef.current?.cropper
+        let base64Img = cropperCover.getCroppedCanvas().toDataURL()
+        setCropCover(base64Img)
+    }
+
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['user-posts', user?.username],
@@ -206,27 +237,10 @@ const Profile = () => {
 
     }, [])
 
-    const onCrop = () => {
-        let cropper = cropperRef.current?.cropper;
-        let cropperCover = cropCoverPhotoRef.current?.cropper
-        if (!isNull(cropper.getCroppedCanvas())) {
-            let base64Img = cropper.getCroppedCanvas().toDataURL()
-            setCropImage(base64Img);
-            return
-        }
-        if (!isNull(cropperCover.getCroppedCanvas())) {
-            let base64Img = cropperCover.getCroppedCanvas().toDataURL()
-            setCropCover(base64Img)
-            return
-        }
-    };
 
     useEffect(() => {
         if (!isNull(displayPhoto)) {
             setEditProfilePhoto(true)
-        } else {
-            setEditProfilePhoto(false)
-            setDisplayPhoto(null)
         }
     }, [displayPhoto])
 
@@ -236,14 +250,11 @@ const Profile = () => {
         }
     }, [coverPhoto])
 
-    useEffect(() => {
-        console.log('cover ' + cropCover, 'profile ' + cropImage)
-    }, [cropCover, cropImage])
 
     return (
         <>
             {/* basic info modal */}
-            <Modal submit={saveUserDetails} loader={loading} openModal={openModal} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
+            <Modal submit={saveUserDetails} loader={loading} openModal={openModal} closeModal={() => setOpenModal(false)} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />}>
                 <LnkInput onChange={handleOnChange} value={userData.firstName} name='firstName' type='text' className='mb-3' placeholder="First name" label='First name' />
                 <LnkInput onChange={handleOnChange} value={userData.lastName} name='lastName' type='text' className='mb-3' placeholder="Last name" label='Last name' />
                 <LnkInput onChange={handleOnChange} value={userData.headline} name='headline' type='text' className='mb-3' placeholder="Headline" label='Headline' />
@@ -253,7 +264,7 @@ const Profile = () => {
             </Modal>
 
             {/* edit profile picture modal */}
-            <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-xl">
+            <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} closeModal={() => closePhotoModal('profile')} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
                 <div className=" flex flex-col items-center justify-center">
                     <Cropper
                         src={displayPhoto}
@@ -278,14 +289,14 @@ const Profile = () => {
             </Modal>
 
             {/* Upload cover photo */}
-            <Modal openModal={coverPhotoModal} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />} maxWidth="max-w-2xl">
+            <Modal submit={updateCoverPhoto} openModal={coverPhotoModal} closeModal={() => closePhotoModal('coverPhoto')} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
                 <>
                     <Cropper
                         src={coverPhoto}
                         style={{ height: 200, width: "100%" }}
                         initialAspectRatio={4 / 1}
                         guides={false}
-                        crop={onCrop}
+                        crop={onCropCoverPhoto}
                         name="coverPhoto"
                         ref={cropCoverPhotoRef}
                     />
