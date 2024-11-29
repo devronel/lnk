@@ -37,6 +37,7 @@ const MainLayout = () => {
                                 headline={user?.headline}
                                 address={user?.address}
                                 profileUrl={user?.url}
+                                coverPhoto={user?.cover_photo}
                             />
                         }
                         <div>
