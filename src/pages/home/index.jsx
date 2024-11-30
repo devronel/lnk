@@ -9,7 +9,6 @@ import { FcAddImage } from "react-icons/fc";
 import { RiCloseCircleFill } from "react-icons/ri";
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
-import LnkTextarea from "../../components/forms/lnk-textarea"
 import Tiptop from "../../components/wysiwyg/Tiptop";
 import Modal from "../../components/modal"
 import Post from "../../components/post"
@@ -47,6 +46,17 @@ const Home = () => {
             ...post,
             [name]: name == 'files' ? e.target.files : e.target.value
         })
+    }
+
+    const closePostModal = () => {
+        setPostModal(false)
+        setPostLoading(false)
+        setPost({
+            ...post,
+            content: '',
+            files: []
+        })
+        setFilesPreview([])
     }
 
     const startPost = () => {
@@ -176,16 +186,8 @@ const Home = () => {
 
     return (
         <>
-            <Modal submit={saveData} loader={postLoading} openModal={postModal} setOpenModal={setPostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
+            <Modal submit={saveData} loader={postLoading} openModal={postModal} closeModal={closePostModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
                 <div className=" mb-3">
-                    {/* <LnkTextarea
-                        name='content'
-                        onChange={handleOnchange}
-                        value={post.content}
-                        label='Share your thoughts'
-                        placeholder='Write here...'
-                        error={errorExist('content')}
-                    /> */}
                     <Tiptop content={post} setContent={setPost} setErrors={setErrors} />
                     {
                         errorExist('content') ? <p className=" text-red-500 text-xs mt-1 italic">{errorExist('content').msg}</p> : null

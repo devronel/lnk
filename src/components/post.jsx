@@ -237,7 +237,6 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             </div>
             <div className="mb-4">
                 <div className=" px-5 mb-1">
-                    {/* <p className=" text-sm font-light whitespace-pre-line">{content}</p> */}
                     <TiptopView content={content} />
                 </div>
                 {
