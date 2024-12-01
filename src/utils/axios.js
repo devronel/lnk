@@ -11,6 +11,11 @@ axiosInstance.interceptors.response.use(response => response, async error => {
     const originalConfig = error.config;
 
     if (error.response) {
+
+        if (originalConfig.url.includes('/user/authenticate')) {
+            return Promise.reject(error);
+        }
+
         if (error.response.status === 401 && !originalConfig._retry) {
 
             originalConfig._retry = true;

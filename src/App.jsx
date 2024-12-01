@@ -11,6 +11,7 @@ import People from './pages/people'
 import Login from './pages/auth/login'
 import Signup from './pages/auth/signup'
 import Notifications from './pages/notifications'
+import ChatHome from './pages/chat'
 import { AuthProvider } from './context/AuthContext'
 
 
@@ -34,6 +35,7 @@ function App() {
               <Route path='/' element={<Home />} />
               <Route path='/profile' element={<Profile />} />
               <Route path='/people' element={<People />} />
+              <Route path='/chat' element={<ChatHome />} />
               <Route path='/notifications' element={<Notifications />} />
             </Route>
             <Route path='/post-image/:post_id/:username' element={<PostImage />} />

@@ -32,14 +32,13 @@ const Signup = () => {
 
     const submit = async (e) => {
         e.preventDefault();
-
         try {
             let response = await axiosInstance.post('/user/create', userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            if (response.data.success) {
+            if (response.status === 200) {
                 toast.success("Account successfully created!")
                 setUserData({
                     username: '',
@@ -48,11 +47,18 @@ const Signup = () => {
                     passwordConfirmation: ''
                 })
                 setErrors([])
-            } else {
-                setErrors(response.data.payload.errors)
             }
         } catch (error) {
-            console.log(error.message)
+            if (error.response) {
+                switch (error.response.status) {
+                    case 400:
+                        setErrors(error.response.data.payload)
+                        break;
+                    default:
+                        console.log('An unexpected error occurred')
+                        break;
+                }
+            }
         }
 
     }

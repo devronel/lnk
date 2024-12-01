@@ -89,7 +89,6 @@ const Home = () => {
         e.preventDefault()
         uploadPostMutation.mutate(post)
     }
-
     const uploadPostMutation = useMutation({
         mutationFn: async (post) => {
             let formData = new FormData()
@@ -104,13 +103,9 @@ const Home = () => {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-
-            if (result.data.success) {
+            if (result.status === 200) {
                 return result
-            } else {
-                throw new Error(JSON.stringify(result.data.payload));
             }
-
         },
         onSuccess: async () => {
             queryClient.invalidateQueries(['posts'])
@@ -124,34 +119,26 @@ const Home = () => {
             setFilesPreview([])
         },
         onError: (error) => {
+            setErrors(error.response.data.payload)
             setPostLoading(false)
-            setErrors(JSON.parse(error.message))
         }
     })
 
     const imagePreview = () => {
-
         if (post.files.length > 0) {
             let result = []
-
             for (let i = 0; i < post.files.length; i++) {
                 let url = URL.createObjectURL(post.files[i])
                 result.push(url);
             }
-
             setFilesPreview(result)
-
         }
-
     }
 
     const removeImage = (index) => {
-
         setFilesPreview(filesPreview.splice(index, -1))
-
         let filesToArr = Array.from(post.files)
         filesToArr.splice(index, 1);
-
         setPost({
             ...post,
             files: filesToArr
@@ -162,13 +149,10 @@ const Home = () => {
         Initialize useEffect
     */
     useEffect(() => {
-
         imagePreview()
-
         return () => {
             filesPreview.forEach(url => URL.revokeObjectURL(url));
         };
-
     }, [post])
 
     useEffect(() => {
@@ -177,11 +161,8 @@ const Home = () => {
                 fetchNextPage()
             }
         }, 500)
-
         window.addEventListener('scroll', onScroll)
-
         return () => window.removeEventListener('scroll', onScroll)
-
     }, [])
 
     return (

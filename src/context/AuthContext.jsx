@@ -22,18 +22,23 @@ export const AuthProvider = ({ children }) => {
                     'Content-Type': 'application/json'
                 }
             })
-
-            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.auth_token}`
-
-            if (user.data.success) {
+            if (user.status === 200) {
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.auth_token}`
                 setIsLogin(true)
                 refreshUser()
-            } else {
-                toast.error(user.data.message + '!')
-                setIsLogin(false)
             }
         } catch (error) {
             setIsLogin(false)
+            if (error.response) {
+                switch (error.response.status) {
+                    case 401:
+                        toast.error(error.response.data.message + '!')
+                        break;
+                    default:
+                        console.log('An unexpected error occurred')
+                        break;
+                }
+            }
         }
     }
 
@@ -45,11 +50,11 @@ export const AuthProvider = ({ children }) => {
             let response = await axiosInstance.delete('/user/logout', {
                 withCredentials: true
             });
-            if (response.data.success) {
+            if (response.status === 200) {
                 setIsLogin(false)
             }
         } catch (error) {
-            console.log(error.message)
+            setIsLogin(true)
         }
     }
 
@@ -61,18 +66,13 @@ export const AuthProvider = ({ children }) => {
             let user = await axiosInstance.get('/user/validate-user', {
                 withCredentials: true
             });
-
-            if (user.data.success) {
-
+            if (user.status === 200) {
                 setUser(user.data.payload.authUser)
-
                 setIsLogin(true)
-
-            } else {
-                setIsLogin(false)
             }
         } catch (error) {
             setIsLogin(false)
+            toast.error(error.response.data.message)
         }
     }
 

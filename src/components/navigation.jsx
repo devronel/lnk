@@ -41,7 +41,7 @@ const Navigation = (props) => {
                                 <Link to="/people"><MdPeopleAlt className={`${route === '/people' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
-                                <Link to="/"><IoIosChatbubbles className=" text-lg hover:text-lnk-orange transition-colors ease-linear duration-150" /></Link>
+                                <Link to="/chat"><IoIosChatbubbles className={`${route === '/chat' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
                                 <Link to="/notifications"><MdNotifications className={`${route === '/notifications' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>

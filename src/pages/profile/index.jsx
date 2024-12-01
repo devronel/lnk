@@ -146,7 +146,7 @@ const Profile = () => {
                     'Content-Type': 'application/json'
                 }
             })
-            if (response.data.success) {
+            if (response.status === 200) {
                 setOpenModal(false)
                 setLoading(false)
                 refreshUser()
@@ -169,7 +169,7 @@ const Profile = () => {
                 }
             )
 
-            if (response.data.success) {
+            if (response.status === 200) {
                 setEditProfilePhoto(false)
                 setSubmitPhotoLoading(false)
                 setProfileError(null)
@@ -177,13 +177,11 @@ const Profile = () => {
                 setCropImage(null)
                 refreshUser()
 
-            } else {
-                setProfileError(response.data.message)
-                setSubmitPhotoLoading(false)
             }
 
         } catch (error) {
-            console.log(error.message)
+            setProfileError(response.data.message)
+            setSubmitPhotoLoading(false)
         }
     }
     const updateCoverPhoto = async () => {
@@ -197,14 +195,13 @@ const Profile = () => {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-            if (response.data.success) {
+            if (response.status === 200) {
                 setCoverPhotoModal(false)
                 setCoverPhoto(null)
                 setCropCover(null)
                 refreshUser()
             }
         } catch (error) {
-            console.log(error.response)
             setCoverPhotoError(error.response.data.message)
         }
     }

@@ -17,6 +17,7 @@ import { diffInDays, path } from "../utils/functions";
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 import PostReaction from "./post-reactions";
+import toast from "react-hot-toast";
 
 const Post = ({ postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
 
@@ -149,7 +150,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 withCredentials: true
             })
 
-            if (result.data.success) {
+            if (result.status === 200) {
                 return result
             }
         },
@@ -157,7 +158,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             queryClient.invalidateQueries(['posts'])
         },
         onError: (error) => {
-            console.log(error.message)
+            toast.error(error.response.data.message)
         }
     })
 
@@ -168,9 +169,12 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
         setComment(e.target.value)
     }
 
+    const sendComment = (e) => {
+        e.preventDefault()
+        postCommentMutation.mutate({ postId: postId, comment: comment })
+    }
     const postCommentMutation = useMutation({
         mutationFn: async (data) => {
-
             let result = await axiosInstance.post('/post/send/comment', {
                 post_id: data.postId,
                 comment_value: data.comment
@@ -184,7 +188,6 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             if (result.data.success) {
                 return result
             }
-
         },
         onSuccess: () => {
             setComment('')
@@ -193,13 +196,9 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             })
         },
         onError: (error) => {
-            console.log(error.message)
+
         }
     })
-
-    const sendComment = () => {
-        postCommentMutation.mutate({ postId: postId, comment: comment })
-    }
 
     const fetchAllComment = async () => {
         setShowComment(true)
@@ -212,7 +211,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 withCredentials: true
             })
 
-            if (result.data.success) {
+            if (result.status === 200) {
                 return result.data.payload
             }
         },
@@ -294,12 +293,12 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                     <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                         <img className=" w-full h-full rounded-full object-cover" src={isNull(authUserProfile) ? profilePlaceholder : path(authUserProfile)} alt="" />
                     </div>
-                    <div className=" flex-grow relative">
+                    <form onSubmit={sendComment} className=" flex-grow relative">
                         <input onChange={getComment} value={comment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
-                        <button onClick={sendComment} className=" group">
+                        <button type="submit" className=" group">
                             <GrSend className="text-base text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2 group-hover:text-lnk-orange transition" />
                         </button>
-                    </div>
+                    </form>
                 </div>
                 <div>
                     {
