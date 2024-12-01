@@ -12,6 +12,7 @@ import Login from './pages/auth/login'
 import Signup from './pages/auth/signup'
 import Notifications from './pages/notifications'
 import ChatHome from './pages/chat'
+import NotFound from './pages/error-page/404'
 import { AuthProvider } from './context/AuthContext'
 
 
@@ -39,6 +40,7 @@ function App() {
               <Route path='/notifications' element={<Notifications />} />
             </Route>
             <Route path='/post-image/:post_id/:username' element={<PostImage />} />
+            <Route path='/404' element={<NotFound />} />
             <Route path='/' element={<AuthLayout />}>
               <Route path='/login' element={<Login />} />
               <Route path='/signup' element={<Signup />} />

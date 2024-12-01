@@ -23,7 +23,6 @@ export const AuthProvider = ({ children }) => {
                 }
             })
             if (user.status === 200) {
-                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.auth_token}`
                 setIsLogin(true)
                 refreshUser()
             }
@@ -72,7 +71,6 @@ export const AuthProvider = ({ children }) => {
             }
         } catch (error) {
             setIsLogin(false)
-            toast.error(error.response.data.message)
         }
     }
 

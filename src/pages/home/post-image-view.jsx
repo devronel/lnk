@@ -81,12 +81,12 @@ const PostImage = () => {
                 withCredentials: true
             })
 
-            if (result.data.success) {
+            if (result.status === 200) {
                 setPost(result.data.payload.result)
             }
 
         } catch (error) {
-            console.log(error.response)
+            console.log(error.message)
         }
     }
 

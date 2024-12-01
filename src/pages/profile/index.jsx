@@ -188,7 +188,6 @@ const Profile = () => {
         try {
             let generatedName = window.crypto.randomUUID()
             let photo = dataURLtoFile(cropCover, generatedName)
-            console.log(photo)
             let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
                 withCredentials: true,
                 headers: {
