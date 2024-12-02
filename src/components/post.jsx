@@ -8,7 +8,7 @@ import { FaHeart, FaGlobeAsia } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { GrSend } from "react-icons/gr";
-import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb";
+import { TbLoaderQuarter, TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb";
 import { MdOutlineCommentsDisabled } from "react-icons/md";
 import { diffInDays, path } from "../utils/functions";
 
@@ -130,11 +130,18 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 </>
             )
         }
-        else {
+        else if (isReact === 'wow') {
             return (
                 <>
                     <BsFillEmojiSurpriseFill className="text-yellow-500" />
                     <span className="text-yellow-500 font-medium">{capitalize(isReact)}</span>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <AiOutlineLike className="" />
+                    <span>React</span>
                 </>
             )
         }
@@ -256,15 +263,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 <ul className=" flex items-center gap-5 py-1 border-t border-lnk-gray">
                     <li className="relative group">
                         <button className="text-sm flex items-center gap-1 py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
-                            {
-                                isNull(isReact) ? (
-                                    <>
-                                        <AiOutlineLike className="" />
-                                        <span>React</span>
-
-                                    </>
-                                ) : userReaction()
-                            }
+                            {userReaction()}
                         </button>
                         <div className="animate__animated animate__fadeIn absolute -top-12 z-10 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
                             <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">

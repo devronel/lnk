@@ -1,5 +1,4 @@
 import moment from "moment"
-import { SERVER_URL } from "./axios"
 
 /*
     Null checking
@@ -117,5 +116,6 @@ export const dataURLtoFile = (dataurl, filename) => {
     Concat path
 */
 export const path = (path) => {
-    return SERVER_URL + path
+    // return SERVER_URL + path
+    return path
 }

@@ -39,7 +39,6 @@ const Profile = () => {
     let [openModal, setOpenModal] = useState(false)
     let [loading, setLoading] = useState(false)
 
-    let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
 
     const [userData, setUserData] = useState({
         firstName: user?.first_name ? user.first_name : '',
@@ -49,6 +48,8 @@ const Profile = () => {
         address: user?.address ? user.address : '',
         about: user?.about ? user.about : ''
     })
+
+    let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
 
     // Profile photo state
     let [editProfilePhoto, setEditProfilePhoto] = useState(false)
@@ -188,6 +189,7 @@ const Profile = () => {
         try {
             let generatedName = window.crypto.randomUUID()
             let photo = dataURLtoFile(cropCover, generatedName)
+            setSubmitPhotoLoading(true)
             let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
                 withCredentials: true,
                 headers: {
@@ -195,6 +197,7 @@ const Profile = () => {
                 }
             })
             if (response.status === 200) {
+                setSubmitPhotoLoading(false)
                 setCoverPhotoModal(false)
                 setCoverPhoto(null)
                 setCropCover(null)
@@ -304,7 +307,7 @@ const Profile = () => {
             </Modal>
 
             {/* Upload cover photo */}
-            <Modal submit={updateCoverPhoto} openModal={coverPhotoModal} closeModal={() => closePhotoModal('coverPhoto')} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+            <Modal submit={updateCoverPhoto} loader={submitPhotoLoading} openModal={coverPhotoModal} closeModal={() => closePhotoModal('coverPhoto')} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
                 {
                     !isNull(coverPhotoError) ? <p className="text-left text-xs mb-2 text-red-500 italic">{coverPhotoError}</p> : null
                 }
