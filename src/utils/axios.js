@@ -1,10 +1,9 @@
 import axios from "axios";
 
-// export const SERVER_URL = 'http://localhost:3001/'
-export const SERVER_URL = 'https://lnk-api.netlify.app/'
+export const SERVER_URL = process.env.API_URL
 
 const axiosInstance = axios.create({
-    baseURL: `${SERVER_URL}api/`
+    baseURL: `${SERVER_URL}/api/`
 })
 
 // axiosInstance.interceptors.response.use(response => response, async error => {

@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Navigate, useNavigate } from "react-router-dom";
+import FullPageLoader from "../components/loader/fullPageLoader";
 import axiosInstance from "../utils/axios";
 
 export const AuthContext = createContext(null)
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
     }, [])
 
     if (isAuthenticating) {
-        return <div>Loading...</div>
+        return <FullPageLoader />
     }
 
     return (

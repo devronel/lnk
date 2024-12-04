@@ -12,6 +12,7 @@ import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineCommentsDisabled } from "react-icons/md"
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
 import { GrSend } from "react-icons/gr"
+import FullPageLoader from "../../components/loader/fullPageLoader"
 
 /*
     Import assets like image and etc.
@@ -24,6 +25,7 @@ const PostImage = () => {
     let [emblaRef] = useEmblaCarousel()
     let queryClient = useQueryClient()
     let { post_id, username } = useParams()
+    let [isFetching, setIsFetching] = useState(true)
     let [commentPage, setCommentPage] = useState(0)
     let [comment, setComment] = useState('')
     let navigate = useNavigate()
@@ -77,15 +79,18 @@ const PostImage = () => {
 
     const getPost = async () => {
         try {
+            setIsFetching(true)
             let result = await axiosInstance(`/post/view-images/${post_id}/${username}`, {
                 withCredentials: true
             })
 
             if (result.status === 200) {
+                setIsFetching(false)
                 setPost(result.data.payload.result)
             }
 
         } catch (error) {
+            setIsFetching(false)
             console.log(error.message)
         }
     }
@@ -97,7 +102,7 @@ const PostImage = () => {
                 withCredentials: true
             })
 
-            if (result.data.success) {
+            if (result.status === 200) {
                 return result.data.payload
             }
         },
@@ -109,7 +114,6 @@ const PostImage = () => {
     */
     const commentMutation = useMutation({
         mutationFn: async (data) => {
-
             let result = await axiosInstance.post('/post/send/comment', {
                 post_id: data.post_id,
                 comment_value: data.comment
@@ -120,10 +124,9 @@ const PostImage = () => {
                 }
             })
 
-            if (result.data.success) {
+            if (result.status === 200) {
                 return result
             }
-
         },
         onSuccess: () => {
             setComment('')
@@ -144,6 +147,10 @@ const PostImage = () => {
     useEffect(() => {
         getPost()
     }, [])
+
+    if (isFetching) {
+        return <FullPageLoader />
+    }
 
 
     return (
