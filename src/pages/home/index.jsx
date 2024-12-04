@@ -91,6 +91,7 @@ const Home = () => {
     }
     const uploadPostMutation = useMutation({
         mutationFn: async (post) => {
+            setPostLoading(true)
             let formData = new FormData()
             let files = Array.from(post.files)
             files.forEach(value => {

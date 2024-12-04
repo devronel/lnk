@@ -1,27 +1,20 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import Navigation from "../components/navigation"
 import LeftSidebar from "../components/left-sidebar"
 
 const MainLayout = () => {
-
     const location = useLocation();
-    const navigate = useNavigate()
     const { isLogin, user } = useContext(AuthContext)
     const [currentUrl, setCurrentUrl] = useState('')
 
     useEffect(() => {
         setCurrentUrl(location.pathname)
-
-        if (!isLogin) {
-            navigate('/login')
-        }
-
-    }, [location, isLogin])
+    }, [location])
 
 
-    return (
+    return isLogin ? (
         <>
             <div className=" min-h-screen h-auto pt-[4.0625rem] pb-4">
                 <Navigation user={user} />
@@ -48,7 +41,7 @@ const MainLayout = () => {
                 </main>
             </div>
         </>
-    )
+    ) : <Navigate to='/login' />
 }
 
 export default MainLayout

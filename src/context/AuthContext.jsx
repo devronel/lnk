@@ -1,14 +1,14 @@
 import { createContext, useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axios";
 
 export const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
 
-    const navigate = useNavigate()
-    const [isLogin, setIsLogin] = useState(null);
+    const [isLogin, setIsLogin] = useState(false);
+    const [isAuthenticating, setIsAuthenticating] = useState(false)
     const [user, setUser] = useState(null)
 
     /*
@@ -62,14 +62,17 @@ export const AuthProvider = ({ children }) => {
     */
     const refreshUser = async () => {
         try {
+            setIsAuthenticating(true)
             let user = await axiosInstance.get('/user/validate-user', {
                 withCredentials: true
             });
             if (user.status === 200) {
                 setUser(user.data.payload.authUser)
+                setIsAuthenticating(false)
                 setIsLogin(true)
             }
         } catch (error) {
+            setIsAuthenticating(false)
             setIsLogin(false)
         }
     }
@@ -78,10 +81,9 @@ export const AuthProvider = ({ children }) => {
 
         refreshUser()
 
-    }, [isLogin, navigate])
+    }, [])
 
-
-    if (isLogin === null) {
+    if (isAuthenticating) {
         return <div>Loading...</div>
     }
 
@@ -90,4 +92,5 @@ export const AuthProvider = ({ children }) => {
             {children}
         </AuthContext.Provider>
     )
+
 }
