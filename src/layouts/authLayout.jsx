@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom"
+import { useContext } from "react";
+import { Link, Navigate, Outlet } from "react-router-dom"
+import { AuthContext } from "../context/AuthContext";
 
 const AuthLayout = () => {
-    return (
+
+    const { isLogin, user } = useContext(AuthContext)
+
+    return !isLogin ? (
         <>
             <div className=" min-h-screen h-auto pt-[3.75rem] pb-4 flex items-center justify-center">
                 <div className="py-3 border-b border-lnk-gray fixed top-0 left-0 right-0 z-50 bg-lnk-white">
@@ -17,7 +21,7 @@ const AuthLayout = () => {
                 </main>
             </div>
         </>
-    )
+    ) : <Navigate to='/' />
 }
 
 export default AuthLayout
