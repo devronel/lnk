@@ -18,13 +18,14 @@ import { diffInDays, path } from "../utils/functions";
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 import PostReaction from "./post-reactions";
 import toast from "react-hot-toast";
+import PostComments from "./post-comments";
 
 const Post = ({ postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
-    const [comment, setComment] = useState('')
-    const [commentPage, setCommentPage] = useState(0)
+    // const [comment, setComment] = useState('')
+    // const [commentPage, setCommentPage] = useState(0)
 
     /*
         Post images display
@@ -172,59 +173,59 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
     /*
         Comment functions
     */
-    const getComment = (e) => {
-        setComment(e.target.value)
-    }
+    // const getComment = (e) => {
+    //     setComment(e.target.value)
+    // }
 
-    const sendComment = (e) => {
-        e.preventDefault()
-        postCommentMutation.mutate({ postId: postId, comment: comment })
-    }
-    const postCommentMutation = useMutation({
-        mutationFn: async (data) => {
-            let result = await axiosInstance.post('/post/send/comment', {
-                post_id: data.postId,
-                comment_value: data.comment
-            }, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+    // const sendComment = (e) => {
+    //     e.preventDefault()
+    //     postCommentMutation.mutate({ postId: postId, comment: comment })
+    // }
+    // const postCommentMutation = useMutation({
+    //     mutationFn: async (data) => {
+    //         let result = await axiosInstance.post('/post/send/comment', {
+    //             post_id: data.postId,
+    //             comment_value: data.comment
+    //         }, {
+    //             withCredentials: true,
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         })
 
-            if (result.data.success) {
-                return result
-            }
-        },
-        onSuccess: () => {
-            setComment('')
-            queryClient.invalidateQueries({
-                queryKey: ['comments', postId]
-            })
-        },
-        onError: (error) => {
+    //         if (result.data.success) {
+    //             return result
+    //         }
+    //     },
+    //     onSuccess: () => {
+    //         setComment('')
+    //         queryClient.invalidateQueries({
+    //             queryKey: ['comments', postId]
+    //         })
+    //     },
+    //     onError: (error) => {
 
-        }
-    })
+    //     }
+    // })
 
     const fetchAllComment = async () => {
         setShowComment(true)
     }
 
-    const { data, isPlaceholderData } = useQuery({
-        queryKey: ['comments', postId, commentPage],
-        queryFn: async () => {
-            let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}&limit=${4}`, {
-                withCredentials: true
-            })
+    // const { data, isPlaceholderData } = useQuery({
+    //     queryKey: ['comments', postId, commentPage],
+    //     queryFn: async () => {
+    //         let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}&limit=${4}`, {
+    //             withCredentials: true
+    //         })
 
-            if (result.status === 200) {
-                return result.data.payload
-            }
-        },
-        placeholderData: keepPreviousData,
-        enabled: showComment
-    })
+    //         if (result.status === 200) {
+    //             return result.data.payload
+    //         }
+    //     },
+    //     placeholderData: keepPreviousData,
+    //     enabled: showComment
+    // })
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -288,7 +289,8 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 </ul>
             </div>
             <div className={`px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
-                <div className=" flex items-center gap-2 mb-5">
+                <PostComments postId={postId} isShowComment={showComment} authUserProfile={authUserProfile} />
+                {/* <div className=" flex items-center gap-2 mb-5">
                     <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                         <img className=" w-full h-full rounded-full object-cover" src={isNull(authUserProfile) ? profilePlaceholder : path(authUserProfile)} alt="" />
                     </div>
@@ -350,7 +352,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                             <TbSquareChevronRight className={`text-2xl ${isNull(data?.next_page) ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
                         </button>
                     </div>
-                </div>
+                </div> */}
             </div>
         </section>
     )
