@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom"
 import toast from "react-hot-toast";
+import BeatLoader from 'react-spinners/BeatLoader'
 import axiosInstance from "../../utils/axios"
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
@@ -12,6 +13,7 @@ const Signup = () => {
     /*
        Initialize react hooks
    */
+    const [loading, setLoading] = useState(false)
     const [userData, setUserData] = useState({
         username: '',
         email: '',
@@ -33,12 +35,14 @@ const Signup = () => {
     const submit = async (e) => {
         e.preventDefault();
         try {
+            setLoading(true)
             let response = await axiosInstance.post('/user/create', userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
             if (response.status === 200) {
+                setLoading(false)
                 toast.success("Account successfully created!")
                 setUserData({
                     username: '',
@@ -49,6 +53,7 @@ const Signup = () => {
                 setErrors([])
             }
         } catch (error) {
+            setLoading(false)
             if (error.response) {
                 switch (error.response.status) {
                     case 400:
@@ -104,8 +109,15 @@ const Signup = () => {
                             errorExist('passwordConfirmation') ? <p className=" text-red-500 text-xs">{errorExist('passwordConfirmation').msg}</p> : null
                         }
                     </div>
-                    <button type="submit" className=" bg-lnk-orange w-full py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-90 transition-all ease-linear duration-150">
-                        Signup
+                    <button type="submit" disabled={loading} className={`${loading ? 'bg-opacity-80' : null} flex items-center justify-center bg-lnk-orange w-full h-10 py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-80 transition-all ease-linear duration-150`}>
+                        {loading ? null : 'Signup'}
+                        <BeatLoader
+                            color={'#F5F5F7'}
+                            loading={loading}
+                            size={8}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
                     </button>
                     <p className=" text-xs text-center">Already have an account? <Link to="/login" className=" text-lnk-orange hover:underline">Login</Link></p>
                 </form>

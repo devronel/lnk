@@ -8,6 +8,7 @@ export const AuthContext = createContext(null)
 export const AuthProvider = ({ children }) => {
 
     const [isLogin, setIsLogin] = useState(false);
+    const [authLoading, setAuthLoading] = useState(false)
     const [isAuthenticating, setIsAuthenticating] = useState(false)
     const [user, setUser] = useState(null)
 
@@ -16,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     */
     const authenticate = async (data) => {
         try {
+            setAuthLoading(true)
             let user = await axiosInstance.post('/user/authenticate', data, {
                 withCredentials: true,
                 headers: {
@@ -24,10 +26,12 @@ export const AuthProvider = ({ children }) => {
             })
             if (user.status === 200) {
                 setIsLogin(true)
+                setAuthLoading(false)
                 refreshUser()
             }
         } catch (error) {
             setIsLogin(false)
+            setAuthLoading(false)
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
@@ -88,7 +92,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ authenticate, logout, isLogin, refreshUser, user, setUser }}>
+        <AuthContext.Provider value={{ authenticate, logout, isLogin, refreshUser, user, setUser, authLoading }}>
             {children}
         </AuthContext.Provider>
     )

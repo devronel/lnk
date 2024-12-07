@@ -204,6 +204,7 @@ const Profile = () => {
                 refreshUser()
             }
         } catch (error) {
+            setSubmitPhotoLoading(false)
             setCoverPhotoError(error.response.data.message)
         }
     }
@@ -284,15 +285,17 @@ const Profile = () => {
             {/* edit profile picture modal */}
             <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} closeModal={() => closePhotoModal('profile')} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
                 <div className=" flex flex-col items-center justify-center">
-                    <Cropper
-                        src={displayPhoto}
-                        style={{ height: 400, width: "100%" }}
-                        initialAspectRatio={1 / 1}
-                        guides={false}
-                        crop={onCrop}
-                        name="profilePhoto"
-                        ref={cropperRef}
-                    />
+                    <div className="">
+                        <Cropper
+                            src={displayPhoto}
+                            style={{ height: 400, width: "100%" }}
+                            initialAspectRatio={1 / 1}
+                            guides={false}
+                            crop={onCrop}
+                            name="profilePhoto"
+                            ref={cropperRef}
+                        />
+                    </div>
                     {
                         !isNull(cropImage) ? (
                             <div className=" rounded-full aspect-square">

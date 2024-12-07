@@ -1,13 +1,15 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"
+import BeatLoader from 'react-spinners/BeatLoader'
 import { AuthContext } from "../../context/AuthContext";
+import LnkInput from "../../components/forms/lnk-input";
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
-import LnkInput from "../../components/forms/lnk-input";
+import { RiLoader4Fill } from "react-icons/ri";
 
 const Login = () => {
 
-    const { isLogin, authenticate } = useContext(AuthContext)
+    const { isLogin, authenticate, authLoading } = useContext(AuthContext)
     const navigate = useNavigate()
     const [authData, setAuthData] = useState({
         email: '',
@@ -58,8 +60,15 @@ const Login = () => {
                     <Link to='/login' className="block mb-3 text-right text-xs hover:underline text-lnk-orange">
                         Forgot Password?
                     </Link>
-                    <button className=" bg-lnk-orange w-full py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-90 transition-all ease-linear duration-150">
-                        Login
+                    <button disabled={authLoading} className={`${authLoading ? 'bg-opacity-80' : null} flex items-center justify-center bg-lnk-orange w-full h-10 py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-80 transition-all ease-linear duration-150`}>
+                        {authLoading ? null : 'Login'}
+                        <BeatLoader
+                            color={'#F5F5F7'}
+                            loading={authLoading}
+                            size={8}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                        />
                     </button>
                     <p className=" text-xs text-center">Don't have an account yet? <Link to="/signup" className=" text-lnk-orange hover:underline">Create account</Link></p>
                 </form>

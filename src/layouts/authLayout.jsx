@@ -1,10 +1,11 @@
 import { useContext } from "react";
-import { Link, Navigate, Outlet } from "react-router-dom"
+import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import { AuthContext } from "../context/AuthContext";
 
 const AuthLayout = () => {
 
     const { isLogin, user } = useContext(AuthContext)
+    const location = useLocation()
 
     return !isLogin ? (
         <>
@@ -21,7 +22,7 @@ const AuthLayout = () => {
                 </main>
             </div>
         </>
-    ) : <Navigate to='/' />
+    ) : <Navigate to={location.state?.from || '/'} replace />
 }
 
 export default AuthLayout

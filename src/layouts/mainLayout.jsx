@@ -41,7 +41,7 @@ const MainLayout = () => {
                 </main>
             </div>
         </>
-    ) : <Navigate to='/login' />
+    ) : <Navigate to='/login' state={{ from: location.pathname }} />
 }
 
 export default MainLayout

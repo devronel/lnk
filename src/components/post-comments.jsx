@@ -55,9 +55,6 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
     let getAllComment = async () => {
         try {
             let url = new URLSearchParams({ post_id: postId, page: page, limit: 4 })
-            // let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${page}&limit=${4}`, {
-            //     withCredentials: true
-            // })
             let result = await axiosInstance.get(`/post/comment/list?${url.toString()}`, {
                 withCredentials: true
             })
