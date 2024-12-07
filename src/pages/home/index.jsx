@@ -35,6 +35,8 @@ const Home = () => {
     })
     let [setErrors, errorExist] = useError()
     let [filesPreview, setFilesPreview] = useState([])
+    let [documentHeight, setDocumentHeight] = useState(0)
+    let [documentHeightInScroll, setDocumentHeightInScroll] = useState(0)
 
     /*
         Functions and event
@@ -159,11 +161,16 @@ const Home = () => {
     useEffect(() => {
         const onScroll = debounce(function () {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+                setDocumentHeightInScroll(window.innerHeight + window.scrollY)
                 fetchNextPage()
             }
         }, 500)
         window.addEventListener('scroll', onScroll)
         return () => window.removeEventListener('scroll', onScroll)
+    }, [])
+
+    useEffect(() => {
+        setDocumentHeight(document.body.offsetHeight)
     }, [])
 
     return (
@@ -226,27 +233,35 @@ const Home = () => {
                     ))
                 ))
             }
-            {isFetchingNextPage
-                ? (
-                    <div>
-                        <p className="  text-center text-xs text-lnk-dark-gray">
-                            <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
-                            Loading more post...
-                        </p>
-                    </div>
+            {
+                documentHeight <= documentHeightInScroll ? (
+                    isFetchingNextPage
+                        ? (
+                            <div>
+                                <p className="  text-center text-xs text-lnk-dark-gray">
+                                    <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
+                                    Loading more post...
+                                </p>
+                            </div>
+                        )
+                        : hasNextPage
+                            ? (
+                                <p className="  text-center text-xs text-lnk-dark-gray">
+                                    Load more
+                                </p>
+                            )
+                            : (
+                                <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
+                                    <PiCoffeeDuotone className=" text-base " />
+                                    No more post
+                                </p>
+                            )
+                ) : (
+                    <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
+                        <PiCoffeeDuotone className=" text-base " />
+                        No more post
+                    </p>
                 )
-                : hasNextPage
-                    ? (
-                        <p className="  text-center text-xs text-lnk-dark-gray">
-                            Load more
-                        </p>
-                    )
-                    : (
-                        <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
-                            <PiCoffeeDuotone className=" text-base " />
-                            No more post
-                        </p>
-                    )
             }
 
         </>
