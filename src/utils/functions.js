@@ -96,7 +96,9 @@ export const getTime = (value) => {
 /*
     Convert base64 image into File object
 */
-export const dataURLtoFile = (dataurl, filename) => {
+export const dataURLtoFile = (dataurl) => {
+
+    let generatedName = window.crypto.randomUUID()
 
     var arr = dataurl.split(",")
     let mime = arr[0].match(/:(.*?);/)[1]
@@ -109,7 +111,16 @@ export const dataURLtoFile = (dataurl, filename) => {
         u8arr[n] = bstr.charCodeAt(n);
     }
 
-    return new File([u8arr], filename, { type: mime });
+    return new File([u8arr], generatedName, { type: mime });
+}
+
+/*
+    Convert bytes to kelobytes, megabytes and gigabytes from base64 image
+*/
+export const convertBytes = (file) => {
+    const base64String = file.replaceAll('=', '');
+    const bytes = base64String.length * (3 / 4);
+    return bytes
 }
 
 /*

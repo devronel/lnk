@@ -4,22 +4,26 @@ import { debounce } from "lodash";
 import toast from "react-hot-toast";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import { filesize } from "filesize";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
-import { isNull, path } from "../../utils/functions";
-import { FcAbout } from "react-icons/fc";
-import { MdOutlineSignpost } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
-import { FaRegImage } from "react-icons/fa";
-import { AiFillPicture } from "react-icons/ai";
-import { BiSolidError } from "react-icons/bi";
-import { dateFormat, dataURLtoFile } from "../../utils/functions";
+import { isNull, path, dateFormat, dataURLtoFile, convertBytes } from "../../utils/functions";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnk-input";
 import LnkTextarea from "../../components/forms/lnk-textarea";
+
+/*
+    Icons
+*/
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
+import { FcAbout } from "react-icons/fc";
+import { MdOutlineSignpost, MdError } from "react-icons/md";
+import { CiEdit } from "react-icons/ci";
+import { FaRegImage, FaCheck } from "react-icons/fa";
+import { AiFillPicture } from "react-icons/ai";
+import { BiSolidError } from "react-icons/bi";
 
 /*
     Import photos
@@ -50,6 +54,7 @@ const Profile = () => {
     })
 
     let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
+    let [photoBytes, setPhotoBytes] = useState(null)
 
     // Profile photo state
     let [editProfilePhoto, setEditProfilePhoto] = useState(false)
@@ -126,10 +131,12 @@ const Profile = () => {
             setEditProfilePhoto(false)
             setCropImage(null)
             setDisplayPhoto(null)
+            setPhotoBytes(null)
         } else if (modalName === 'coverPhoto') {
             setCoverPhotoModal(false)
             setCropCover(null)
             setCoverPhoto(null)
+            setPhotoBytes(null)
         } else {
             return
         }
@@ -159,8 +166,7 @@ const Profile = () => {
     const updateProfilePhoto = async () => {
         try {
             setSubmitPhotoLoading(true)
-            let generatedName = window.crypto.randomUUID()
-            let photo = dataURLtoFile(cropImage, generatedName)
+            let photo = dataURLtoFile(cropImage)
             let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
                 {
                     withCredentials: true,
@@ -176,19 +182,18 @@ const Profile = () => {
                 setProfileError(null)
                 setDisplayPhoto(null)
                 setCropImage(null)
+                setPhotoBytes(null)
                 refreshUser()
-
             }
 
         } catch (error) {
-            setProfileError(response.data.message)
             setSubmitPhotoLoading(false)
+            setProfileError(error.response.data.message)
         }
     }
     const updateCoverPhoto = async () => {
         try {
-            let generatedName = window.crypto.randomUUID()
-            let photo = dataURLtoFile(cropCover, generatedName)
+            let photo = dataURLtoFile(cropCover)
             setSubmitPhotoLoading(true)
             let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
                 withCredentials: true,
@@ -201,6 +206,7 @@ const Profile = () => {
                 setCoverPhotoModal(false)
                 setCoverPhoto(null)
                 setCropCover(null)
+                setPhotoBytes(null)
                 refreshUser()
             }
         } catch (error) {
@@ -215,12 +221,14 @@ const Profile = () => {
     const onCrop = () => {
         let cropper = cropperRef.current?.cropper;
         let base64Img = cropper.getCroppedCanvas().toDataURL()
+        setPhotoBytes(convertBytes(base64Img))
         setCropImage(base64Img);
     };
 
     const onCropCoverPhoto = () => {
         let cropperCover = cropCoverPhotoRef.current?.cropper
         let base64Img = cropperCover.getCroppedCanvas().toDataURL()
+        setPhotoBytes(convertBytes(base64Img))
         setCropCover(base64Img)
     }
 
@@ -283,19 +291,39 @@ const Profile = () => {
             </Modal>
 
             {/* edit profile picture modal */}
-            <Modal submit={updateProfilePhoto} loader={submitPhotoLoading} openModal={editProfilePhoto} closeModal={() => closePhotoModal('profile')} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
-                <div className=" flex flex-col items-center justify-center">
-                    <div className="">
-                        <Cropper
-                            src={displayPhoto}
-                            style={{ height: 400, width: "100%" }}
-                            initialAspectRatio={1 / 1}
-                            guides={false}
-                            crop={onCrop}
-                            name="profilePhoto"
-                            ref={cropperRef}
-                        />
-                    </div>
+            <Modal submit={updateProfilePhoto} openModal={!isNull(displayPhoto)} loader={submitPhotoLoading} closeModal={() => closePhotoModal('profile')} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+                {
+                    !isNull(profileError) ? (
+                        <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">
+                            <MdError className=" text-base" />
+                            {profileError}
+                        </p>
+                    ) : null
+                }
+                <div className=" mb-2">
+                    {
+                        photoBytes > 1000000 ? (
+                            <p className=" text-red-500 flex items-center gap-1 text-xs italic">
+                                <MdError className=" text-base" />
+                                {filesize(photoBytes)}
+                            </p>
+                        ) : <p className=" text-green-500 flex items-center gap-1 text-xs italic">
+                            <FaCheck className=" text-xs" />
+                            {filesize(photoBytes)}
+                        </p>
+                    }
+                </div>
+
+                <div className=" flex flex-col items-center justify-center gap-2">
+                    <Cropper
+                        src={displayPhoto}
+                        style={{ height: 300, width: "100%" }}
+                        initialAspectRatio={1 / 1}
+                        guides={false}
+                        crop={onCrop}
+                        name="profilePhoto"
+                        ref={cropperRef}
+                    />
                     {
                         !isNull(cropImage) ? (
                             <div className=" rounded-full aspect-square">
@@ -304,16 +332,31 @@ const Profile = () => {
                         ) : null
                     }
                 </div>
-                {
-                    !isNull(profileError) ? <p className="text-center text-xs mt-3 text-red-500 italic">{profileError}</p> : null
-                }
             </Modal>
 
             {/* Upload cover photo */}
-            <Modal submit={updateCoverPhoto} loader={submitPhotoLoading} openModal={coverPhotoModal} closeModal={() => closePhotoModal('coverPhoto')} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+            <Modal submit={updateCoverPhoto} loader={submitPhotoLoading} openModal={!isNull(coverPhoto)} closeModal={() => closePhotoModal('coverPhoto')} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
                 {
-                    !isNull(coverPhotoError) ? <p className="text-left text-xs mb-2 text-red-500 italic">{coverPhotoError}</p> : null
+                    !isNull(coverPhotoError) ? (
+                        <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">
+                            <MdError className=" text-base" />
+                            {coverPhotoError}
+                        </p>
+                    ) : null
                 }
+                <div className=" mb-2">
+                    {
+                        photoBytes > 1000000 ? (
+                            <p className=" text-red-500 flex items-center gap-1 text-xs italic">
+                                <MdError className=" text-base" />
+                                {filesize(photoBytes)}
+                            </p>
+                        ) : <p className=" text-green-500 flex items-center gap-1 text-xs italic">
+                            <FaCheck className=" text-xs" />
+                            {filesize(photoBytes)}
+                        </p>
+                    }
+                </div>
                 <>
                     <Cropper
                         src={coverPhoto}
@@ -405,6 +448,21 @@ const Profile = () => {
                     ) : null
                 ) : null
             }
+
+            {/* {
+                !isNull(displayPhoto) ? (
+                    <Cropper
+                        src={displayPhoto}
+                        style={{ height: 400, width: "100%" }}
+                        initialAspectRatio={1 / 1}
+                        guides={false}
+                        crop={onCrop}
+                        name="profilePhoto"
+                        ref={cropperRef}
+                    />
+                ) : null
+            } */}
+
             <div className=" flex items-center gap-3 mb-2">
                 <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
                 <p className=" text-sm font-light text-lnk-dark-gray">

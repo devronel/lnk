@@ -24,8 +24,7 @@ const PostReaction = ({ postReactions, reactionCount }) => {
                 {reactions.map((icon, index) => (
                     <div
                         key={index}
-                        className={`${index > 0 ? "-ml-[5px]" : ""
-                            }`}
+                        className={`${index > 0 ? "-ml-[3px]" : ""} rounded-full`}
                         style={{ zIndex: reactions.length - index }}
                     >
                         {icon}
