@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import useEmblaCarousel from "embla-carousel-react"
 import axiosInstance from "../../utils/axios"
 import TiptopView from '../../components/wysiwyg/TiptopView'
+import { AuthContext } from "../../context/AuthContext"
 import { IoMdClose, IoMdTime } from "react-icons/io"
 import { diffInDays, isNull, parseJson, path } from "../../utils/functions"
 import { FaHeart } from "react-icons/fa"
@@ -13,18 +14,19 @@ import { MdOutlineCommentsDisabled } from "react-icons/md"
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
 import { GrSend } from "react-icons/gr"
 import FullPageLoader from "../../components/loader/fullPageLoader"
+import PostReaction from "../../components/post-reactions"
 
 /*
     Import assets like image and etc.
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
-import PostReaction from "../../components/post-reactions"
 
 const PostImage = () => {
 
     let [emblaRef] = useEmblaCarousel()
     let queryClient = useQueryClient()
     let { post_id, username } = useParams()
+    let { user, setUser, refreshUser } = useContext(AuthContext)
     let [isFetching, setIsFetching] = useState(true)
     let [commentPage, setCommentPage] = useState(0)
     let [comment, setComment] = useState('')
@@ -98,7 +100,8 @@ const PostImage = () => {
     const { data, isPlaceholderData } = useQuery({
         queryKey: ['view-image-comment', post_id, commentPage],
         queryFn: async () => {
-            let result = await axiosInstance.get(`/post/comment/list?post_id=${post_id}&page=${commentPage}&limit=${7}`, {
+            let url = new URLSearchParams({ post_id: post_id, page: commentPage, limit: 7 })
+            let result = await axiosInstance.get(`/post/comment/list?${url.toString()}`, {
                 withCredentials: true
             })
 
@@ -183,7 +186,7 @@ const PostImage = () => {
                 <div className=" py-6 px-5">
                     <div className=" flex items-start gap-2 mb-4">
                         <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                            <img className=" w-full h-full object-cover" src={isNull(post?.url) ? profilePlaceholder : path(post?.url)} alt={post?.full_name} />
+                            <img className=" w-full h-full object-cover" src={post?.url ?? profilePlaceholder} alt={post?.full_name} />
                         </div>
                         <div>
                             <>
@@ -247,7 +250,7 @@ const PostImage = () => {
                     <div className={` pb-2 block`}>
                         <div className=" flex items-center gap-2 mb-5">
                             <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                <img className=" w-full h-full rounded-full object-cover" src="https://images.pexels.com/photos/3779760/pexels-photo-3779760.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
+                                <img className=" w-full h-full rounded-full object-cover" src={path(user.url) ?? profilePlaceholder} alt="" />
                             </div>
                             <div className=" flex-grow relative">
                                 <input onChange={(e) => setComment(e.target.value)} value={comment} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />

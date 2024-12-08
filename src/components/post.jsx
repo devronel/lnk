@@ -24,8 +24,6 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
-    // const [comment, setComment] = useState('')
-    // const [commentPage, setCommentPage] = useState(0)
 
     /*
         Post images display
@@ -170,62 +168,9 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
         }
     })
 
-    /*
-        Comment functions
-    */
-    // const getComment = (e) => {
-    //     setComment(e.target.value)
-    // }
-
-    // const sendComment = (e) => {
-    //     e.preventDefault()
-    //     postCommentMutation.mutate({ postId: postId, comment: comment })
-    // }
-    // const postCommentMutation = useMutation({
-    //     mutationFn: async (data) => {
-    //         let result = await axiosInstance.post('/post/send/comment', {
-    //             post_id: data.postId,
-    //             comment_value: data.comment
-    //         }, {
-    //             withCredentials: true,
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         })
-
-    //         if (result.data.success) {
-    //             return result
-    //         }
-    //     },
-    //     onSuccess: () => {
-    //         setComment('')
-    //         queryClient.invalidateQueries({
-    //             queryKey: ['comments', postId]
-    //         })
-    //     },
-    //     onError: (error) => {
-
-    //     }
-    // })
-
     const fetchAllComment = async () => {
         setShowComment(true)
     }
-
-    // const { data, isPlaceholderData } = useQuery({
-    //     queryKey: ['comments', postId, commentPage],
-    //     queryFn: async () => {
-    //         let result = await axiosInstance.get(`/post/comment/list?post_id=${postId}&page=${commentPage}&limit=${4}`, {
-    //             withCredentials: true
-    //         })
-
-    //         if (result.status === 200) {
-    //             return result.data.payload
-    //         }
-    //     },
-    //     placeholderData: keepPreviousData,
-    //     enabled: showComment
-    // })
 
     return (
         <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
@@ -290,69 +235,6 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             </div>
             <div className={`px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
                 <PostComments postId={postId} isShowComment={showComment} authUserProfile={authUserProfile} />
-                {/* <div className=" flex items-center gap-2 mb-5">
-                    <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                        <img className=" w-full h-full rounded-full object-cover" src={isNull(authUserProfile) ? profilePlaceholder : path(authUserProfile)} alt="" />
-                    </div>
-                    <form onSubmit={sendComment} className=" flex-grow relative">
-                        <input onChange={getComment} value={comment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
-                        <button type="submit" className=" group">
-                            <GrSend className="text-base text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2 group-hover:text-lnk-orange transition" />
-                        </button>
-                    </form>
-                </div>
-                <div>
-                    {
-                        data?.result.length > 0 ? (
-                            data.result.map(value => (
-                                <div key={value.id} className=" mb-5">
-                                    <div className=" flex items-center gap-2 mb-2">
-                                        <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
-                                            <img className=" w-full h-full rounded-full object-cover" src={isNull(value.profile_photo_url) ? profilePlaceholder : path(value.profile_photo_url)} alt={value.full_name} />
-                                        </div>
-                                        <div>
-                                            <p className=" text-xs">{value.full_name}</p>
-                                            {
-                                                !isNull(value.headline) ? (
-                                                    <p className=" text-[10px] font-light">{value.headline}</p>
-                                                ) : null
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className=" pl-9">
-                                        <div className="border border-lnk-gray py-1 rounded-md px-2">
-                                            <p className=" text-xs font-bold">{value.comment}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <p className=" text-center text-sm text-lnk-dark-gray flex items-center justify-center gap-1">
-                                <MdOutlineCommentsDisabled className=" text-base" />
-                                No comment available
-                            </p>
-
-                        )
-                    }
-                    <div className=" flex items-center justify-end">
-                        <button
-                            onClick={() => setCommentPage((old) => Math.max(old - 4, 0))}
-                            disabled={commentPage === 0}
-                        >
-                            <TbSquareChevronLeft className={`text-2xl ${commentPage === 0 ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
-                        </button>
-                        <button
-                            onClick={() => {
-                                if (!isPlaceholderData && !isNull(data.next_page)) {
-                                    setCommentPage((old) => old + 4)
-                                }
-                            }}
-                            disabled={isPlaceholderData || isNull(data?.next_page)}
-                        >
-                            <TbSquareChevronRight className={`text-2xl ${isNull(data?.next_page) ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
-                        </button>
-                    </div>
-                </div> */}
             </div>
         </section>
     )

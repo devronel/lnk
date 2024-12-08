@@ -47,7 +47,7 @@ function App() {
             </Route>
           </Routes>
         </AuthProvider>
-        <ReactQueryDevtools />
+        {/* <ReactQueryDevtools /> */}
       </QueryClientProvider>
     </BrowserRouter>
   )
