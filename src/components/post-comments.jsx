@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import axiosInstance from "../utils/axios"
 import { MdOutlineCommentsDisabled } from "react-icons/md"
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
@@ -11,7 +12,6 @@ import profilePlaceholder from "../assets/profile-placeholder.jpg"
 const PostComments = ({ postId, isShowComment, authUserProfile }) => {
     let queryClient = useQueryClient()
     let [page, setPage] = useState(0)
-    let [comments, setComments] = useState(null)
     let [comment, setComment] = useState('')
 
     const getComment = (e) => {
@@ -42,7 +42,9 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
         onSuccess: () => {
             setComment('')
             setPage(0)
-            getAllComment()
+            queryClient.invalidateQueries({
+                queryKey: ['post-comments', postId, 0]
+            })
             queryClient.invalidateQueries({
                 queryKey: ['comments', postId]
             })
@@ -52,25 +54,20 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
         }
     })
 
-    let getAllComment = async () => {
-        try {
+    const { data, isPlaceholderData } = useQuery({
+        queryKey: ['post-comments', postId, page],
+        queryFn: async () => {
             let url = new URLSearchParams({ post_id: postId, page: page, limit: 4 })
             let result = await axiosInstance.get(`/post/comment/list?${url.toString()}`, {
                 withCredentials: true
             })
             if (result.status === 200) {
-                setComments(result.data.payload)
+                return result.data.payload
             }
-        } catch (error) {
-            console.log(error.response)
-        }
-    }
-
-    useEffect(() => {
-        if (isShowComment) {
-            getAllComment()
-        }
-    }, [isShowComment, page])
+        },
+        placeholderData: keepPreviousData,
+        enabled: isShowComment
+    })
 
     return (
         <>
@@ -87,8 +84,8 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
             </div>
             <div>
                 {
-                    comments?.result.length > 0 ? (
-                        comments?.result.map(value => (
+                    data?.result.length > 0 ? (
+                        data.result.map(value => (
                             <div key={value.id} className=" mb-5">
                                 <div className=" flex items-center gap-2 mb-2">
                                     <div className=" w-7 h-7 rounded-full overflow-hidden border border-lnk-dark-gray">
@@ -110,13 +107,7 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
                                 </div>
                             </div>
                         ))
-                    ) : (
-                        <p className=" text-center text-sm text-lnk-dark-gray flex items-center justify-center gap-1">
-                            <MdOutlineCommentsDisabled className=" text-base" />
-                            No comment available
-                        </p>
-
-                    )
+                    ) : null
                 }
                 <div className=" flex items-center justify-end">
                     <button
@@ -127,13 +118,14 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
                     </button>
                     <button
                         onClick={() => {
-                            if (!isNull(comments.next_page)) {
+                            if (!isPlaceholderData && !isNull(data?.next_page)) {
+                                console.log('Running')
                                 setPage((old) => old + 4)
                             }
                         }}
-                        disabled={isNull(comments?.next_page)}
+                        disabled={isPlaceholderData || isNull(data?.next_page)}
                     >
-                        <TbSquareChevronRight className={`text-2xl ${isNull(comments?.next_page) ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
+                        <TbSquareChevronRight className={`text-2xl ${isNull(data?.next_page) ? 'text-lnk-gray' : 'hover:text-lnk-orange'}`} />
                     </button>
                 </div>
             </div>
