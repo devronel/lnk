@@ -205,11 +205,11 @@ const Home = () => {
                     </label>
                 </div>
             </Modal>
-            <section className=" flex items-center gap-3 p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
-                <div className=" w-12 h-12 rounded-full overflow-hidden border border-lnk-dark-gray">
+            <section className=" flex items-center gap-3 p-3 sm:p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
+                <div className=" h-10 w-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-lnk-dark-gray">
                     <img className=" w-full h-full object-cover" src={isNull(user?.url) ? profilePlaceholder : path(user?.url)} alt="" />
                 </div>
-                <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-3 rounded text-left bg-white">Start post</button>
+                <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-2 sm:p-3 rounded text-left bg-white">Start post</button>
             </section>
             {
                 data?.pages.map(dt => (

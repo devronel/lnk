@@ -173,8 +173,8 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
     }
 
     return (
-        <section className=" pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
-            <div className=" flex items-start gap-2 px-5 mb-4">
+        <section className=" pt-3 sm:pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
+            <div className=" flex items-start gap-2 px-3 sm:px-5 mb-4">
                 <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                     <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? path(profilPicUrl) : profilePlaceholder} alt="" />
                 </div>

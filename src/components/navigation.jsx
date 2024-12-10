@@ -32,19 +32,19 @@ const Navigation = (props) => {
             <div className="py-1 border-b border-lnk-dark-gray fixed top-0 left-0 right-0 z-50 bg-lnk-white">
                 <nav className="max-w-[80rem] w-[90%] mx-auto flex items-center justify-between">
                     <Link to="/" className=" font-bold text-lg text-lnk-orange">Lnk</Link>
-                    <div className=" flex items-center gap-8">
-                        <ul className=" flex items-center gap-5">
+                    <div className=" flex items-center gap-3 md:gap-8">
+                        <ul className=" flex items-center gap-3 sm:gap-5">
                             <li>
-                                <Link to="/"><SiFeedly className={`${route === '/' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
+                                <Link to="/"><SiFeedly className={`${route === '/' ? 'text-lnk-orange' : null} text-base sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
-                                <Link to="/people"><MdPeopleAlt className={`${route === '/people' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
+                                <Link to="/people"><MdPeopleAlt className={`${route === '/people' ? 'text-lnk-orange' : null} text-base sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
-                                <Link to="/chat"><IoIosChatbubbles className={`${route === '/chat' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
+                                <Link to="/chat"><IoIosChatbubbles className={`${route === '/chat' ? 'text-lnk-orange' : null} text-base sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
-                                <Link to="/notifications"><MdNotifications className={`${route === '/notifications' ? 'text-lnk-orange' : null} text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
+                                <Link to="/notifications"><MdNotifications className={`${route === '/notifications' ? 'text-lnk-orange' : null} text-base sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                         </ul>
                         <span className=" block w-[2px] h-5 bg-lnk-dark-gray rounded"></span>
@@ -59,7 +59,7 @@ const Navigation = (props) => {
                                         alt={!isNull(props.user) ? isNull(props.user.full_name) ? props.user.username : props.user.full_name : null}
                                     />
                                 </div>
-                                <p className=" font-medium text-sm">{!isNull(props.user) ? isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name : null}</p>
+                                <p className="hidden xs:block font-medium text-sm">{!isNull(props.user) ? isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name : null}</p>
                             </button>
                             <NavMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                         </div>

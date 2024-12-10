@@ -18,6 +18,9 @@ export default {
       },
       boxShadow: {
         'bottom': '0 -37px 61px -9px #1E3E62',
+      },
+      screens: {
+        'xs': '450px'
       }
     },
   },
