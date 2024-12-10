@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { isNull, capitalize } from 'lodash'
+import { isNull, capitalize, debounce } from 'lodash'
 import axiosInstance from "../utils/axios";
 import TiptopView from "./wysiwyg/TiptopView";
 import { FaHeart, FaGlobeAsia } from "react-icons/fa";
@@ -144,6 +144,9 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
         }
     }
 
+    const handleShowReactionIcon = debounce(() => setIsShowReactionIcon(true), 100)
+    const handleHideReactionIcon = debounce(() => setIsShowReactionIcon(false), 100)
+
     const likePost = async (reaction) => {
         likePostMutation.mutate({ postId: postId, reaction: reaction })
     }
@@ -205,8 +208,8 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
             </div>
             <div className="px-5">
                 <ul className=" flex items-center gap-5 py-1 border-t border-lnk-gray">
-                    <li onMouseEnter={() => setIsShowReactionIcon(true)} onMouseLeave={() => setIsShowReactionIcon(false)} className="relative group">
-                        <button className="text-sm flex items-center gap-1 py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                    <li onMouseEnter={handleShowReactionIcon} onMouseLeave={handleHideReactionIcon} tabIndex={0} className="relative group">
+                        <button onTouchStart={handleShowReactionIcon} onTouchEnd={isShowReactionIcon ? handleHideReactionIcon : handleShowReactionIcon} className="text-sm flex items-center gap-1 py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
                             {userReaction()}
                         </button>
                         <div className={`${isShowReactionIcon ? 'block' : 'hidden'} animate__animated animate__fadeIn absolute -top-12 z-10 pb-2 opacity-0 group-hover:opacity-100  transition-all ease-linear duration-150`}>
