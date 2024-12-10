@@ -2,7 +2,7 @@ const LnkInput = ({ value, type, placeholder, label, className, name, onChange, 
     return (
         <div className={className}>
             {label ? (
-                <label htmlFor={label.toLowerCase().replace(' ', '-')} className=" block text-sm font-normal mb-1 font-ubuntu text-lnk-dark-gray">{label}</label>
+                <label htmlFor={label.toLowerCase().replace(' ', '-')} className=" block text-sm text-left font-normal mb-1 font-ubuntu text-lnk-dark-gray">{label}</label>
             ) : null}
             <input
                 onChange={onChange}

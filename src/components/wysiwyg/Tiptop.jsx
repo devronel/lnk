@@ -22,7 +22,7 @@ const Tiptop = ({ content, setContent, setErrors }) => {
         extensions: TIPTOP_EXTENSIONS,
         editorProps: {
             attributes: {
-                class: 'text-sm min-h-[150px]'
+                class: 'text-sm min-h-[150px] text-left'
             }
         },
         content: content.content,

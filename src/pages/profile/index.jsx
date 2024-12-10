@@ -379,7 +379,7 @@ const Profile = () => {
 
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative">
-                    <div className="relative h-52 w-full">
+                    <div className="relative h-40 md:h-52 w-full">
                         <img
                             className=" w-full h-full object-cover"
                             src={(user?.cover_photo && path(user?.cover_photo)) ?? coverPhotoPlaceholder}
@@ -391,8 +391,8 @@ const Profile = () => {
                         </label>
                         <input onChange={profilePhoto} hidden type="file" name="cover__photo" id="cover__photo" accept=".png,.webp,.jpeg,.jpg" />
                     </div>
-                    <div className="  absolute top-28 left-5">
-                        <div className=" w-36 h-36 group rounded-full border border-lnk-white relative">
+                    <div className="  absolute top-24 md:top-28 left-5">
+                        <div className=" h-28 w-28 md:w-36 md:h-36 group rounded-full border border-lnk-white relative">
                             <img
                                 height='144'
                                 width='144'
@@ -409,7 +409,7 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-                <div className=" px-5 flex items-center justify-end mb-5 pt-6">
+                <div className=" px-5 flex items-center justify-end mb-3 md:mb-5 pt-6">
                     <button onClick={modalOpen} className=" text-xl hover:bg-lnk-gray p-2 rounded-full transition-colors ease-linear duration-150">
                         <CiEdit />
                     </button>

@@ -36,11 +36,11 @@ const People = () => {
     }, [])
 
     return (
-        <section className=" p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
-            <h1 className=" mb-2">People you may know</h1>
+        <section className=" p-3 md:p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
+            <h1 className=" mb-2 text-sm md:text-base font-bold">People you may know</h1>
             {
                 users.length > 0 ? (
-                    <main className=" grid grid-cols-3 grid-flow-col gap-2">
+                    <main className=" grid  xs:grid-cols-2 xl:grid-cols-3 grid-flow-col gap-2">
                         {
                             users.map(value => {
                                 return (
