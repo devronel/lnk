@@ -12,7 +12,7 @@ const LeftSidebar = ({ firstName, lastName, username, headline, address, profile
             <div className=" relative overflow-hidden rounded border border-lnk-dark-gray bg-lnk-white">
                 <div className=" h-16 w-full border-b border-lnk-gray">
                     <img
-                        className=" aspect-[4/1]"
+                        className=" aspect-[4/1] w-full"
                         src={isNull(coverPhoto) ? coverPhotoPlaceholder : path(coverPhoto)}
                         alt={isNull(firstName) || isNull(lastName) ? username : firstName + ' ' + lastName}
                     />

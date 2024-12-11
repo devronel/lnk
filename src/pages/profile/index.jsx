@@ -319,6 +319,7 @@ const Profile = () => {
                         src={displayPhoto}
                         style={{ height: 300, width: "100%" }}
                         initialAspectRatio={1 / 1}
+                        aspectRatio={1 / 1}
                         guides={false}
                         crop={onCrop}
                         name="profilePhoto"
@@ -327,7 +328,7 @@ const Profile = () => {
                     {
                         !isNull(cropImage) ? (
                             <div className=" rounded-full aspect-square">
-                                <img src={cropImage} width='144' height='144' className=" object-cover rounded-full aspect-square" alt="" />
+                                <img src={cropImage} width='144' className=" object-cover rounded-full aspect-square" alt="" />
                             </div>
                         ) : null
                     }
@@ -362,6 +363,7 @@ const Profile = () => {
                         src={coverPhoto}
                         style={{ height: 200, width: "100%" }}
                         initialAspectRatio={4 / 1}
+                        aspectRatio={4 / 1}
                         guides={false}
                         crop={onCropCoverPhoto}
                         name="coverPhoto"
@@ -369,8 +371,8 @@ const Profile = () => {
                     />
                     {
                         cropCover !== null ? (
-                            <div className=" aspect-[4/1] mt-3">
-                                <img src={cropCover} height='191' className="w-full object-contain aspect-[4/1]" alt="" />
+                            <div className=" mt-3">
+                                <img src={cropCover} className="w-full object-contain aspect-[4/1]" alt="" />
                             </div>
                         ) : null
                     }
@@ -381,11 +383,11 @@ const Profile = () => {
                 <div className=" relative h-auto w-full">
                     <div className="relative ">
                         <img
-                            className=" aspect-[4/1]"
+                            className=" aspect-[4/1] w-full"
                             src={(user?.cover_photo && path(user?.cover_photo)) ?? coverPhotoPlaceholder}
                             alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                         />
-                        <div className=" absolute inset-0 bg-lnk-dark opacity-25"></div>
+                        <div className=" absolute inset-0 bg-lnk-dark opacity-10"></div>
                         <label htmlFor="cover__photo" className=" absolute top-3 text-lnk-gray right-3 border border-lnk-gray hover:bg-lnk-gray hover:text-lnk-dark p-2 rounded-full transition-colors ease-linear duration-150">
                             <FaRegImage />
                         </label>
