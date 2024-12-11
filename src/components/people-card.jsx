@@ -5,16 +5,19 @@ import { isNull, path } from '../utils/functions'
     Import assets (images, videos etc.)
 */
 import profilePlacholder from '../assets/profile-placeholder.jpg'
+import coverPhotoPlaceholder from "../assets/cover-photo-placeholder.png"
 
-const PeopleCard = ({ fullName, headline, address, profileUrl, username }) => {
+const PeopleCard = ({ fullName, headline, address, profileUrl, username, coverPhoto }) => {
     return (
         <div>
-            <div className="h-full flex flex-col relative overflow-hidden rounded border border-lnk-gray bg-lnk-white">
-                <div className=" h-16 w-full">
-                    <img className=" w-full h-full object-cover" src="https://images.pexels.com/photos/633409/pexels-photo-633409.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
-                </div>
-                <div className=" w-14 h-14 rounded-full overflow-hidden border border-lnk-white absolute top-8 left-2">
-                    <img className=" w-full h-full object-cover" src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)} alt="" />
+            <div className="h-full flex flex-col overflow-hidden rounded border border-lnk-gray bg-lnk-white">
+                <div className=" relative">
+                    <div className=" h-auto w-full border-b border-lnk-gray">
+                        <img className=" aspect-[4/1]" src={(path(coverPhoto)) ?? coverPhotoPlaceholder} alt="" />
+                    </div>
+                    <div className=" w-14 h-14 rounded-full overflow-hidden border border-lnk-white absolute -bottom-6 left-2">
+                        <img className=" w-full h-full object-cover" src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)} alt="" />
+                    </div>
                 </div>
                 <div className=" pt-8 px-2 mb-4 flex-1">
                     <h4 className=" font-bold text-lg">{isNull(fullName) ? username : fullName}</h4>

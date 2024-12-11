@@ -51,6 +51,7 @@ const People = () => {
                                         headline={value.headline}
                                         address={value.address}
                                         profileUrl={value.url}
+                                        coverPhoto={value.user_cover_photo}
                                     />
                                 )
                             })

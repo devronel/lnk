@@ -378,10 +378,10 @@ const Profile = () => {
             </Modal>
 
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
-                <div className=" relative">
-                    <div className="relative h-40 md:h-52 w-full">
+                <div className=" relative h-auto w-full">
+                    <div className="relative ">
                         <img
-                            className=" w-full h-full object-cover"
+                            className=" aspect-[4/1]"
                             src={(user?.cover_photo && path(user?.cover_photo)) ?? coverPhotoPlaceholder}
                             alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                         />
@@ -391,12 +391,10 @@ const Profile = () => {
                         </label>
                         <input onChange={profilePhoto} hidden type="file" name="cover__photo" id="cover__photo" accept=".png,.webp,.jpeg,.jpg" />
                     </div>
-                    <div className="  absolute top-24 md:top-28 left-5">
-                        <div className=" h-28 w-28 md:w-36 md:h-36 group rounded-full border border-lnk-white relative">
+                    <div className="  absolute -bottom-10 xs:-bottom-12 left-5">
+                        <div className="w-20 h-20 xs:w-28 xs:h-28 sm:w-32 sm:h-32 aspect-square group rounded-full border border-lnk-white relative">
                             <img
-                                height='144'
-                                width='144'
-                                className="aspect-square rounded-full object-cover"
+                                className=" aspect-square rounded-full "
                                 src={(user?.url && path(user?.url)) ?? profilePlaceholder}
                                 alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                             />
@@ -409,7 +407,7 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
-                <div className=" px-5 flex items-center justify-end mb-3 md:mb-5 pt-6">
+                <div className=" px-5 flex items-center justify-end mb-3 md:mb-5 pt-3 sm:pt-6">
                     <button onClick={modalOpen} className=" text-xl hover:bg-lnk-gray p-2 rounded-full transition-colors ease-linear duration-150">
                         <CiEdit />
                     </button>
@@ -418,7 +416,7 @@ const Profile = () => {
                     {
                         !isNull(user) ? (
                             <>
-                                <h6 className=" text-2xl font-bold">{!isNull(user.full_name) ? user.full_name : user.username}</h6>
+                                <h6 className=" text-xl sm:text-2xl font-bold">{!isNull(user.full_name) ? user.full_name : user.username}</h6>
                                 {
                                     !isNull(user.headline) ? (
                                         <p className=" text-sm font-normal ">{user.headline}</p>
