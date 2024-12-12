@@ -31,6 +31,8 @@ import { BiSolidError } from "react-icons/bi";
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 import empty from "../../assets/empty.svg"
 import coverPhotoPlaceholder from "../../assets/cover-photo-placeholder.png"
+import CoverPhotoModal from "../../components/modals/coverPhotoModal";
+import ProfilePhotoModal from "../../components/modals/profilePhotoModal";
 
 const Profile = () => {
 
@@ -163,74 +165,74 @@ const Profile = () => {
 
         }
     }
-    const updateProfilePhoto = async () => {
-        try {
-            setSubmitPhotoLoading(true)
-            let photo = dataURLtoFile(cropImage)
-            let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
-                {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-            )
+    // const updateProfilePhoto = async () => {
+    //     try {
+    //         setSubmitPhotoLoading(true)
+    //         let photo = dataURLtoFile(cropImage)
+    //         let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
+    //             {
+    //                 withCredentials: true,
+    //                 headers: {
+    //                     'Content-Type': 'multipart/form-data'
+    //                 }
+    //             }
+    //         )
 
-            if (response.status === 200) {
-                setEditProfilePhoto(false)
-                setSubmitPhotoLoading(false)
-                setProfileError(null)
-                setDisplayPhoto(null)
-                setCropImage(null)
-                setPhotoBytes(null)
-                refreshUser()
-            }
+    //         if (response.status === 200) {
+    //             setEditProfilePhoto(false)
+    //             setSubmitPhotoLoading(false)
+    //             setProfileError(null)
+    //             setDisplayPhoto(null)
+    //             setCropImage(null)
+    //             setPhotoBytes(null)
+    //             refreshUser()
+    //         }
 
-        } catch (error) {
-            setSubmitPhotoLoading(false)
-            setProfileError(error.response.data.message)
-        }
-    }
-    const updateCoverPhoto = async () => {
-        try {
-            let photo = dataURLtoFile(cropCover)
-            setSubmitPhotoLoading(true)
-            let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
-            if (response.status === 200) {
-                setSubmitPhotoLoading(false)
-                setCoverPhotoModal(false)
-                setCoverPhoto(null)
-                setCropCover(null)
-                setPhotoBytes(null)
-                refreshUser()
-            }
-        } catch (error) {
-            setSubmitPhotoLoading(false)
-            setCoverPhotoError(error.response.data.message)
-        }
-    }
+    //     } catch (error) {
+    //         setSubmitPhotoLoading(false)
+    //         setProfileError(error.response.data.message)
+    //     }
+    // }
+    // const updateCoverPhoto = async () => {
+    //     try {
+    //         let photo = dataURLtoFile(cropCover)
+    //         setSubmitPhotoLoading(true)
+    //         let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
+    //             withCredentials: true,
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //             }
+    //         })
+    //         if (response.status === 200) {
+    //             setSubmitPhotoLoading(false)
+    //             setCoverPhotoModal(false)
+    //             setCoverPhoto(null)
+    //             setCropCover(null)
+    //             setPhotoBytes(null)
+    //             refreshUser()
+    //         }
+    //     } catch (error) {
+    //         setSubmitPhotoLoading(false)
+    //         setCoverPhotoError(error.response.data.message)
+    //     }
+    // }
 
     /*
         Crop image functions
     */
-    const onCrop = () => {
-        let cropper = cropperRef.current?.cropper;
-        let base64Img = cropper.getCroppedCanvas().toDataURL()
-        setPhotoBytes(convertBytes(base64Img))
-        setCropImage(base64Img);
-    };
+    // const onCrop = () => {
+    //     let cropper = cropperRef.current?.cropper;
+    //     let base64Img = cropper.getCroppedCanvas().toDataURL()
+    //     setPhotoBytes(convertBytes(base64Img))
+    //     setCropImage(base64Img);
+    // };
 
-    const onCropCoverPhoto = () => {
-        let cropperCover = cropCoverPhotoRef.current?.cropper
-        let base64Img = cropperCover.getCroppedCanvas().toDataURL()
-        setPhotoBytes(convertBytes(base64Img))
-        setCropCover(base64Img)
-    }
+    // const onCropCoverPhoto = () => {
+    //     let cropperCover = cropCoverPhotoRef.current?.cropper
+    //     let base64Img = cropperCover.getCroppedCanvas().toDataURL()
+    //     setPhotoBytes(convertBytes(base64Img))
+    //     setCropCover(base64Img)
+    // }
 
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
@@ -291,7 +293,7 @@ const Profile = () => {
             </Modal>
 
             {/* edit profile picture modal */}
-            <Modal submit={updateProfilePhoto} openModal={!isNull(displayPhoto)} loader={submitPhotoLoading} closeModal={() => closePhotoModal('profile')} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+            {/* <Modal submit={updateProfilePhoto} openModal={!isNull(displayPhoto)} loader={submitPhotoLoading} closeModal={() => closePhotoModal('profile')} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
                 {
                     !isNull(profileError) ? (
                         <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">
@@ -333,10 +335,10 @@ const Profile = () => {
                         ) : null
                     }
                 </div>
-            </Modal>
+            </Modal> */}
 
             {/* Upload cover photo */}
-            <Modal submit={updateCoverPhoto} loader={submitPhotoLoading} openModal={!isNull(coverPhoto)} closeModal={() => closePhotoModal('coverPhoto')} setOpenModal={setCoverPhotoModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+            {/* <Modal submit={updateCoverPhoto} loader={submitPhotoLoading} openModal={!isNull(coverPhoto)} closeModal={() => closePhotoModal('coverPhoto')} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
                 {
                     !isNull(coverPhotoError) ? (
                         <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">
@@ -377,7 +379,9 @@ const Profile = () => {
                         ) : null
                     }
                 </>
-            </Modal>
+            </Modal> */}
+            <ProfilePhotoModal displayPhoto={displayPhoto} setDisplayPhoto={setDisplayPhoto} />
+            <CoverPhotoModal coverPhoto={coverPhoto} setCoverPhoto={setCoverPhoto} />
 
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
                 <div className=" relative h-auto w-full">
