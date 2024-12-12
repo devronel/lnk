@@ -1,6 +1,7 @@
 import { useState, useRef, useContext } from "react"
 import axiosInstance from "../../utils/axios";
 import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
 import { filesize } from "filesize";
 import { AuthContext } from "../../context/AuthContext";
 import { convertBytes, dataURLtoFile, isNull } from "../../utils/functions";
@@ -12,15 +13,19 @@ import { MdError } from "react-icons/md"
 const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
 
     const cropperRef = useRef()
-    const { user, setUser, refreshUser } = useContext(AuthContext)
+    const { refreshUser } = useContext(AuthContext)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [cropImage, setCropImage] = useState(null)
-    const [photoBytes, setPhotoBytes] = useState(null)
+    const [photoBytes, setPhotoBytes] = useState(0)
 
     const closeModal = () => {
-        setCoverPhoto(null)
+        reset()
+    }
+
+    const reset = () => {
         setIsLoading(false)
+        setCoverPhoto(null)
         setCropImage(null)
         setError(null)
     }
@@ -44,10 +49,7 @@ const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
                 }
             })
             if (response.status === 200) {
-                setIsLoading(false)
-                setCoverPhoto(null)
-                setCropImage(null)
-                setPhotoBytes(null)
+                reset()
                 refreshUser()
             }
         } catch (error) {
@@ -57,7 +59,15 @@ const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
     }
 
     return (
-        <Modal submit={save} loader={isLoading} openModal={!isNull(coverPhoto)} closeModal={closeModal} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+        <Modal
+            submit={save}
+            loader={isLoading}
+            openModal={!isNull(coverPhoto)}
+            closeModal={closeModal}
+            title="Change Cover Photo"
+            icon={<AiFillPicture className=" text-xl text-lnk-orange" />}
+            maxSize={'max-w-2xl'}
+        >
             {
                 !isNull(error) ? (
                     <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">

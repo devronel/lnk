@@ -1,13 +1,10 @@
-import { useState, useContext, useEffect, useRef } from "react";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useState, useContext, useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import toast from "react-hot-toast";
-import Cropper from "react-cropper";
-import "cropperjs/dist/cropper.css";
-import { filesize } from "filesize";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
-import { isNull, path, dateFormat, dataURLtoFile, convertBytes } from "../../utils/functions";
+import { isNull, path, dateFormat } from "../../utils/functions";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnk-input";
@@ -19,10 +16,9 @@ import LnkTextarea from "../../components/forms/lnk-textarea";
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
 import { FcAbout } from "react-icons/fc";
-import { MdOutlineSignpost, MdError } from "react-icons/md";
+import { MdOutlineSignpost } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
-import { FaRegImage, FaCheck } from "react-icons/fa";
-import { AiFillPicture } from "react-icons/ai";
+import { FaRegImage } from "react-icons/fa";
 import { BiSolidError } from "react-icons/bi";
 
 /*
@@ -39,9 +35,7 @@ const Profile = () => {
     /*
         Initialize React hooks like states, context api and etc.
     */
-    let cropperRef = useRef(null)
-    let cropCoverPhotoRef = useRef(null)
-    let { user, setUser, refreshUser } = useContext(AuthContext)
+    let { user, refreshUser } = useContext(AuthContext)
     let [openModal, setOpenModal] = useState(false)
     let [loading, setLoading] = useState(false)
 
@@ -55,20 +49,8 @@ const Profile = () => {
         about: user?.about ? user.about : ''
     })
 
-    let [submitPhotoLoading, setSubmitPhotoLoading] = useState(false)
-    let [photoBytes, setPhotoBytes] = useState(null)
-
-    // Profile photo state
-    let [editProfilePhoto, setEditProfilePhoto] = useState(false)
-    let [displayPhoto, setDisplayPhoto] = useState(null)
-    let [cropImage, setCropImage] = useState(null)
-    let [profileError, setProfileError] = useState(null);
-
-    // Cover photo state
-    let [coverPhotoModal, setCoverPhotoModal] = useState(false)
+    let [profilePhoto, setProfilePhoto] = useState(null)
     let [coverPhoto, setCoverPhoto] = useState(null)
-    let [cropCover, setCropCover] = useState(null)
-    let [coverPhotoError, setCoverPhotoError] = useState(null);
 
     /*
         Onchange handler
@@ -80,14 +62,10 @@ const Profile = () => {
         })
     }
 
-    const profilePhoto = (e) => {
-
+    const choosePhoto = (e) => {
         if (e.target.files && e.target.files[0]) {
-
             let targetAttr = e.target.name
-
             const MAX_SIZE = 1 * 1000 * 1000;
-
             if (e.target.files[0].size >= MAX_SIZE) {
                 toast.error(`The file size exceeds the maximum limit of 1mb. Please upload a smaller file.`, {
                     duration: 5000,
@@ -104,21 +82,17 @@ const Profile = () => {
                 })
                 return
             }
-
             let reader = new FileReader()
-
             reader.onload = function (e) {
                 if (targetAttr === 'profile__photo') {
-                    setDisplayPhoto(e.target.result);
+                    setProfilePhoto(e.target.result);
                 } else {
                     setCoverPhoto(e.target.result)
                 }
             };
-
-
             reader.readAsDataURL(e.target.files[0])
+            e.target.value = ''
         }
-
     }
 
 
@@ -127,21 +101,6 @@ const Profile = () => {
     */
     const modalOpen = () => {
         setOpenModal(prevState => !prevState)
-    }
-    const closePhotoModal = (modalName) => {
-        if (modalName === 'profile') {
-            setEditProfilePhoto(false)
-            setCropImage(null)
-            setDisplayPhoto(null)
-            setPhotoBytes(null)
-        } else if (modalName === 'coverPhoto') {
-            setCoverPhotoModal(false)
-            setCropCover(null)
-            setCoverPhoto(null)
-            setPhotoBytes(null)
-        } else {
-            return
-        }
     }
 
     /*
@@ -165,74 +124,6 @@ const Profile = () => {
 
         }
     }
-    // const updateProfilePhoto = async () => {
-    //     try {
-    //         setSubmitPhotoLoading(true)
-    //         let photo = dataURLtoFile(cropImage)
-    //         let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
-    //             {
-    //                 withCredentials: true,
-    //                 headers: {
-    //                     'Content-Type': 'multipart/form-data'
-    //                 }
-    //             }
-    //         )
-
-    //         if (response.status === 200) {
-    //             setEditProfilePhoto(false)
-    //             setSubmitPhotoLoading(false)
-    //             setProfileError(null)
-    //             setDisplayPhoto(null)
-    //             setCropImage(null)
-    //             setPhotoBytes(null)
-    //             refreshUser()
-    //         }
-
-    //     } catch (error) {
-    //         setSubmitPhotoLoading(false)
-    //         setProfileError(error.response.data.message)
-    //     }
-    // }
-    // const updateCoverPhoto = async () => {
-    //     try {
-    //         let photo = dataURLtoFile(cropCover)
-    //         setSubmitPhotoLoading(true)
-    //         let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
-    //             withCredentials: true,
-    //             headers: {
-    //                 'Content-Type': 'multipart/form-data'
-    //             }
-    //         })
-    //         if (response.status === 200) {
-    //             setSubmitPhotoLoading(false)
-    //             setCoverPhotoModal(false)
-    //             setCoverPhoto(null)
-    //             setCropCover(null)
-    //             setPhotoBytes(null)
-    //             refreshUser()
-    //         }
-    //     } catch (error) {
-    //         setSubmitPhotoLoading(false)
-    //         setCoverPhotoError(error.response.data.message)
-    //     }
-    // }
-
-    /*
-        Crop image functions
-    */
-    // const onCrop = () => {
-    //     let cropper = cropperRef.current?.cropper;
-    //     let base64Img = cropper.getCroppedCanvas().toDataURL()
-    //     setPhotoBytes(convertBytes(base64Img))
-    //     setCropImage(base64Img);
-    // };
-
-    // const onCropCoverPhoto = () => {
-    //     let cropperCover = cropCoverPhotoRef.current?.cropper
-    //     let base64Img = cropperCover.getCroppedCanvas().toDataURL()
-    //     setPhotoBytes(convertBytes(base64Img))
-    //     setCropCover(base64Img)
-    // }
 
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
@@ -266,19 +157,13 @@ const Profile = () => {
 
     }, [])
 
-
     useEffect(() => {
-        if (!isNull(displayPhoto)) {
-            setEditProfilePhoto(true)
+        if (!isNull(profilePhoto) || !isNull(coverPhoto)) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = 'auto'
         }
-    }, [displayPhoto])
-
-    useEffect(() => {
-        if (!isNull(coverPhoto)) {
-            setCoverPhotoModal(true)
-        }
-    }, [coverPhoto])
-
+    }, [profilePhoto, coverPhoto])
 
     return (
         <>
@@ -292,95 +177,7 @@ const Profile = () => {
                 <LnkTextarea onChange={handleOnChange} value={userData.about} name='about' className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
             </Modal>
 
-            {/* edit profile picture modal */}
-            {/* <Modal submit={updateProfilePhoto} openModal={!isNull(displayPhoto)} loader={submitPhotoLoading} closeModal={() => closePhotoModal('profile')} setOpenModal={setEditProfilePhoto} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
-                {
-                    !isNull(profileError) ? (
-                        <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">
-                            <MdError className=" text-base" />
-                            {profileError}
-                        </p>
-                    ) : null
-                }
-                <div className=" mb-2">
-                    {
-                        photoBytes > 1000000 ? (
-                            <p className=" text-red-500 flex items-center gap-1 text-xs italic">
-                                <MdError className=" text-base" />
-                                {filesize(photoBytes)}
-                            </p>
-                        ) : <p className=" text-green-500 flex items-center gap-1 text-xs italic">
-                            <FaCheck className=" text-xs" />
-                            {filesize(photoBytes)}
-                        </p>
-                    }
-                </div>
-
-                <div className=" flex flex-col items-center justify-center gap-2">
-                    <Cropper
-                        src={displayPhoto}
-                        style={{ height: 300, width: "100%" }}
-                        initialAspectRatio={1 / 1}
-                        aspectRatio={1 / 1}
-                        guides={false}
-                        crop={onCrop}
-                        name="profilePhoto"
-                        ref={cropperRef}
-                    />
-                    {
-                        !isNull(cropImage) ? (
-                            <div className=" rounded-full aspect-square">
-                                <img src={cropImage} width='144' className=" object-cover rounded-full aspect-square" alt="" />
-                            </div>
-                        ) : null
-                    }
-                </div>
-            </Modal> */}
-
-            {/* Upload cover photo */}
-            {/* <Modal submit={updateCoverPhoto} loader={submitPhotoLoading} openModal={!isNull(coverPhoto)} closeModal={() => closePhotoModal('coverPhoto')} title="Change Cover Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
-                {
-                    !isNull(coverPhotoError) ? (
-                        <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">
-                            <MdError className=" text-base" />
-                            {coverPhotoError}
-                        </p>
-                    ) : null
-                }
-                <div className=" mb-2">
-                    {
-                        photoBytes > 1000000 ? (
-                            <p className=" text-red-500 flex items-center gap-1 text-xs italic">
-                                <MdError className=" text-base" />
-                                {filesize(photoBytes)}
-                            </p>
-                        ) : <p className=" text-green-500 flex items-center gap-1 text-xs italic">
-                            <FaCheck className=" text-xs" />
-                            {filesize(photoBytes)}
-                        </p>
-                    }
-                </div>
-                <>
-                    <Cropper
-                        src={coverPhoto}
-                        style={{ height: 200, width: "100%" }}
-                        initialAspectRatio={4 / 1}
-                        aspectRatio={4 / 1}
-                        guides={false}
-                        crop={onCropCoverPhoto}
-                        name="coverPhoto"
-                        ref={cropCoverPhotoRef}
-                    />
-                    {
-                        cropCover !== null ? (
-                            <div className=" mt-3">
-                                <img src={cropCover} className="w-full object-contain aspect-[4/1]" alt="" />
-                            </div>
-                        ) : null
-                    }
-                </>
-            </Modal> */}
-            <ProfilePhotoModal displayPhoto={displayPhoto} setDisplayPhoto={setDisplayPhoto} />
+            <ProfilePhotoModal profilePhoto={profilePhoto} setProfilePhoto={setProfilePhoto} />
             <CoverPhotoModal coverPhoto={coverPhoto} setCoverPhoto={setCoverPhoto} />
 
             <section className=" bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-2">
@@ -395,7 +192,7 @@ const Profile = () => {
                         <label htmlFor="cover__photo" className=" absolute top-3 text-lnk-gray right-3 border border-lnk-gray hover:bg-lnk-gray hover:text-lnk-dark p-2 rounded-full transition-colors ease-linear duration-150">
                             <FaRegImage />
                         </label>
-                        <input onChange={profilePhoto} hidden type="file" name="cover__photo" id="cover__photo" accept=".png,.webp,.jpeg,.jpg" />
+                        <input onChange={choosePhoto} hidden type="file" name="cover__photo" id="cover__photo" accept=".png,.webp,.jpeg,.jpg" />
                     </div>
                     <div className="  absolute -bottom-10 xs:-bottom-12 left-5">
                         <div className="w-20 h-20 xs:w-28 xs:h-28 sm:w-32 sm:h-32 aspect-square group rounded-full border border-lnk-white relative">
@@ -408,7 +205,7 @@ const Profile = () => {
                                 <label htmlFor="profile__photo" className="cursor-pointer group-hover:block hidden text-lnk-gray text-2xl" >
                                     <FaRegImage />
                                 </label>
-                                <input onChange={profilePhoto} name="profile__photo" hidden type="file" id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
+                                <input onChange={choosePhoto} name="profile__photo" hidden type="file" id="profile__photo" accept=".png,.webp,.jpeg,.jpg" />
                             </div>
                         </div>
                     </div>
@@ -452,21 +249,6 @@ const Profile = () => {
                     ) : null
                 ) : null
             }
-
-            {/* {
-                !isNull(displayPhoto) ? (
-                    <Cropper
-                        src={displayPhoto}
-                        style={{ height: 400, width: "100%" }}
-                        initialAspectRatio={1 / 1}
-                        guides={false}
-                        crop={onCrop}
-                        name="profilePhoto"
-                        ref={cropperRef}
-                    />
-                ) : null
-            } */}
-
             <div className=" flex items-center gap-3 mb-2">
                 <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
                 <p className=" text-sm font-light text-lnk-dark-gray">

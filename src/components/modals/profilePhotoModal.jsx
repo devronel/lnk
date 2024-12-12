@@ -3,23 +3,24 @@ import { AuthContext } from "../../context/AuthContext"
 import axiosInstance from "../../utils/axios"
 import Modal from "../modal"
 import Cropper from "react-cropper"
+import "cropperjs/dist/cropper.css";
 import { filesize } from "filesize"
 import { convertBytes, dataURLtoFile, isNull } from "../../utils/functions"
 import { MdError } from "react-icons/md"
 import { FaCheck } from "react-icons/fa"
 import { AiFillPicture } from "react-icons/ai"
 
-const ProfilePhotoModal = ({ displayPhoto, setDisplayPhoto }) => {
+const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
 
     const cropperRef = useRef()
-    const { user, setUser, refreshUser } = useContext(AuthContext)
+    const { refreshUser } = useContext(AuthContext)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [photoBytes, setPhotoBytes] = useState(0)
     const [cropImage, setCropImage] = useState(null)
 
     const closeModal = () => {
-        setDisplayPhoto(null)
+        setProfilePhoto(null)
         setCropImage(null)
         setIsLoading(false)
         setError(null)
@@ -49,7 +50,7 @@ const ProfilePhotoModal = ({ displayPhoto, setDisplayPhoto }) => {
             if (response.status === 200) {
                 setIsLoading(false)
                 setError(null)
-                setDisplayPhoto(null)
+                setProfilePhoto(null)
                 setCropImage(null)
                 setPhotoBytes(null)
                 refreshUser()
@@ -62,7 +63,7 @@ const ProfilePhotoModal = ({ displayPhoto, setDisplayPhoto }) => {
     }
 
     return (
-        <Modal submit={save} openModal={!isNull(displayPhoto)} loader={isLoading} closeModal={closeModal} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
+        <Modal submit={save} openModal={!isNull(profilePhoto)} loader={isLoading} closeModal={closeModal} title="Change Profile Photo" icon={<AiFillPicture className=" text-xl text-lnk-orange" />}>
             {
                 !isNull(error) ? (
                     <p className="text-left text-xs mb-2 text-red-500 italic flex items-center">
@@ -87,7 +88,7 @@ const ProfilePhotoModal = ({ displayPhoto, setDisplayPhoto }) => {
 
             <div className=" flex flex-col items-center justify-center gap-2">
                 <Cropper
-                    src={displayPhoto}
+                    src={profilePhoto}
                     style={{ height: 300, width: "100%" }}
                     initialAspectRatio={1 / 1}
                     aspectRatio={1 / 1}
