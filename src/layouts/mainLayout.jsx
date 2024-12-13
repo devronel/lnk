@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import Navigation from "../components/navigation"
-import LeftSidebar from "../components/left-sidebar"
+import LeftSidebar from "../components/leftSidebar"
 
 const MainLayout = () => {
     const location = useLocation();

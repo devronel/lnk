@@ -1,5 +1,5 @@
-import FollowingAlert from "../../components/notifications/following-alert"
-import PostAlert from "../../components/notifications/post-alert"
+import FollowingAlert from "../../components/notifications/followingAlert"
+import PostAlert from "../../components/notifications/postAlert"
 import underConstruction from '../../assets/under-construction.svg'
 
 

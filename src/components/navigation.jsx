@@ -4,7 +4,7 @@ import { MdNotifications, MdPeopleAlt } from "react-icons/md";
 import { SiFeedly } from "react-icons/si";
 import { IoIosChatbubbles } from "react-icons/io";
 import { isNull, path } from "../utils/functions";
-import NavMenu from "./nav-menu";
+import NavMenu from "./navMenu";
 
 /*
     Import images

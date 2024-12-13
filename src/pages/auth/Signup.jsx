@@ -5,7 +5,7 @@ import BeatLoader from 'react-spinners/BeatLoader'
 import axiosInstance from "../../utils/axios"
 import { FcGoogle } from "react-icons/fc";
 import { MdWavingHand } from "react-icons/md";
-import LnkInput from "../../components/forms/lnk-input";
+import LnkInput from "../../components/forms/lnkInput";
 import useError from "../../hooks/useError";
 
 const Signup = () => {
