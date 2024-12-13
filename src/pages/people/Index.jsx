@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axiosInstance from '../../utils/axios'
-import PeopleCard from "../../components/people-card";
+import PeopleCard from "../../components/peopleCard";
 
 /*
     Import Assets

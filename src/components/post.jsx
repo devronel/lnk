@@ -13,9 +13,9 @@ import { diffInDays, path } from "../utils/functions";
     Import assets like image and etc.
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
-import PostReaction from "./post-reactions";
+import PostReaction from "./postReactions";
 import toast from "react-hot-toast";
-import PostComments from "./post-comments";
+import PostComments from "./postComments";
 
 const Post = ({ postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
 

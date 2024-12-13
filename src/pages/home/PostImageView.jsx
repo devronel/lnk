@@ -14,7 +14,7 @@ import { MdOutlineCommentsDisabled } from "react-icons/md"
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
 import { GrSend } from "react-icons/gr"
 import FullPageLoader from "../../components/loader/fullPageLoader"
-import PostReaction from "../../components/post-reactions"
+import PostReaction from "../../components/postReactions"
 
 /*
     Import assets like image and etc.

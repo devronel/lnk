@@ -7,8 +7,8 @@ import axiosInstance from "../../utils/axios";
 import { isNull, path, dateFormat } from "../../utils/functions";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
-import LnkInput from "../../components/forms/lnk-input";
-import LnkTextarea from "../../components/forms/lnk-textarea";
+import LnkInput from "../../components/forms/lnkInput";
+import LnkTextarea from "../../components/forms/lnkTextarea";
 
 /*
     Icons
