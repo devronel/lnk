@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { AuthContext } from "../../context/AuthContext";
 import { debounce } from "lodash";
+import PulseLoader from 'react-spinners/PulseLoader'
 import { isNull, path } from "../../utils/functions";
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
@@ -112,8 +113,13 @@ const Home = () => {
                         ? (
                             <div>
                                 <p className="  text-center text-xs text-lnk-dark-gray">
-                                    <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
-                                    Loading more post...
+                                    <PulseLoader
+                                        color={'#FF6500'}
+                                        loading={isFetchingNextPage}
+                                        size={6}
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                    />
                                 </p>
                             </div>
                         )

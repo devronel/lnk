@@ -16,10 +16,10 @@ const MainLayout = () => {
 
     return isLogin ? (
         <>
-            <div className=" min-h-screen h-auto pt-[4.0625rem] pb-4">
+            <div className=" min-h-screen h-auto pt-[4.0625rem] lg:pb-2">
                 <Navigation user={user} />
                 <main>
-                    <div className={`max-w-[80rem] w-[90%] mx-auto grid gap-5
+                    <div className={`max-w-[80rem] w-[95%] xs:w-[90%] mx-auto grid gap-5
                             ${currentUrl === '/profile' ? 'md:grid-cols-[1fr_100px] lg:grid-cols-[1fr_350px]' : 'md:grid-cols-[240px_1fr] lg:grid-cols-[16.25rem_1fr_16.25rem]'}
                             `}>
                         {
@@ -33,7 +33,7 @@ const MainLayout = () => {
                                 coverPhoto={user?.cover_photo}
                             />
                         }
-                        <div>
+                        <div className=" pt-12 xs:pt-0">
                             <Outlet />
                         </div>
                         <div></div>

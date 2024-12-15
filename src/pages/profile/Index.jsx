@@ -4,6 +4,7 @@ import { debounce } from "lodash";
 import toast from "react-hot-toast";
 import { AuthContext } from "../../context/AuthContext";
 import axiosInstance from "../../utils/axios";
+import PulseLoader from 'react-spinners/PulseLoader'
 import { isNull, path, dateFormat } from "../../utils/functions";
 import Post from "../../components/post";
 import Modal from "../../components/modal";
@@ -285,17 +286,18 @@ const Profile = () => {
                     ? (
                         <div>
                             <p className="  text-center text-xs text-lnk-dark-gray">
-                                <TbLoaderQuarter className=" inline animate-spin text-lnk-orange mr-1 " />
-                                Loading more post...
+                                <PulseLoader
+                                    color={'#FF6500'}
+                                    loading={isFetchingNextPage}
+                                    size={6}
+                                    aria-label="Loading Spinner"
+                                    data-testid="loader"
+                                />
                             </p>
                         </div>
                     )
                     : hasNextPage
-                        ? (
-                            <p className="  text-center text-xs text-lnk-dark-gray">
-                                Load more
-                            </p>
-                        )
+                        ? null
                         : (
                             <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
                                 <PiCoffeeDuotone className=" text-base " />

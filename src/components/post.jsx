@@ -174,8 +174,8 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
     }
 
     return (
-        <section className=" pt-3 sm:pt-2 mb-3 rounded border border-lnk-gray bg-lnk-white">
-            <div className=" flex items-start gap-2 px-3 sm:px-5 mb-4">
+        <section className=" pt-3 sm:pt-2 mb-4 xs:mb-3 rounded  sm:border sm:border-lnk-gray sm:bg-lnk-white">
+            <div className=" flex items-start gap-2 sm:px-5 mb-4">
                 <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
                     <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? path(profilPicUrl) : profilePlaceholder} alt="" />
                 </div>
@@ -189,14 +189,14 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 </div>
             </div>
             <div className="mb-4">
-                <div className=" px-5 mb-1">
+                <div className=" sm:px-5 mb-1">
                     <TiptopView content={content} />
                 </div>
                 {
                     postImageDisplay()
                 }
             </div>
-            <div className="px-5 flex items-center justify-between mb-2">
+            <div className="sm:px-5 flex items-center justify-between mb-2">
                 <PostReaction postReactions={postReactions} reactionCount={reactionCount} />
                 <div>
                     <button onClick={fetchAllComment} className=" text-xs text-lnk-dark-gray hover:underline">
@@ -206,10 +206,10 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                     </button>
                 </div>
             </div>
-            <div className="px-5">
+            <div className="sm:px-5">
                 <ul className=" flex items-center gap-5 py-1 border-t border-lnk-gray">
                     <li onMouseEnter={handleShowReactionIcon} onMouseLeave={handleHideReactionIcon} tabIndex={0} className="relative group">
-                        <button onTouchStart={handleShowReactionIcon} onTouchEnd={isShowReactionIcon ? handleHideReactionIcon : handleShowReactionIcon} className="text-sm flex items-center gap-1 py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                        <button onTouchStart={handleShowReactionIcon} onTouchEnd={isShowReactionIcon ? handleHideReactionIcon : handleShowReactionIcon} className="text-sm flex items-center gap-1 py-1 sm:py-2 px-2 sm:px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
                             {userReaction()}
                         </button>
                         <div className={`${isShowReactionIcon ? 'block' : 'hidden'} animate__animated animate__fadeIn absolute -top-12 z-10 pb-2 opacity-0 group-hover:opacity-100  transition-all ease-linear duration-150`}>
@@ -227,14 +227,14 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                         </div>
                     </li>
                     <li>
-                        <button onClick={fetchAllComment} className="text-sm flex items-center gap-1  py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                        <button onClick={fetchAllComment} className="text-sm flex items-center gap-1 py-1 sm:py-2 px-2 sm:px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
                             <AiOutlineComment className="" />
                             <span>Comment</span>
                         </button>
                     </li>
                 </ul>
             </div>
-            <div className={`px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
+            <div className={`sm:px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
                 <PostComments postId={postId} isShowComment={showComment} authUserProfile={authUserProfile} />
             </div>
         </section>
