@@ -82,9 +82,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     useEffect(() => {
-
         refreshUser()
-
     }, [])
 
     if (isAuthenticating) {
