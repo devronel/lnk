@@ -76,7 +76,7 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
                     <img className=" w-full h-full rounded-full object-cover" src={isNull(authUserProfile) ? profilePlaceholder : path(authUserProfile)} alt="" />
                 </div>
                 <form onSubmit={sendComment} className=" flex-grow relative">
-                    <input onChange={getComment} value={comment} name={`comment_post_${postId}`} className="w-full outline-none font-ubuntu focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
+                    <input onChange={getComment} value={comment} name={`comment_post_${postId}`} className="w-full font-source-code-pro outline-none focus:outline focus:outline-lnk-dark-gray text-sm border border-lnk-gray p-2 pr-7 rounded text-left bg-white" placeholder="Leave a comment" />
                     <button type="submit" className=" group">
                         <GrSend className="text-base text-lnk-dark-gray absolute top-1/2 -translate-y-1/2 right-2 group-hover:text-lnk-orange transition" />
                     </button>

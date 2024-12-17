@@ -9,7 +9,7 @@ import coverPhotoPlaceholder from "../assets/cover-photo-placeholder.png"
 const LeftSidebar = ({ firstName, lastName, username, headline, address, profileUrl, coverPhoto }) => {
     return (
         <div className='hidden md:block'>
-            <div className=" relative overflow-hidden rounded border border-lnk-dark-gray bg-lnk-white">
+            <div className=" relative overflow-hidden rounded border border-lnk-gray bg-lnk-white">
                 <div className=" h-16 w-full border-b border-lnk-gray">
                     <img
                         className=" aspect-[4/1] w-full"

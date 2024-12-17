@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'ubuntu': 'Ubuntu'
+        'ubuntu': 'Ubuntu',
+        'source-code-pro': 'Source Code Pro'
       },
       colors: {
         'lnk-dark': '#0B192C',
