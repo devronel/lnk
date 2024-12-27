@@ -201,7 +201,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 <div>
                     <button onClick={fetchAllComment} className=" text-xs text-lnk-dark-gray hover:underline">
                         {
-                            isNull(commentCount) ? 'No comment' : `${commentCount} ${commentCount > 1 ? 'comments' : 'comment'}`
+                            isNull(commentCount) ? '0 Comment' : `${commentCount} ${commentCount > 1 ? 'Comments' : 'Comment'}`
                         }
                     </button>
                 </div>

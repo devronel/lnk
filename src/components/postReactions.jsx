@@ -10,7 +10,7 @@ const reactionIcons = {
 
 const PostReaction = ({ postReactions, reactionCount }) => {
     if (!postReactions) {
-        return <p className="text-xs">No one reacted to this post.</p>;
+        return <p className="text-xs"></p>;
     }
 
     const reactions = postReactions
