@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 import { debounce } from "lodash"
-import { AuthContext } from "../../context/AuthContext"
 import PulseLoader from "react-spinners/PulseLoader"
 import axiosInstance from "../../utils/axios"
 import { isNull, path } from "../../utils/functions"
@@ -16,11 +15,10 @@ import coverPhotoPlaceholder from "../../assets/cover-photo-placeholder.png"
 
 const ViewProfile = () => {
 
-    let { user } = useContext(AuthContext)
     const { username } = useParams()
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ['user-info', user?.username],
+        queryKey: ['user-info', username],
         queryFn: async ({ pageParam }) => {
             let result = await axiosInstance.get(`/user/user-info/${username}?pages=${pageParam}`, {
                 withCredentials: true
