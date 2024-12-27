@@ -20,10 +20,10 @@ const MainLayout = () => {
                 <Navigation user={user} />
                 <main>
                     <div className={`max-w-[80rem] w-[95%] xs:w-[90%] mx-auto grid gap-5
-                            ${currentUrl === '/profile' ? 'md:grid-cols-[1fr_100px] lg:grid-cols-[1fr_350px]' : 'md:grid-cols-[240px_1fr] lg:grid-cols-[16.25rem_1fr_16.25rem]'}
+                            ${currentUrl === '/profile' || location.pathname.startsWith('/profile-info/') ? 'md:grid-cols-[1fr_100px] lg:grid-cols-[1fr_350px]' : 'md:grid-cols-[240px_1fr] lg:grid-cols-[16.25rem_1fr_16.25rem]'}
                             `}>
                         {
-                            currentUrl === '/profile' ? null : <LeftSidebar
+                            currentUrl === '/profile' || location.pathname.startsWith('/profile-info/') ? null : <LeftSidebar
                                 firstName={user?.first_name}
                                 lastName={user?.last_name}
                                 username={user?.username}

@@ -97,6 +97,7 @@ const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
                     aspectRatio={4 / 1}
                     guides={false}
                     crop={onCrop}
+                    viewMode={1}
                     name="coverPhoto"
                     ref={cropperRef}
                 />

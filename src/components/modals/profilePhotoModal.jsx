@@ -94,6 +94,7 @@ const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
                     aspectRatio={1 / 1}
                     guides={false}
                     crop={onCrop}
+                    viewMode={1}
                     name="profilePhoto"
                     ref={cropperRef}
                 />

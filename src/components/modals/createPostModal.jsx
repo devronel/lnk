@@ -125,11 +125,11 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
                     filesPreview.length > 0 ? (
                         filesPreview.map((value, index) => {
                             return (
-                                <div key={index} className=" w-12 h-12 group relative">
+                                <div key={index} className=" group relative">
                                     <button onClick={() => removeImage(index)} className="hidden group-hover:block absolute -top-1 -right-2">
                                         <RiCloseCircleFill className=" text-red-600 text-lg" />
                                     </button>
-                                    <img className="w-full h-full object-cover rounded-md border border-lnk-orange" src={value} alt="" />
+                                    <img className="w-20 aspect-video object-contain rounded-md bg-lnk-gray" src={value} alt="" />
                                 </div>
                             )
                         })

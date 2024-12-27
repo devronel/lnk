@@ -180,7 +180,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                     <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? path(profilPicUrl) : profilePlaceholder} alt="" />
                 </div>
                 <div>
-                    <h5 className=" text-base font-bold">{isNull(fullName) ? username : fullName}</h5>
+                    <Link to={`/profile-info/${username}`} className=" text-base font-bold hover:underline">{isNull(fullName) ? username : fullName}</Link>
                     <p className=" text-xs font-light">{headline}</p>
                     <p className=" text-xs font-light text-lnk-dark-gray">
                         <span className="inline-block">{diffInDays(createdAt)}</span>

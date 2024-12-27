@@ -6,6 +6,7 @@ import { isNull, path } from '../utils/functions'
 */
 import profilePlacholder from '../assets/profile-placeholder.jpg'
 import coverPhotoPlaceholder from "../assets/cover-photo-placeholder.png"
+import { Link } from "react-router-dom";
 
 const PeopleCard = ({ fullName, headline, address, profileUrl, username, coverPhoto }) => {
     return (
@@ -20,7 +21,7 @@ const PeopleCard = ({ fullName, headline, address, profileUrl, username, coverPh
                     </div>
                 </div>
                 <div className=" pt-8 px-2 mb-4 flex-1">
-                    <h4 className=" font-bold text-lg">{isNull(fullName) ? username : fullName}</h4>
+                    <Link to={`/profile-info/${username}`} className=" font-bold text-lg hover:underline">{isNull(fullName) ? username : fullName}</Link>
                     <p className=" font-normal text-xs">{isNull(headline) ? 'Not available' : headline}</p>
                     <p className=" font-light text-xs text-lnk-dark-gray">{isNull(address) ? null : address}</p>
                 </div>
