@@ -27,7 +27,7 @@ const ForgotPassword = () => {
                     <IoArrowBackCircle className=" text-2xl text-lnk-orange" />
                 </Link>
                 <h2 className=" text-3xl mb-1 font-bold">Reset your password</h2>
-                <p className=" text-sm mb-5 font-light">Enter the email you used to register with.</p>
+                <p className=" text-sm mb-5 font-light">Enter the email you used to register.</p>
                 <form onSubmit={submit}>
                     <div className=" mb-3">
                         <LnkInput onChange={handleChange} name='email' type="email" label="Email" />

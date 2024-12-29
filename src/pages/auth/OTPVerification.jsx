@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
 import BeatLoader from "react-spinners/BeatLoader"
 import LnkInput from "../../components/forms/lnkInput"
@@ -8,15 +8,45 @@ import { MdWavingHand } from "react-icons/md"
 
 const OTPVerification = () => {
 
+    const inputs = useRef([])
     const [authLoading, setAuthLoading] = useState(false)
-    const [email, setEmail] = useState('')
+    const [otp, setOtp] = useState(Array(4).fill(''))
 
-    const handleChange = (e) => {
-        setEmail(e.target.value)
+    const handleOnChange = (e, index) => {
+
+        const { value } = e.target
+
+        if (value.match(/^\d$/)) {
+            const newOtp = [...otp]
+            newOtp[index] = value
+            setOtp(newOtp)
+
+            if (index < 3) {
+                inputs.current[index + 1].focus();
+            }
+        }
+
+        if (value === '') {
+            const newOtp = [...otp]
+            newOtp[index] = ''
+            setOtp(newOtp)
+            if (index > 0) {
+                inputs.current[index - 1].focus();
+            }
+        }
     }
 
-    const submit = () => {
-        console.log('Testing')
+    const handleKeyDown = (e, index) => {
+        if (e.key === 'Backspace' && otp[index] === '') {
+            if (index > 0) {
+                inputs.current[index - 1].focus();
+            }
+        }
+    };
+
+    const submit = (e) => {
+        e.preventDefault()
+        console.log(otp)
     }
 
     return (
@@ -25,14 +55,27 @@ const OTPVerification = () => {
                 <Link to={'/login'}>
                     <IoArrowBackCircle className=" text-2xl text-lnk-orange" />
                 </Link>
-                <h2 className=" text-3xl mb-1 font-bold">Reset your password</h2>
-                <p className=" text-sm mb-5 font-light">Enter the email you used to register with.</p>
+                <h2 className=" text-3xl mb-1 font-bold">Verify your account</h2>
+                <p className=" text-sm mb-5 font-light">We have sent your one time password(OTP) on example@email.com</p>
                 <form onSubmit={submit}>
                     <div className=" mb-3">
-                        <LnkInput onChange={handleChange} name='email' type="email" label="Email" />
+                        <div id="inputs" className=" flex items-center gap-2">
+                            {
+                                otp.map((_, index) => (
+                                    <OTPInput
+                                        key={index}
+                                        index={index}
+                                        value={otp[index]}
+                                        onChange={handleOnChange}
+                                        onKeyDown={handleKeyDown}
+                                        inputs={inputs}
+                                    />
+                                ))
+                            }
+                        </div>
                     </div>
                     <button disabled={authLoading} className={`${authLoading ? 'bg-opacity-80' : null} flex items-center justify-center bg-lnk-orange w-full h-10 py-2.5 px-3 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-80 transition-all ease-linear duration-150`}>
-                        {authLoading ? null : 'Send OTP'}
+                        {authLoading ? null : 'Verify'}
                         <BeatLoader
                             color={'#F5F5F7'}
                             loading={authLoading}
@@ -48,3 +91,19 @@ const OTPVerification = () => {
 }
 
 export default OTPVerification
+
+export function OTPInput({ value, onChange, onKeyDown, index, inputs }) {
+    return (
+        <input
+            type="text"
+            inputMode="numeric"
+            maxLength="1"
+            value={value}
+            onChange={(e) => onChange(e, index)}
+            onKeyDown={(e) => onKeyDown(e, index)}
+            ref={(e) => (inputs.current[index] = e)}
+            className=" border border-gray-400 w-full p-2 rounded text-center focus:outline-lnk-orange"
+        />
+    )
+
+}
