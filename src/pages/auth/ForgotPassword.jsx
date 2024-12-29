@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import axiosInstance from '../../utils/axios'
 import BeatLoader from "react-spinners/BeatLoader"
 import LnkInput from "../../components/forms/lnkInput"
 import { IoArrowBackCircle } from "react-icons/io5";
@@ -16,8 +17,22 @@ const ForgotPassword = () => {
         setEmail(e.target.value)
     }
 
-    const submit = () => {
-        navigate('/otp-verification')
+    const submit = async (e) => {
+        e.preventDefault()
+        try {
+            setAuthLoading(true)
+            const result = await axiosInstance.post('/user/forgot-password', { email }, {
+                withCredentials: true
+            })
+            if (result.status === 200) {
+                console.log(result)
+                setAuthLoading(false)
+            }
+        } catch (error) {
+            setAuthLoading(false)
+            console.log(error.response)
+        }
+        // navigate('/otp-verification')
     }
 
     return (

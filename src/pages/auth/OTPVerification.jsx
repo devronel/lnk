@@ -10,7 +10,7 @@ const OTPVerification = () => {
 
     const inputs = useRef([])
     const [authLoading, setAuthLoading] = useState(false)
-    const [otp, setOtp] = useState(Array(4).fill(''))
+    const [otp, setOtp] = useState(Array(6).fill(''))
 
     const handleOnChange = (e, index) => {
 
@@ -21,7 +21,7 @@ const OTPVerification = () => {
             newOtp[index] = value
             setOtp(newOtp)
 
-            if (index < 3) {
+            if (index < 5) {
                 inputs.current[index + 1].focus();
             }
         }
@@ -52,7 +52,7 @@ const OTPVerification = () => {
     return (
         <>
             <section className="  max-w-[400px] w-[90%] mx-auto">
-                <Link to={'/login'}>
+                <Link to={'/forgot-password'}>
                     <IoArrowBackCircle className=" text-2xl text-lnk-orange" />
                 </Link>
                 <h2 className=" text-3xl mb-1 font-bold">Verify your account</h2>
