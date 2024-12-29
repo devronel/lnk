@@ -57,7 +57,7 @@ const Login = () => {
                     <div className=" mb-3">
                         <LnkInput onChange={handleChange} name='password' type='password' label="Password" />
                     </div>
-                    <Link to='/login' className="block mb-3 text-right text-xs hover:underline text-lnk-orange">
+                    <Link to='/forgot-password' className="block mb-3 text-right text-xs hover:underline text-lnk-orange">
                         Forgot Password?
                     </Link>
                     <button disabled={authLoading} className={`${authLoading ? 'bg-opacity-80' : null} flex items-center justify-center bg-lnk-orange w-full h-10 py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-80 transition-all ease-linear duration-150`}>

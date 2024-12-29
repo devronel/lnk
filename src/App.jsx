@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Toaster } from 'react-hot-toast'
 import MainLayout from './layouts/mainLayout'
+import { AuthProvider } from './context/AuthContext'
 import AuthLayout from './layouts/authLayout'
 import Home from './pages/home/Index'
 import PostImage from './pages/home/PostImageView'
@@ -13,8 +14,9 @@ import Login from './pages/auth/Login'
 import Signup from './pages/auth/Signup'
 import Notifications from './pages/notifications/Index'
 import ChatHome from './pages/chat/Index'
+import ForgotPassword from './pages/auth/ForgotPassword'
 import NotFound from './pages/errorPage/404'
-import { AuthProvider } from './context/AuthContext'
+import OTPVerification from './pages/auth/OTPVerification'
 
 
 const queryClient = new QueryClient({
@@ -45,6 +47,8 @@ function App() {
             <Route path='/404' element={<NotFound />} />
             <Route path='/' element={<AuthLayout />}>
               <Route path='/login' element={<Login />} />
+              <Route path='/forgot-password' element={<ForgotPassword />} />
+              <Route path='/otp-verification' element={<OTPVerification />} />
               <Route path='/signup' element={<Signup />} />
             </Route>
           </Routes>
