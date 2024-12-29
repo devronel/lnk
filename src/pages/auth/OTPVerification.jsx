@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 import BeatLoader from "react-spinners/BeatLoader"
-import LnkInput from "../../components/forms/lnkInput"
+import axiosInstance from "../../utils/axios";
 import { IoArrowBackCircle } from "react-icons/io5";
-import { FcGoogle } from "react-icons/fc"
-import { MdWavingHand } from "react-icons/md"
+import toast from "react-hot-toast";
 
 const OTPVerification = () => {
 
@@ -45,14 +44,19 @@ const OTPVerification = () => {
         }
     };
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault()
-        console.log(otp)
+        try {
+            let result = await axiosInstance.post('/user/verify-otp', {
+                email: atob(email),
+                otpCode: otp
+            })
+        } catch (error) {
+            toast.error(error.response.data.message, {
+                position: 'top-center'
+            })
+        }
     }
-
-    useEffect(() => {
-        console.log(atob(email))
-    }, [])
 
     return (
         <>
@@ -61,7 +65,7 @@ const OTPVerification = () => {
                     <IoArrowBackCircle className=" text-2xl text-lnk-orange" />
                 </Link>
                 <h2 className=" text-3xl mb-1 font-bold">Verify your account</h2>
-                <p className=" text-sm mb-5 font-light">We have sent your one time password(OTP) on example@email.com</p>
+                <p className=" text-sm mb-5 font-light">We have sent your one time password(OTP) on <span className="font-bold text-lnk-orange">{atob(email)}</span></p>
                 <form onSubmit={submit}>
                     <div className=" mb-3">
                         <div id="inputs" className=" flex items-center gap-2">
