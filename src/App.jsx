@@ -48,7 +48,7 @@ function App() {
             <Route path='/' element={<AuthLayout />}>
               <Route path='/login' element={<Login />} />
               <Route path='/forgot-password' element={<ForgotPassword />} />
-              <Route path='/otp-verification' element={<OTPVerification />} />
+              <Route path='/otp-verification/:email' element={<OTPVerification />} />
               <Route path='/signup' element={<Signup />} />
             </Route>
           </Routes>

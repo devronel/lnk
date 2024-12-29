@@ -27,12 +27,13 @@ const ForgotPassword = () => {
             if (result.status === 200) {
                 console.log(result)
                 setAuthLoading(false)
+                const encodedEmail = btoa(result.data.payload.email);
+                navigate(`/otp-verification/${encodeURIComponent(encodedEmail)}`)
             }
         } catch (error) {
             setAuthLoading(false)
             console.log(error.response)
         }
-        // navigate('/otp-verification')
     }
 
     return (

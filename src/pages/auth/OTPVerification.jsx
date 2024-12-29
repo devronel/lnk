@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import BeatLoader from "react-spinners/BeatLoader"
 import LnkInput from "../../components/forms/lnkInput"
 import { IoArrowBackCircle } from "react-icons/io5";
@@ -9,6 +9,7 @@ import { MdWavingHand } from "react-icons/md"
 const OTPVerification = () => {
 
     const inputs = useRef([])
+    const { email } = useParams()
     const [authLoading, setAuthLoading] = useState(false)
     const [otp, setOtp] = useState(Array(6).fill(''))
 
@@ -48,6 +49,10 @@ const OTPVerification = () => {
         e.preventDefault()
         console.log(otp)
     }
+
+    useEffect(() => {
+        console.log(atob(email))
+    }, [])
 
     return (
         <>
