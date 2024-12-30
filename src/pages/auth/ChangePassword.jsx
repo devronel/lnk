@@ -4,6 +4,7 @@ import axiosInstance from '../../utils/axios'
 import toast from "react-hot-toast"
 import BeatLoader from "react-spinners/BeatLoader"
 import LnkInput from "../../components/forms/lnkInput"
+import useError from "../../hooks/useError"
 import { IoArrowBackCircle } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc"
 import { MdWavingHand } from "react-icons/md"
@@ -12,10 +13,11 @@ const ChangePassword = () => {
 
     const navigate = useNavigate()
     const { token } = useParams()
+    let [setErrors, errorExist] = useError()
     const [authLoading, setAuthLoading] = useState(false)
     const [password, setPassword] = useState({
         password: '',
-        repeatPassword: ''
+        passwordConfirmation: ''
     })
 
     const handleChange = (e) => {
@@ -39,7 +41,24 @@ const ChangePassword = () => {
             }
         } catch (error) {
             setAuthLoading(false)
-            toast.error(error.response.data.message)
+            console.log(error.response)
+            if (error.response) {
+                switch (error.response.status) {
+                    case 400:
+                        setErrors(error.response.data.payload)
+                        break;
+                    case 404:
+                        toast.error(error.response.data.message, {
+                            position: 'top-center'
+                        })
+                        break;
+                    default:
+                        toast.error(error.response.data.message, {
+                            position: 'top-center'
+                        })
+                        break;
+                }
+            }
         }
     }
 
@@ -53,8 +72,18 @@ const ChangePassword = () => {
                 <p className=" text-sm mb-5 font-light">Enter a new password to change your password.</p>
                 <form onSubmit={submit}>
                     <div className=" mb-3 flex flex-col gap-3">
-                        <LnkInput onChange={handleChange} value={password.password} name='password' type="password" label="New password" />
-                        <LnkInput onChange={handleChange} value={password.repeatPassword} name='repeatPassword' type="password" label="Confirm password" />
+                        <div>
+                            <LnkInput onChange={handleChange} value={password.password} name='password' type="password" label="New password" />
+                            {
+                                errorExist('password') ? <p className=" text-red-500 text-xs">{errorExist('password').msg}</p> : null
+                            }
+                        </div>
+                        <div>
+                            <LnkInput onChange={handleChange} value={password.passwordConfirmation} name='passwordConfirmation' type="password" label="Confirm password" />
+                            {
+                                errorExist('passwordConfirmation') ? <p className=" text-red-500 text-xs">{errorExist('passwordConfirmation').msg}</p> : null
+                            }
+                        </div>
                     </div>
                     <button disabled={authLoading} className={`${authLoading ? 'bg-opacity-80' : null} flex items-center justify-center bg-lnk-orange w-full h-10 py-2.5 px-3 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-80 transition-all ease-linear duration-150`}>
                         {authLoading ? null : 'Change Password'}
