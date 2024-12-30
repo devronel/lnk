@@ -51,7 +51,11 @@ const OTPVerification = () => {
                 email: atob(email),
                 otpCode: otp
             })
+            if (result.status === 200) {
+                alert(result.data.payload.token)
+            }
         } catch (error) {
+            console.log(error.response)
             toast.error(error.response.data.message, {
                 position: 'top-center'
             })
