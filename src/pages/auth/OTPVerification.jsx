@@ -101,6 +101,7 @@ const OTPVerification = () => {
                         />
                     </button>
                 </form>
+                <p className="text-sm text-center">Didn't recieve verification OTP? <span className=" text-lnk-orange"> <CountdownTimer /></span></p>
             </section>
         </>
     )
@@ -122,4 +123,27 @@ export function OTPInput({ value, onChange, onKeyDown, index, inputs }) {
         />
     )
 
+}
+
+export function CountdownTimer() {
+    const [timeLeft, setTimeLeft] = useState(2 * 60);
+
+    useEffect(() => {
+        if (timeLeft <= 0) return;
+
+        const timer = setInterval(() => {
+            setTimeLeft((prevTime) => prevTime - 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [timeLeft]);
+
+    // Format the time as mm:ss
+    const formatTime = (seconds) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+    };
+
+    return <span className=" text-lnk-orange underline">{timeLeft === 0 ? 'Resend OTP' : formatTime(timeLeft)}</span>
 }
