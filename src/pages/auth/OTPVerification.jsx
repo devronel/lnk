@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import BeatLoader from "react-spinners/BeatLoader"
 import axiosInstance from "../../utils/axios";
 import { IoArrowBackCircle } from "react-icons/io5";
@@ -9,6 +9,7 @@ const OTPVerification = () => {
 
     const inputs = useRef([])
     const { email } = useParams()
+    const navigate = useNavigate()
     const [authLoading, setAuthLoading] = useState(false)
     const [otp, setOtp] = useState(Array(6).fill(''))
 
@@ -47,15 +48,17 @@ const OTPVerification = () => {
     const submit = async (e) => {
         e.preventDefault()
         try {
+            setAuthLoading(true)
             let result = await axiosInstance.post('/user/verify-otp', {
                 email: atob(email),
                 otpCode: otp
             })
             if (result.status === 200) {
-                alert(result.data.payload.token)
+                setAuthLoading(false)
+                navigate(`/change-password/${result.data.payload.token}`)
             }
         } catch (error) {
-            console.log(error.response)
+            setAuthLoading(false)
             toast.error(error.response.data.message, {
                 position: 'top-center'
             })

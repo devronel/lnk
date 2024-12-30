@@ -17,6 +17,7 @@ import ChatHome from './pages/chat/Index'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import NotFound from './pages/errorPage/404'
 import OTPVerification from './pages/auth/OTPVerification'
+import ChangePassword from './pages/auth/ChangePassword'
 
 
 const queryClient = new QueryClient({
@@ -49,6 +50,7 @@ function App() {
               <Route path='/login' element={<Login />} />
               <Route path='/forgot-password' element={<ForgotPassword />} />
               <Route path='/otp-verification/:email' element={<OTPVerification />} />
+              <Route path='/change-password/:token' element={<ChangePassword />} />
               <Route path='/signup' element={<Signup />} />
             </Route>
           </Routes>
