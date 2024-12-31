@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import BeatLoader from "react-spinners/BeatLoader"
+import ClipLoader from "react-spinners/ClipLoader"
 import axiosInstance from "../../utils/axios";
 import { IoArrowBackCircle } from "react-icons/io5";
 import toast from "react-hot-toast";
@@ -127,6 +128,7 @@ export function OTPInput({ value, onChange, onKeyDown, index, inputs }) {
 
 export function CountdownTimer({ email }) {
     const [timeLeft, setTimeLeft] = useState(2 * 60);
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         if (timeLeft <= 0) return;
@@ -147,18 +149,31 @@ export function CountdownTimer({ email }) {
 
     const resendOTP = async () => {
         try {
+            setIsLoading(true)
             const decodeEmail = atob(email)
             const result = await axiosInstance.post('/user/forgot-password', { email: decodeEmail }, {
                 withCredentials: true
             })
             if (result.status === 200) {
-                console.log(result)
+                setIsLoading(false)
                 setTimeLeft(2 * 60)
             }
         } catch (error) {
+            setIsLoading(false)
             console.log(error.response)
         }
     }
 
-    return <span className=" text-lnk-orange underline">{timeLeft === 0 ? <button onClick={resendOTP}>Resend OTP</button> : formatTime(timeLeft)}</span>
+    return <span className=" text-lnk-orange underline">{timeLeft === 0 ? (
+        <button disabled={isLoading} onClick={resendOTP} className=" inline-flex items-center gap-1">
+            Resend OTP
+            <ClipLoader
+                color={'#FF6500'}
+                loading={isLoading}
+                size={12}
+                aria-label="Loading Spinner"
+                data-testid="loader"
+            />
+        </button>
+    ) : formatTime(timeLeft)}</span>
 }
