@@ -101,7 +101,7 @@ const OTPVerification = () => {
                         />
                     </button>
                 </form>
-                <p className="text-sm text-center">Didn't recieve verification OTP? <span className=" text-lnk-orange"> <CountdownTimer /></span></p>
+                <p className="text-sm text-center">Didn't recieve verification OTP? <span className=" text-lnk-orange"> <CountdownTimer email={email} /></span></p>
             </section>
         </>
     )
@@ -125,7 +125,7 @@ export function OTPInput({ value, onChange, onKeyDown, index, inputs }) {
 
 }
 
-export function CountdownTimer() {
+export function CountdownTimer({ email }) {
     const [timeLeft, setTimeLeft] = useState(2 * 60);
 
     useEffect(() => {
@@ -145,5 +145,20 @@ export function CountdownTimer() {
         return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
     };
 
-    return <span className=" text-lnk-orange underline">{timeLeft === 0 ? 'Resend OTP' : formatTime(timeLeft)}</span>
+    const resendOTP = async () => {
+        try {
+            const decodeEmail = atob(email)
+            const result = await axiosInstance.post('/user/forgot-password', { email: decodeEmail }, {
+                withCredentials: true
+            })
+            if (result.status === 200) {
+                console.log(result)
+                setTimeLeft(2 * 60)
+            }
+        } catch (error) {
+            console.log(error.response)
+        }
+    }
+
+    return <span className=" text-lnk-orange underline">{timeLeft === 0 ? <button onClick={resendOTP}>Resend OTP</button> : formatTime(timeLeft)}</span>
 }
