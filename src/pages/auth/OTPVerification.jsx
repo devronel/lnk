@@ -72,8 +72,8 @@ const OTPVerification = () => {
                 <Link to={'/forgot-password'}>
                     <IoArrowBackCircle className=" text-2xl text-lnk-orange" />
                 </Link>
-                <h2 className=" text-3xl mb-1 font-bold">Verify your account</h2>
-                <p className=" text-sm mb-5 font-light">We have sent your one time password(OTP) on <span className="font-bold text-lnk-orange">{atob(email)}</span></p>
+                <h2 className="text-2xl sm:text-3xl mb-1 font-bold">Verify your account</h2>
+                <p className=" text-xs sm:text-sm mb-5 font-light">We have sent your one time password(OTP) on <span className="font-bold text-lnk-orange">{atob(email)}</span></p>
                 <form onSubmit={submit}>
                     <div className=" mb-3">
                         <div id="inputs" className=" flex items-center gap-2">

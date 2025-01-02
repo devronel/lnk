@@ -28,7 +28,7 @@ const NavMenu = (props) => {
 
     return (
         <div ref={menuDialog} className={`${props.menuOpen ? 'block animate__fadeIn' : 'hidden'} animate__animated absolute top-12 right-0 bg-lnk-white border border-lnk-gray rounded py-2 px-1 w-auto min-w-48`}>
-            <div className="absolute -top-[1.125rem] right-3 xs:left-14">
+            <div className="absolute -top-[1.125rem] right-4 xs:left-28">
                 <div className="triangle-wrapper">
                     <div className="triangle"></div>
                 </div>

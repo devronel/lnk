@@ -68,8 +68,8 @@ const ChangePassword = () => {
                 {/* <Link to={'/login'}>
                     <IoArrowBackCircle className=" text-2xl text-lnk-orange" />
                 </Link> */}
-                <h2 className=" text-3xl mb-1 font-bold">Change your password</h2>
-                <p className=" text-sm mb-5 font-light">Enter a new password to change your password.</p>
+                <h2 className="text-2xl sm:text-3xl mb-1 font-bold">Change your password</h2>
+                <p className="text-xs sm:text-sm mb-5 font-light">Enter a new password to change your password.</p>
                 <form onSubmit={submit}>
                     <div className=" mb-3 flex flex-col gap-3">
                         <div>

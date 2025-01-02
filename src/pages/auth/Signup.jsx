@@ -3,24 +3,26 @@ import { Link } from "react-router-dom"
 import toast from "react-hot-toast";
 import BeatLoader from 'react-spinners/BeatLoader'
 import axiosInstance from "../../utils/axios"
-import { FcGoogle } from "react-icons/fc";
-import { MdWavingHand } from "react-icons/md";
 import LnkInput from "../../components/forms/lnkInput";
 import useError from "../../hooks/useError";
+import { FcGoogle } from "react-icons/fc";
+import { MdWavingHand } from "react-icons/md";
+import { FaInfoCircle } from "react-icons/fa";
 
 const Signup = () => {
 
     /*
        Initialize react hooks
    */
+    let [setErrors, errorExist] = useError()
     const [loading, setLoading] = useState(false)
+    const [displayAlertSuccess, setDisplayAlertSuccess] = useState(false)
     const [userData, setUserData] = useState({
         username: '',
         email: '',
         password: '',
         passwordConfirmation: ''
     })
-    let [setErrors, errorExist] = useError()
 
     /*
         Functions and event
@@ -43,6 +45,7 @@ const Signup = () => {
             })
             if (response.status === 200) {
                 setLoading(false)
+                setDisplayAlertSuccess(true)
                 toast.success("Account successfully created!")
                 setUserData({
                     username: '',
@@ -73,6 +76,16 @@ const Signup = () => {
             <section className="  max-w-[400px] w-[90%] mx-auto">
                 <h2 className=" text-3xl mb-1 font-bold">Signup</h2>
                 <p className=" text-sm mb-5 font-light">Hello, Create your Account. <MdWavingHand className="inline-block align-middle text-lnk-orange text-base" /></p>
+                {
+                    displayAlertSuccess ? (
+                        <div className=" mb-3 bg-green-400 p-2 rounded grid grid-cols-[15px_1fr] gap-1">
+                            <div>
+                                <FaInfoCircle className="text-lnk-dark" />
+                            </div>
+                            <p className=" text-xs text-lnk-dark">Signup successful! We've sent a <span className=" font-bold">confirmation email</span>. Click the link in the email to verify your account.</p>
+                        </div>
+                    ) : null
+                }
                 <div className=" mb-4">
                     <button className=" flex items-center justify-center gap-2 text-sm bg-lnk-white border border-lnk-gray w-full py-2 rounded">
                         <FcGoogle />
