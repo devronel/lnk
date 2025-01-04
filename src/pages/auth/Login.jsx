@@ -52,10 +52,10 @@ const Login = () => {
                 </div>
                 <form onSubmit={submit}>
                     <div className=" mb-3">
-                        <LnkInput onChange={handleChange} name='email' type="email" label="Email" />
+                        <LnkInput required onChange={handleChange} name='email' type="email" label="Email" />
                     </div>
                     <div className=" mb-3">
-                        <LnkInput onChange={handleChange} name='password' type='password' label="Password" />
+                        <LnkInput required onChange={handleChange} name='password' type='password' label="Password" />
                     </div>
                     <Link to='/forgot-password' className="block mb-3 text-right text-xs hover:underline text-lnk-orange">
                         Forgot Password?

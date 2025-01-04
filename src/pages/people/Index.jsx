@@ -19,7 +19,6 @@ const People = () => {
             })
 
             if (result.data.success) {
-
                 setUsers(result.data.payload.users);
 
             }
@@ -46,12 +45,15 @@ const People = () => {
                                 return (
                                     <PeopleCard
                                         key={value.userId}
+                                        userId={value.userId}
                                         fullName={value.full_name}
                                         username={value.username}
                                         headline={value.headline}
                                         address={value.address}
                                         profileUrl={value.url}
                                         coverPhoto={value.user_cover_photo}
+                                        friendStatus={value.friend_status}
+                                        refreshUser={getAllusers}
                                     />
                                 )
                             })

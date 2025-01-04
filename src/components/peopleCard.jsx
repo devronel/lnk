@@ -1,3 +1,4 @@
+import axiosInstance from "../utils/axios";
 import { MdOutlinePersonAdd } from "react-icons/md";
 import { isNull, path } from '../utils/functions'
 
@@ -8,7 +9,27 @@ import profilePlacholder from '../assets/profile-placeholder.jpg'
 import coverPhotoPlaceholder from "../assets/cover-photo-placeholder.png"
 import { Link } from "react-router-dom";
 
-const PeopleCard = ({ fullName, headline, address, profileUrl, username, coverPhoto }) => {
+const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username, coverPhoto, friendStatus, refreshUser }) => {
+
+    const addFriend = async () => {
+        try {
+            const response = await axiosInstance.post('/friend/add', {
+                friendId: userId,
+                status: 'Pending'
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            if (response.status === 200) {
+                refreshUser()
+            }
+        } catch (error) {
+            console.log(error.response)
+        }
+    }
+
     return (
         <div>
             <div className="h-full flex flex-col overflow-hidden rounded border border-lnk-gray bg-lnk-white">
@@ -26,10 +47,14 @@ const PeopleCard = ({ fullName, headline, address, profileUrl, username, coverPh
                     <p className=" font-light text-xs text-lnk-dark-gray">{isNull(address) ? null : address}</p>
                 </div>
                 <div className=" px-2 pb-3">
-                    <button className=" text-sm rounded border border-lnk-orange px-2 py-1 w-full hover:bg-lnk-orange hover:text-lnk-white transition-all ease-linear duration-150">
-                        <MdOutlinePersonAdd className="text-lg inline-block align-middle mr-2" />
-                        <span className=" align-middle">Follow</span>
-                    </button>
+                    {
+                        isNull(friendStatus) ? (
+                            <button onClick={addFriend} className=" text-sm rounded border border-lnk-orange px-2 py-1 w-full hover:bg-lnk-orange hover:text-lnk-white transition-all ease-linear duration-150">
+                                <MdOutlinePersonAdd className="text-lg inline-block align-middle mr-2" />
+                                <span className=" align-middle">Add Friend</span>
+                            </button>
+                        ) : <p>Request Sent</p>
+                    }
                 </div>
             </div>
         </div>

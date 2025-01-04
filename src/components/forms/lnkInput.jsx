@@ -1,4 +1,4 @@
-const LnkInput = ({ value, type, placeholder, label, className, name, onChange, error }) => {
+const LnkInput = ({ value, type, placeholder, label, className, name, onChange, error, required }) => {
     return (
         <div className={className}>
             {label ? (
@@ -11,6 +11,7 @@ const LnkInput = ({ value, type, placeholder, label, className, name, onChange, 
                 type={type}
                 id={label.toLowerCase().replace(' ', '-')}
                 placeholder={placeholder}
+                required={required}
                 className={`${error ? ' border-red-500' : 'border-lnk-gray'} px-3 py-2 w-full rounded border font-source-code-pro  text-sm outline-none focus:outline focus:outline-lnk-orange`}
             />
         </div>
