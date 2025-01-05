@@ -1,6 +1,7 @@
 import axiosInstance from "../utils/axios";
 import { MdOutlinePersonAdd } from "react-icons/md";
 import { isNull, path } from '../utils/functions'
+import { FaCheck } from "react-icons/fa";
 
 /*
     Import assets (images, videos etc.)
@@ -30,8 +31,26 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
         }
     }
 
+    const checkFriendStatus = () => {
+        if (isNull(friendStatus)) {
+            return (
+                <button onClick={addFriend} className=" text-sm rounded border border-lnk-orange px-2 py-1 w-full hover:bg-lnk-orange hover:text-lnk-white transition-all ease-linear duration-150">
+                    <MdOutlinePersonAdd className="text-lg inline-block align-middle mr-2" />
+                    <span className=" align-middle">Add Friend</span>
+                </button>
+            )
+        } else if (friendStatus === 'Pending') {
+            return (
+                <p className=" text-green-400 text-sm flex items-center gap-1 font-bold">
+                    <FaCheck />
+                    Request Sent
+                </p>
+            )
+        }
+    }
+
     return (
-        <div>
+        <div className="">
             <div className="h-full flex flex-col overflow-hidden rounded border border-lnk-gray bg-lnk-white">
                 <div className=" relative">
                     <div className=" h-auto w-full border-b border-lnk-gray">
@@ -43,17 +62,12 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
                 </div>
                 <div className=" pt-8 px-2 mb-4 flex-1">
                     <Link to={`/profile-info/${username}`} className=" font-bold text-lg hover:underline">{isNull(fullName) ? username : fullName}</Link>
-                    <p className=" font-normal text-xs">{isNull(headline) ? 'Not available' : headline}</p>
+                    <p className=" font-normal text-xs">{isNull(headline) ? <p></p> : headline}</p>
                     <p className=" font-light text-xs text-lnk-dark-gray">{isNull(address) ? null : address}</p>
                 </div>
                 <div className=" px-2 pb-3">
                     {
-                        isNull(friendStatus) ? (
-                            <button onClick={addFriend} className=" text-sm rounded border border-lnk-orange px-2 py-1 w-full hover:bg-lnk-orange hover:text-lnk-white transition-all ease-linear duration-150">
-                                <MdOutlinePersonAdd className="text-lg inline-block align-middle mr-2" />
-                                <span className=" align-middle">Add Friend</span>
-                            </button>
-                        ) : <p>Request Sent</p>
+                        checkFriendStatus()
                     }
                 </div>
             </div>

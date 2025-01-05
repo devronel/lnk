@@ -1,10 +1,10 @@
-import { isNull, path } from '../utils/functions'
+import { isNull, path } from '../../utils/functions'
 
 /*
     Import assets (images, videos etc.)
 */
-import profilePlacholder from '../assets/profile-placeholder.jpg'
-import coverPhotoPlaceholder from "../assets/cover-photo-placeholder.png"
+import profilePlacholder from '../../assets/profile-placeholder.jpg'
+import coverPhotoPlaceholder from "../../assets/cover-photo-placeholder.png"
 
 const LeftSidebar = ({ firstName, lastName, username, headline, address, profileUrl, coverPhoto }) => {
     return (

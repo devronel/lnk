@@ -7,7 +7,7 @@ import PeopleCard from "../../components/peopleCard";
 */
 import empty from "../../assets/empty.svg"
 
-const People = () => {
+const Friends = () => {
 
     let [users, setUsers] = useState([])
 
@@ -39,7 +39,7 @@ const People = () => {
             <h1 className=" mb-2 text-sm md:text-base font-bold">People you may know</h1>
             {
                 users.length > 0 ? (
-                    <main className=" grid grid-cols-1 xs:grid-cols-2 xl:grid-cols-3 gap-2">
+                    <main className=" grid grid-cols-1 xs:grid-cols-2 xl:grid-cols-4 gap-2">
                         {
                             users.map(value => {
                                 return (
@@ -73,4 +73,4 @@ const People = () => {
     )
 }
 
-export default People;
+export default Friends;
