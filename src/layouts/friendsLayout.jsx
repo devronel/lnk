@@ -7,11 +7,6 @@ import FriendsMenu from "../components/sidemenu/friendsMenu"
 const FriendsLayout = () => {
     const location = useLocation();
     const { isLogin, user } = useContext(AuthContext)
-    const [currentUrl, setCurrentUrl] = useState('')
-
-    useEffect(() => {
-        setCurrentUrl(location.pathname)
-    }, [location])
 
     return isLogin ? (
         <>
