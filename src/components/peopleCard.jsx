@@ -35,6 +35,26 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
         }
     }
 
+    const confirmFriendRequest = async () => {
+        try {
+            const response = await axiosInstance.post('/friend/accept-friend', {
+                friendId: userId,
+                status: 'Accepted'
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            if (response.status === 200) {
+                console.log('Running')
+                refreshUser()
+            }
+        } catch (error) {
+            console.log(error.response)
+        }
+    }
+
     const checkFriendStatus = () => {
         if (isNull(friendStatus)) {
             return (
@@ -45,6 +65,14 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
             )
         } else if (friendStatus === 'Pending') {
             return displayButton()
+        } else {
+            return (
+                <div className="flex items-center justify-center gap-1 text-xs rounded border border-green-400 px-2 py-1 w-full bg-green-400 font-bold transition-all ease-linear duration-150">
+                    <FaUserCheck className=" text-base" />
+                    Visit Profile
+                </div>
+
+            )
         }
     }
 
@@ -59,10 +87,10 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
         } else if (location.pathname === '/friends/request') {
             return (
                 <div className=" flex items-center gap-2">
-                    <button onClick={addFriend} className=" text-xs rounded border border-green-400 px-2 py-1 w-full bg-green-400 hover:bg-opacity-90 font-bold transition-all ease-linear duration-150">
+                    <button onClick={confirmFriendRequest} className=" text-xs rounded border border-green-400 px-2 py-1 w-full bg-green-400 hover:bg-opacity-90 font-bold transition-all ease-linear duration-150">
                         <span className=" align-middle">Confirm</span>
                     </button>
-                    <button onClick={addFriend} className=" text-xs rounded border border-red-400 px-2 py-1 w-full bg-red-400 hover:bg-opacity-90 font-bold transition-all ease-linear duration-150">
+                    <button className=" text-xs rounded border border-red-400 px-2 py-1 w-full bg-red-400 hover:bg-opacity-90 font-bold transition-all ease-linear duration-150">
                         <span className=" align-middle">Reject</span>
                     </button>
                 </div>

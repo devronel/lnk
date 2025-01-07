@@ -12,7 +12,6 @@ const FriendsRequest = () => {
                 withCredentials: true
             })
             if (response.status === 200) {
-                console.log(response.data)
                 setFriendRequest(response.data.payload.friendRequest)
             }
         } catch (error) {
@@ -43,6 +42,7 @@ const FriendsRequest = () => {
                                         profileUrl={value.url}
                                         coverPhoto={value.user_cover_photo}
                                         friendStatus={value.friend_status}
+                                        refreshUser={getFriendRequest}
                                     />
                                 )
                             })
