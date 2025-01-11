@@ -161,16 +161,16 @@ const PostImage = () => {
             <button onClick={() => navigate(-1)} className="fixed top-3 left-3 z-20 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
                 <IoMdClose />
             </button>
-            <div className="bg-lnk-dark min-h-screen h-auto overflow-hidden flex items-center justify-center p-2">
+            <div className="bg-lnk-dark h-screen overflow-hidden flex items-center justify-center p-2">
                 <div className="embla" ref={emblaRef}>
                     <div className="embla__container items-center">
                         {
                             !isNull(post) ? (
                                 parseJson(post.post_files).map(value => {
                                     return (
-                                        <div key={value.id} className="embla__slide flex items-center justify-center ">
-                                            <div>
-                                                <img className="w-full h-full object-contain aspect-auto"
+                                        <div key={value.id} className="embla__slide flex items-center justify-center">
+                                            <div className="">
+                                                <img className="object-contain w-[600px] aspect-square"
                                                     src={path(value.url)}
                                                     alt={value.filename} />
                                             </div>

@@ -73,11 +73,11 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                 }
 
                 return (
-                    <Link to={`/post-image/${postId}/${username}`} className="grid grid-cols-2 h-full">
-                        <div className='h-[300px]'>
-                            <img className="w-full h-full object-cover" src={path(postImages[0].url)} alt={postImages[0].filename} />
+                    <Link to={`/post-image/${postId}/${username}`} className="grid grid-cols-2 gap-1 h-full">
+                        <div className=''>
+                            <img className="aspect-square object-cover" src={path(postImages[0].url)} alt={postImages[0].filename} />
                         </div>
-                        <div className=" grid grid-cols-1 grid-rows-2 h-[300px]">
+                        <div className=" grid grid-cols-1 grid-rows-2 gap-1 aspect-square">
                             {
                                 twoPhotos.map(value => (
                                     <div key={value.id} className='h-full relative'>

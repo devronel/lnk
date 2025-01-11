@@ -12,7 +12,9 @@
   "dependencies": {
     "@tanstack/react-query": "^5.59.20",
     "@tanstack/react-query-devtools": "^5.59.20",
+    "@tiptap/extension-bubble-menu": "^2.11.2",
     "@tiptap/extension-link": "^2.10.3",
+    "@tiptap/extension-placeholder": "^2.11.2",
     "@tiptap/pm": "^2.10.3",
     "@tiptap/react": "^2.10.3",
     "@tiptap/starter-kit": "^2.10.3",
