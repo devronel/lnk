@@ -48,6 +48,7 @@ const PostComments = ({ postId, isShowComment, authUserProfile }) => {
             queryClient.invalidateQueries({
                 queryKey: ['comments', postId]
             })
+            queryClient.invalidateQueries(['posts'])
         },
         onError: (error) => {
             console.log(error)

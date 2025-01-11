@@ -5,6 +5,7 @@ import useEmblaCarousel from "embla-carousel-react"
 import axiosInstance from "../../utils/axios"
 import TiptopView from '../../components/wysiwyg/TiptopView'
 import { AuthContext } from "../../context/AuthContext"
+import { capitalize } from "lodash"
 import { IoMdClose, IoMdTime } from "react-icons/io"
 import { diffInDays, isNull, parseJson, path } from "../../utils/functions"
 import { FaHeart } from "react-icons/fa"
@@ -12,6 +13,7 @@ import { AiFillLike, AiOutlineComment, AiOutlineLike } from "react-icons/ai"
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { MdOutlineCommentsDisabled } from "react-icons/md"
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
+import { FaRegComment } from "react-icons/fa";
 import { GrSend } from "react-icons/gr"
 import FullPageLoader from "../../components/loader/fullPageLoader"
 import PostReaction from "../../components/postReactions"
@@ -20,13 +22,16 @@ import PostReaction from "../../components/postReactions"
     Import assets like image and etc.
 */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
+import wowIcon from '../../assets/icons/wow.png'
+import likeIcon from '../../assets/icons/like.png'
+import heartIcon from '../../assets/icons/heart.png'
 
 const PostImage = () => {
 
     let [emblaRef] = useEmblaCarousel()
     let queryClient = useQueryClient()
     let { post_id, username } = useParams()
-    let { user, setUser, refreshUser } = useContext(AuthContext)
+    let { user } = useContext(AuthContext)
     let [isFetching, setIsFetching] = useState(true)
     let [commentPage, setCommentPage] = useState(0)
     let [comment, setComment] = useState('')
@@ -41,24 +46,24 @@ const PostImage = () => {
             if (post.is_reacted === 'like') {
                 return (
                     <>
-                        <AiFillLike className="text-blue-500" />
-                        <span className="text-blue-500 font-bold">{post.is_reacted}</span>
+                        <img width={20} height={20} src={likeIcon} alt="Like icon" />
+                        <span className="text-blue-500 font-bold">{capitalize(post.is_reacted)}</span>
                     </>
                 )
             }
             else if (post.is_reacted === 'heart') {
                 return (
                     <>
-                        <FaHeart className="text-red-500" />
-                        <span className="text-red-500 font-bold" >{post.is_reacted}</span>
+                        <img width={20} height={20} src={heartIcon} alt="Heart icon" />
+                        <span className="text-red-500 font-bold" >{capitalize(post.is_reacted)}</span>
                     </>
                 )
             }
             else {
                 return (
                     <>
-                        <BsFillEmojiSurpriseFill className="text-yellow-500" />
-                        <span className="text-yellow-500 font-bold">{post.is_reacted}</span>
+                        <img width={16} height={16} src={wowIcon} alt="Wow icon" />
+                        <span className="text-yellow-500 font-bold">{capitalize(post.is_reacted)}</span>
                     </>
                 )
             }
@@ -157,23 +162,21 @@ const PostImage = () => {
 
 
     return (
-        <section className={`min-h-screen h-auto overflow-hidden pr-[400px]`}>
+        <section className={`min-h-screen h-auto overflow-hidden grid grid-cols-[70%_30%]`}>
             <button onClick={() => navigate(-1)} className="fixed top-3 left-3 z-20 text-lnk-orange border border-lnk-orange p-1 rounded-full hover:bg-lnk-orange hover:text-lnk-white">
                 <IoMdClose />
             </button>
-            <div className="bg-lnk-dark h-screen overflow-hidden flex items-center justify-center p-2">
+            <div className="bg-lnk-dark h-screen flex items-center justify-center p-3">
                 <div className="embla" ref={emblaRef}>
-                    <div className="embla__container items-center">
+                    <div className="embla__container">
                         {
                             !isNull(post) ? (
                                 parseJson(post.post_files).map(value => {
                                     return (
-                                        <div key={value.id} className="embla__slide flex items-center justify-center">
-                                            <div className="">
-                                                <img className="object-contain w-[600px] aspect-square"
-                                                    src={path(value.url)}
-                                                    alt={value.filename} />
-                                            </div>
+                                        <div key={value.id} className="embla__slide">
+                                            <img className="embla__image"
+                                                src={path(value.url)}
+                                                alt={value.filename} />
                                         </div>
                                     )
                                 })
@@ -182,7 +185,7 @@ const PostImage = () => {
                     </div>
                 </div>
             </div>
-            <div className="fixed top-0 bottom-0 right-0 w-[400px] bg-lnk-white overflow-y-auto">
+            <div className=" bg-lnk-white overflow-y-auto">
                 <div className=" py-6 px-5">
                     <div className=" flex items-start gap-2 mb-4">
                         <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
@@ -225,8 +228,8 @@ const PostImage = () => {
                                         ) : userReaction()
                                     }
                                 </button>
-                                <div className="animate__animated animate__fadeIn absolute z-10 -top-12 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
-                                    <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
+                                <div className="animate__animated animate__fadeIn absolute z-10 -top-11 hidden pb-2 opacity-0 group-hover:block group-hover:opacity-100  transition-all ease-linear duration-150">
+                                    <div className="bg-lnk-white border border-lnk-gray p-2 flex items-center gap-5 rounded-3xl shadow ">
                                         <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                             <FaHeart className=" text-red-500 text-xl" />
                                         </button>
@@ -241,7 +244,7 @@ const PostImage = () => {
                             </li>
                             <li>
                                 <button className="text-sm flex items-center gap-1  py-2 px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
-                                    <AiOutlineComment className=" text-lg" />
+                                    <FaRegComment className=" text-lg" />
                                     <span>Comment</span>
                                 </button>
                             </li>

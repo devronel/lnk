@@ -8,6 +8,8 @@ import { RiCloseCircleFill } from "react-icons/ri"
 import { FcAddImage } from "react-icons/fc"
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 
+import photoGalleryIcon from "../../assets/icons/photo-gallery.png"
+
 
 const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
 
@@ -113,14 +115,14 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
     }, [isPostModalOpen])
 
     return (
-        <Modal submit={save} loader={loading} openModal={isPostModalOpen} closeModal={closeModal} title="Create Post" icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
+        <Modal submit={save} loader={loading} openModal={isPostModalOpen} closeModal={closeModal} title='Create Post' icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
             <div className=" mb-3">
                 <Tiptop content={post} setContent={setPost} setErrors={setErrors} />
                 {
                     errorExist('content') ? <p className=" text-red-500 text-xs mt-1 italic">{errorExist('content').msg}</p> : null
                 }
             </div>
-            {/* <div className=" flex items-center flex-wrap gap-2">
+            <div className=" flex items-center flex-wrap gap-2">
                 {
                     filesPreview.length > 0 ? (
                         filesPreview.map((value, index) => {
@@ -137,11 +139,11 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
                 }
             </div>
             <div className=" flex items-center gap-2 justify-end">
-                <label htmlFor="files" className="cursor-pointer hover:text-lnk-orange text-xl">
-                    <FcAddImage />
+                <label title="Attach Image" htmlFor="files" className="cursor-pointer hover:text-lnk-orange text-2xl">
+                    <img width={30} className=" aspect-square" src={photoGalleryIcon} alt="Attach image" />
                     <input onChange={handleOnchange} type="file" multiple name="files" id="files" hidden accept=".png,.webp,.jpeg,.jpg" />
                 </label>
-            </div> */}
+            </div>
         </Modal>
     )
 }

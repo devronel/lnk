@@ -2,10 +2,14 @@ import { FaHeart } from "react-icons/fa";
 import { AiFillLike } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs";
 
+import wowIcon from '../assets/icons/wow.png'
+import likeIcon from '../assets/icons/like.png'
+import heartIcon from '../assets/icons/heart.png'
+
 const reactionIcons = {
-    heart: <span className=" bg-red-500 w-4 h-4 p-[3px] rounded-full flex items-center justify-center"><FaHeart className="text-lnk-white text-xs" /></span>,
-    like: <span className=" bg-blue-500 w-4 h-4 p-[3px] rounded-full flex items-center justify-center"><AiFillLike className="text-lnk-white text-xs" /></span>,
-    wow: <span className=" bg-yellow-500 w-4 h-4 p-[3px] rounded-full flex items-center justify-center"><BsFillEmojiSurpriseFill className="text-lnk-white text-xs" /></span>,
+    heart: <span className="flex items-center justify-center"><img width={23} height={23} src={heartIcon} alt="Heart icon" /></span>,
+    like: <span className=" flex items-center justify-center"><img width={23} height={23} src={likeIcon} alt="Like icon" /></span>,
+    wow: <span className=" flex items-center justify-center"><img width={18} height={18} src={wowIcon} alt="Wow icon" /></span>,
 };
 
 const PostReaction = ({ postReactions, reactionCount }) => {
@@ -24,7 +28,7 @@ const PostReaction = ({ postReactions, reactionCount }) => {
                 {reactions.map((icon, index) => (
                     <div
                         key={index}
-                        className={`${index > 0 ? "-ml-[3px]" : ""} rounded-full`}
+                        className={`${index > 0 ? "-ml-[6px]" : ""} rounded-full`}
                         style={{ zIndex: reactions.length - index }}
                     >
                         {icon}

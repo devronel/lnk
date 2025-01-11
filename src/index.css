@@ -40,9 +40,21 @@
 
 .embla__container {
     display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .embla__slide {
     flex: 0 0 100%;
     min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.embla__image {
+    height: calc(100vh - 1.75rem);
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: contain;
 }

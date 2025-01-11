@@ -28,7 +28,7 @@ const LeftSidebar = ({ firstName, lastName, username, headline, address, profile
                 </div>
                 <div className=" pt-8 pb-3 px-2">
                     <h4 className=" font-bold text-lg">{isNull(firstName) || isNull(lastName) ? username : firstName + ' ' + lastName}</h4>
-                    <p className=" font-normal text-xs">{isNull(headline) ? 'No headline available' : headline}</p>
+                    <p className=" font-normal text-sm">{isNull(headline) ? 'No headline available' : headline}</p>
                     <p className=" font-light text-xs text-lnk-dark-gray">{address}</p>
                 </div>
             </div>

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isNull, capitalize, debounce } from 'lodash'
 import axiosInstance from "../utils/axios";
 import TiptopView from "./wysiwyg/TiptopView";
-import { FaHeart, FaGlobeAsia } from "react-icons/fa";
+import { FaHeart, FaGlobeAsia, FaRegComment } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { diffInDays, path } from "../utils/functions";
@@ -16,6 +16,9 @@ import profilePlaceholder from "../assets/profile-placeholder.jpg"
 import PostReaction from "./postReactions";
 import toast from "react-hot-toast";
 import PostComments from "./postComments";
+import wowIcon from '../assets/icons/wow.png'
+import likeIcon from '../assets/icons/like.png'
+import heartIcon from '../assets/icons/heart.png'
 
 const Post = ({ postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
 
@@ -114,24 +117,24 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
         if (isReact === 'like') {
             return (
                 <>
-                    <AiFillLike className="text-blue-500" />
-                    <span className="text-blue-500 font-medium">{capitalize(isReact)}</span>
+                    <img width={20} height={20} src={likeIcon} alt="Like icon" />
+                    <span className="text-blue-500 font-bold">{capitalize(isReact)}</span>
                 </>
             )
         }
         else if (isReact === 'heart') {
             return (
                 <>
-                    <FaHeart className="text-red-500" />
-                    <span className="text-red-500 font-medium">{capitalize(isReact)}</span>
+                    <img width={20} height={20} src={heartIcon} alt="Heart icon" />
+                    <span className="text-red-500 font-bold">{capitalize(isReact)}</span>
                 </>
             )
         }
         else if (isReact === 'wow') {
             return (
                 <>
-                    <BsFillEmojiSurpriseFill className="text-yellow-500" />
-                    <span className="text-yellow-500 font-medium">{capitalize(isReact)}</span>
+                    <img width={16} height={16} src={wowIcon} alt="Wow icon" />
+                    <span className="text-yellow-500 font-bold">{capitalize(isReact)}</span>
                 </>
             )
         } else {
@@ -212,8 +215,8 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                         <button onTouchStart={handleShowReactionIcon} onTouchEnd={isShowReactionIcon ? handleHideReactionIcon : handleShowReactionIcon} className="text-sm flex items-center gap-1 py-1 sm:py-2 px-2 sm:px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
                             {userReaction()}
                         </button>
-                        <div className={`${isShowReactionIcon ? 'block' : 'hidden'} animate__animated animate__fadeIn absolute -top-12 z-10 pb-2 opacity-0 group-hover:opacity-100  transition-all ease-linear duration-150`}>
-                            <div className=" bg-lnk-white border border-lnk-gray p-3 flex items-center gap-5 rounded ">
+                        <div className={`${isShowReactionIcon ? 'block' : 'hidden'} animate__animated animate__fadeIn absolute -top-11 z-10 pb-2 opacity-0 group-hover:opacity-100  transition-all ease-linear duration-150`}>
+                            <div className=" bg-lnk-white border border-lnk-gray p-2 flex items-center gap-5 rounded-3xl shadow">
                                 <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <FaHeart className=" text-red-500 text-xl" />
                                 </button>
@@ -228,7 +231,7 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                     </li>
                     <li>
                         <button onClick={fetchAllComment} className="text-sm flex items-center gap-1 py-1 sm:py-2 px-2 sm:px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
-                            <AiOutlineComment className="" />
+                            <FaRegComment className="" />
                             <span>Comment</span>
                         </button>
                     </li>
