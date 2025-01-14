@@ -38,7 +38,7 @@ const Navigation = (props) => {
                                 <Link to="/"><SiFeedly className={`${route === '/' ? 'text-lnk-orange' : null} text-xl sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
-                                <Link to="/friends"><MdPeopleAlt className={`${route === '/friends' ? 'text-lnk-orange' : null} text-xl sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
+                                <Link to="/friends"><MdPeopleAlt className={`${route?.startsWith('/friends') ? 'text-lnk-orange' : null} text-xl sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                             <li>
                                 <Link to="/chat"><IoIosChatbubbles className={`${route === '/chat' ? 'text-lnk-orange' : null} text-xl sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
@@ -68,7 +68,7 @@ const Navigation = (props) => {
                         <Link to="/"><SiFeedly className={`${route === '/' ? 'text-lnk-orange' : null} text-xl hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                     </li>
                     <li>
-                        <Link to="/friends"><MdPeopleAlt className={`${route === '/friends' ? 'text-lnk-orange' : null} text-xl hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
+                        <Link to="/friends"><MdPeopleAlt className={`${route?.startsWith('/friends') ? 'text-lnk-orange' : null} text-xl hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                     </li>
                     <li>
                         <Link to="/chat"><IoIosChatbubbles className={`${route === '/chat' ? 'text-lnk-orange' : null} text-xl hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>

@@ -109,8 +109,8 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
         <div className="">
             <div className="h-full flex flex-col overflow-hidden rounded border border-lnk-gray bg-lnk-white">
                 <div className=" relative">
-                    <div className=" h-auto w-full border-b border-lnk-gray">
-                        <img className=" aspect-[4/1]" src={(path(coverPhoto)) ?? coverPhotoPlaceholder} alt="" />
+                    <div className=" h-auto border-b border-lnk-gray">
+                        <img className="w-full aspect-[4/1]" src={(path(coverPhoto)) ?? coverPhotoPlaceholder} alt="" />
                     </div>
                     <div className=" w-14 h-14 rounded-full overflow-hidden border border-lnk-white absolute -bottom-6 left-2">
                         <img className=" w-full h-full object-cover" src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)} alt="" />

@@ -1,12 +1,18 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
+import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import Navigation from "../components/navigation"
 import FriendsMenu from "../components/sidebar/friendsMenu"
+import { FaHome, FaUserClock, FaUserFriends } from "react-icons/fa";
 
 const FriendsLayout = () => {
     const location = useLocation();
     const { isLogin, user } = useContext(AuthContext)
+    const [currentRoute, setCurrentRoute] = useState('')
+
+    useEffect(() => {
+        setCurrentRoute(location.pathname)
+    }, [location])
 
     return isLogin ? (
         <>
@@ -18,6 +24,17 @@ const FriendsLayout = () => {
                             <FriendsMenu />
                         </div>
                         <div className=" pt-12 xs:pt-0">
+                            <div className="flex md:hidden items-center flex-wrap gap-2 mb-2">
+                                <Link to={'/friends'} title="Friends" className={`${currentRoute === '/friends' ? 'bg-lnk-dark-gray text-lnk-white' : 'text-lnk-dark-gray'} text-sm px-2 py-1 rounded-md border border-lnk-dark-gray`}>
+                                    <FaHome className=" text-lg " />
+                                </Link>
+                                <Link to={'/friends/request'} title="Friend Request" className={`${currentRoute === '/friends/request' ? 'bg-lnk-dark-gray text-lnk-white' : 'text-lnk-dark-gray'} text-sm px-2 py-1 rounded-md border border-lnk-dark-gray`}>
+                                    <FaUserClock className=" text-lg" />
+                                </Link>
+                                <Link to={'/all-friend'} title="All Friends" className={`${currentRoute === '/all-friend' ? 'bg-lnk-dark-gray text-lnk-white' : 'text-lnk-dark-gray'} text-sm px-2 py-1 rounded-md border border-lnk-dark-gray`}>
+                                    <FaUserFriends className=" text-lg" />
+                                </Link>
+                            </div>
                             <Outlet />
                         </div>
                     </div>
