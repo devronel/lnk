@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useLayoutEffect } from "react";
 import toast from "react-hot-toast";
 import FullPageLoader from "../components/loader/fullPageLoader";
 import axiosInstance from "../utils/axios";
@@ -11,10 +11,11 @@ export const AuthProvider = ({ children }) => {
     const [authLoading, setAuthLoading] = useState(false)
     const [isAuthenticating, setIsAuthenticating] = useState(false)
     const [user, setUser] = useState(null)
+    const [accessToken ,setAccessToken] = useState()
 
-    /*
-        Login user
-    */
+    /* ==========================
+        AUTHENTICATE/LOGIN USER
+    =============================*/
     const authenticate = async (data) => {
         try {
             setAuthLoading(true)
@@ -25,13 +26,16 @@ export const AuthProvider = ({ children }) => {
                 }
             })
             if (user.status === 200) {
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.ACCESS_TOKEN}`;
+                setAccessToken(user.data.payload.ACCESS_TOKEN)
                 setIsLogin(true)
                 setAuthLoading(false)
-                refreshUser()
+                refreshUser()  
             }
         } catch (error) {
             setIsLogin(false)
             setAuthLoading(false)
+            console.log(error.response)
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
@@ -45,9 +49,9 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    /*
-        Logout user
-    */
+    /* ================
+        LOGOUT USER
+    ===================*/
     const logout = async () => {
         try {
             let response = await axiosInstance.delete('/user/logout', {
@@ -61,9 +65,9 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    /*
-        Validate user
-    */
+    /* =====================================
+        GET USER DATA, RUN WHEN PAGE RELOAD
+    =========================================*/
     const refreshUser = async () => {
         try {
             setIsAuthenticating(true)
@@ -80,6 +84,18 @@ export const AuthProvider = ({ children }) => {
             setIsLogin(false)
         }
     }
+
+    useLayoutEffect(() => {
+        const authInterceptors = axiosInstance.interceptors.request.use((config) => {
+            console.log('running')
+            config.headers.Authorization = !config._retry && accessToken ? `Bearer ${accessToken}` : config.headers.Authorization
+            return config
+        })
+
+        return () => {
+            axiosInstance.interceptors.request.eject(authInterceptors)
+        }
+    }, [accessToken])
 
     useEffect(() => {
         refreshUser()
