@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
     const [authLoading, setAuthLoading] = useState(false)
     const [isAuthenticating, setIsAuthenticating] = useState(false)
     const [user, setUser] = useState(null)
-    const [accessToken ,setAccessToken] = useState()
 
     /* ==========================
         AUTHENTICATE/LOGIN USER
@@ -27,7 +26,6 @@ export const AuthProvider = ({ children }) => {
             })
             if (user.status === 200) {
                 axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.ACCESS_TOKEN}`;
-                setAccessToken(user.data.payload.ACCESS_TOKEN)
                 setIsLogin(true)
                 setAuthLoading(false)
                 refreshUser()  
@@ -85,21 +83,10 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    useLayoutEffect(() => {
-        const authInterceptors = axiosInstance.interceptors.request.use((config) => {
-            console.log('running')
-            config.headers.Authorization = !config._retry && accessToken ? `Bearer ${accessToken}` : config.headers.Authorization
-            return config
-        })
-
-        return () => {
-            axiosInstance.interceptors.request.eject(authInterceptors)
-        }
-    }, [accessToken])
-
     useEffect(() => {
         refreshUser()
     }, [])
+
 
     if (isAuthenticating) {
         return <FullPageLoader />

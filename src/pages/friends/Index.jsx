@@ -8,14 +8,12 @@ import EmptyFriend from "../../components/emptyPagePlaceholder/emptyFriend";
 */
 
 const Friends = () => {
-
     let [users, setUsers] = useState([])
-
     let getAllusers = async () => {
         try {
 
             let result = await axiosInstance.get('/user/all', {
-                withCredentials: true
+                withCredentials: true,
             })
 
             if (result.data.success) {
