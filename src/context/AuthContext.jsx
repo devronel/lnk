@@ -12,9 +12,9 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticating, setIsAuthenticating] = useState(false)
     const [user, setUser] = useState(null)
 
-    /* ==========================
+    /* =====================================================================
         AUTHENTICATE/LOGIN USER
-    =============================*/
+    ========================================================================*/
     const authenticate = async (data) => {
         try {
             setAuthLoading(true)
@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             setIsLogin(false)
             setAuthLoading(false)
-            console.log(error.response)
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
@@ -47,9 +46,9 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    /* ================
+    /* =================================================================================
         LOGOUT USER
-    ===================*/
+    ====================================================================================*/
     const logout = async () => {
         try {
             let response = await axiosInstance.delete('/user/logout', {
@@ -63,9 +62,9 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    /* =====================================
+    /* ==================================================================================
         GET USER DATA, RUN WHEN PAGE RELOAD
-    =========================================*/
+    =====================================================================================*/
     const refreshUser = async () => {
         try {
             setIsAuthenticating(true)
