@@ -6,8 +6,10 @@ import axiosInstance from "../../utils/axios"
 import TiptopView from '../../components/wysiwyg/TiptopView'
 import { AuthContext } from "../../context/AuthContext"
 import { capitalize } from "lodash"
-import { IoMdClose, IoMdTime } from "react-icons/io"
 import { diffInDays, isNull, parseJson, path } from "../../utils/functions"
+import FullPageLoader from "../../components/loader/fullPageLoader"
+import PostReaction from "../../components/postReactions"
+import { IoMdClose, IoMdTime } from "react-icons/io"
 import { FaHeart } from "react-icons/fa"
 import { AiFillLike, AiOutlineComment, AiOutlineLike } from "react-icons/ai"
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
@@ -15,8 +17,6 @@ import { MdOutlineCommentsDisabled } from "react-icons/md"
 import { TbSquareChevronLeft, TbSquareChevronRight } from "react-icons/tb"
 import { FaRegComment } from "react-icons/fa";
 import { GrSend } from "react-icons/gr"
-import FullPageLoader from "../../components/loader/fullPageLoader"
-import PostReaction from "../../components/postReactions"
 
 /*
     Import assets like image and etc.

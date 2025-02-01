@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
     const [authLoading, setAuthLoading] = useState(false)
     const [isAuthenticating, setIsAuthenticating] = useState(false)
     const [user, setUser] = useState(null)
+    const [accessToken, setAccessToken] = useState()
 
     /* =====================================================================
         AUTHENTICATE/LOGIN USER
@@ -25,14 +26,16 @@ export const AuthProvider = ({ children }) => {
                 }
             })
             if (user.status === 200) {
-                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.ACCESS_TOKEN}`;
+                // axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${user.data.payload.ACCESS_TOKEN}`;
+                setAccessToken(user.data.payload.ACCESS_TOKEN)
                 setIsLogin(true)
                 setAuthLoading(false)
-                refreshUser()  
+                // refreshUser()  
             }
         } catch (error) {
             setIsLogin(false)
             setAuthLoading(false)
+            console.log(error)
             if (error.response) {
                 switch (error.response.status) {
                     case 401:
@@ -82,10 +85,72 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    // const refreshTokenOnReload = async () => {
+    //     try {
+    //         const userToken = await axiosInstance.get('/user/refresh-token', { withCredentials: true })
+    //         if (userToken.status === 200) {
+    //             setAccessToken(userToken.data.payload.ACCESS_TOKEN)
+    //         }
+    //     } catch (error) {
+            
+    //     }
+    // }
+
+    useLayoutEffect(() => {
+        const requestInterceptor = axiosInstance.interceptors.request.use(config => {
+            config.headers.Authorization = accessToken ? `Bearer ${accessToken}` : config.headers.Authorization
+            return config
+        })
+
+        return () => {
+            axiosInstance.interceptors.request.eject(requestInterceptor)
+        }
+    }, [accessToken])
+
+    useLayoutEffect(() => {
+        const responseInterceptors = axiosInstance.interceptors.response.use(response => response, async error => {
+            const originalConfig = error.config;
+            if (error.response) {
+
+                if (originalConfig.url.includes('/user/authenticate')) {
+                    return Promise.reject(error);
+                }
+
+                if (error.response.status === 401 && !originalConfig._retry) {
+                    originalConfig._retry = true;
+                    try {
+                        const response = await axiosInstance.get('/user/refresh-token', {
+                            withCredentials: true,
+                        })
+                        
+                        if (response.status === 200) {
+                            const newAccessToken = response.data.payload.ACCESS_TOKEN
+                            setAccessToken(newAccessToken)
+                            originalConfig.headers.Authorization = `Bearer ${newAccessToken}`;
+                            return axiosInstance(originalConfig);
+                        }
+                    } catch (error) {
+                        return Promise.reject(error);
+                    }
+
+                }
+
+                return Promise.reject(error);
+            }
+        })
+
+        return () => {
+            axiosInstance.interceptors.response.eject(responseInterceptors)
+        }
+    }, [accessToken])
+
+    // useEffect(() => {
+    //     refreshTokenOnReload()
+    // }, [])
+
     useEffect(() => {
         refreshUser()
-    }, [])
-
+    }, [accessToken])
 
     if (isAuthenticating) {
         return <FullPageLoader />
