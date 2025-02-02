@@ -31,7 +31,7 @@ const PostImage = () => {
     let [emblaRef] = useEmblaCarousel()
     let queryClient = useQueryClient()
     let { post_id, username } = useParams()
-    let { user } = useContext(AuthContext)
+    let { user, accessToken } = useContext(AuthContext)
     let [isFetching, setIsFetching] = useState(true)
     let [commentPage, setCommentPage] = useState(0)
     let [comment, setComment] = useState('')
@@ -87,7 +87,7 @@ const PostImage = () => {
     const getPost = async () => {
         try {
             setIsFetching(true)
-            let result = await axiosInstance(`/post/view-images/${post_id}/${username}`, {
+            let result = await axiosInstance.get(`/post/view-images/${post_id}/${username}`, {
                 withCredentials: true
             })
 
@@ -117,9 +117,9 @@ const PostImage = () => {
         placeholderData: keepPreviousData
     })
 
-    /*
-        Send Comment
-    */
+    /*==============================================================================
+        SEND COMMENT
+    ================================================================================*/
     const commentMutation = useMutation({
         mutationFn: async (data) => {
             let result = await axiosInstance.post('/post/send/comment', {
@@ -151,10 +151,14 @@ const PostImage = () => {
     const sendComment = () => {
         commentMutation.mutate({ post_id: post_id, comment: comment })
     }
+    /*==============================================================================
+        SEND COMMENT
+    ================================================================================*/
 
     useEffect(() => {
+        console.log('Fetching POST Image!')
         getPost()
-    }, [])
+    }, [accessToken])
 
     if (isFetching) {
         return <FullPageLoader />

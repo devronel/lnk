@@ -122,7 +122,7 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
                     errorExist('content') ? <p className=" text-red-500 text-xs mt-1 italic">{errorExist('content').msg}</p> : null
                 }
             </div>
-            <div className=" flex items-center flex-wrap gap-2">
+            {/* <div className=" flex items-center flex-wrap gap-2">
                 {
                     filesPreview.length > 0 ? (
                         filesPreview.map((value, index) => {
@@ -143,7 +143,7 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
                     <img width={30} className=" aspect-square" src={photoGalleryIcon} alt="Attach image" />
                     <input onChange={handleOnchange} type="file" multiple name="files" id="files" hidden accept=".png,.webp,.jpeg,.jpg" />
                 </label>
-            </div>
+            </div> */}
         </Modal>
     )
 }
