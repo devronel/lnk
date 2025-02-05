@@ -10,16 +10,16 @@ const LeftSidebar = ({ fullName, username, headline, address, profileUrl, coverP
     return (
         <div className='hidden md:block col-span-2'>
             <div className=" relative overflow-hidden rounded border border-lnk-gray bg-lnk-white">
-                <div className=" h-16 w-full border-b border-lnk-gray">
+                <div className="">
                     <img
-                        className=" aspect-[4/1] w-full"
+                        className="h-16 aspect-[4/1] w-full border-b border-lnk-gray"
                         src={isNull(coverPhoto) ? coverPhotoPlaceholder : path(coverPhoto)}
                         alt={fullName ?? username}
                     />
                 </div>
-                <div className=" rounded-full overflow-hidden border border-lnk-white absolute top-6 left-2">
+                <div className=" rounded-full overflow-hidden border border-lnk-white absolute top-9 left-2">
                     <img
-                        className="w-14 aspect-square object-cover"
+                        className="w-12 aspect-square object-cover"
                         src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)}
                         alt={fullName ?? username}
                     />
