@@ -6,29 +6,27 @@ import { isNull, path } from '../../utils/functions'
 import profilePlacholder from '../../assets/profile-placeholder.jpg'
 import coverPhotoPlaceholder from "../../assets/cover-photo-placeholder.png"
 
-const LeftSidebar = ({ firstName, lastName, username, headline, address, profileUrl, coverPhoto }) => {
+const LeftSidebar = ({ fullName, username, headline, address, profileUrl, coverPhoto }) => {
     return (
-        <div className='hidden md:block'>
+        <div className='hidden md:block col-span-2'>
             <div className=" relative overflow-hidden rounded border border-lnk-gray bg-lnk-white">
                 <div className=" h-16 w-full border-b border-lnk-gray">
                     <img
                         className=" aspect-[4/1] w-full"
                         src={isNull(coverPhoto) ? coverPhotoPlaceholder : path(coverPhoto)}
-                        alt={isNull(firstName) || isNull(lastName) ? username : firstName + ' ' + lastName}
+                        alt={fullName ?? username}
                     />
                 </div>
-                <div className=" w-16 h-16 aspect-square rounded-full overflow-hidden border border-lnk-white absolute top-6 left-2">
+                <div className=" rounded-full overflow-hidden border border-lnk-white absolute top-6 left-2">
                     <img
-                        width='64'
-                        height='64'
-                        className=" aspect-square object-cover"
+                        className="w-14 aspect-square object-cover"
                         src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)}
-                        alt={isNull(firstName) || isNull(lastName) ? username : firstName + ' ' + lastName}
+                        alt={fullName ?? username}
                     />
                 </div>
-                <div className=" pt-8 pb-3 px-2">
-                    <h4 className=" font-bold text-lg">{isNull(firstName) || isNull(lastName) ? username : firstName + ' ' + lastName}</h4>
-                    <p className=" font-normal text-sm">{isNull(headline) ? 'No headline available' : headline}</p>
+                <div className=" pt-6 pb-3 px-2">
+                    <h4 className=" font-bold text-base">{fullName ?? username}</h4>
+                    <p className=" font-normal text-xs">{headline ?? 'No headline available'}</p>
                     <p className=" font-light text-xs text-lnk-dark-gray">{address}</p>
                 </div>
             </div>

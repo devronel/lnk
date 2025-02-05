@@ -104,9 +104,9 @@ const Profile = () => {
         setOpenModal(prevState => !prevState)
     }
 
-    /*
-        Submit function
-    */
+     /*=======================================================================================
+                                    SAVE USER DETAILS
+    =========================================================================================*/
     const saveUserDetails = async () => {
         try {
             setLoading(true)
@@ -126,7 +126,9 @@ const Profile = () => {
         }
     }
 
-
+    /*=======================================================================================
+                                    FETCH USER POSTS
+    =========================================================================================*/
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['user-posts', user?.username],
         queryFn: async ({ pageParam }) => {
@@ -144,8 +146,8 @@ const Profile = () => {
         },
     })
 
+    
     useEffect(() => {
-
         const onScroll = debounce(function () {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
                 fetchNextPage()
@@ -153,11 +155,12 @@ const Profile = () => {
         }, 500)
 
         window.addEventListener('scroll', onScroll)
-
         return () => window.removeEventListener('scroll', onScroll)
-
     }, [])
 
+     /*=======================================================================================
+                                DISABLE SCROLL WHEN MODAL IS OPEN
+    =========================================================================================*/
     useEffect(() => {
         if (!isNull(profilePhoto) || !isNull(coverPhoto)) {
             document.body.style.overflow = 'hidden'

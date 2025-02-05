@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             setIsLogin(false)
             setAuthLoading(false)
-            console.log(error)
             if (error.response) {
                 switch (error.response.status) {
                     case 401:

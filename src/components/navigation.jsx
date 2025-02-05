@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import NavMenu from "./navMenu";
 import { MdNotifications, MdPeopleAlt } from "react-icons/md";
 import { SiFeedly } from "react-icons/si";
 import { IoIosChatbubbles } from "react-icons/io";
-import { isNull, path } from "../utils/functions";
-import NavMenu from "./navMenu";
+import { path } from "../utils/functions";
 
 /*
     Import images
 */
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const Navigation = (props) => {
+const Navigation = () => {
 
     const location = useLocation()
+    const { user } = useContext(AuthContext)
     const [route, setRoute] = useState(null)
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -53,11 +55,11 @@ const Navigation = (props) => {
                                 <div className=" w-8 h-8 xs:w-6 xs:h-6 rounded-full overflow-hidden border border-lnk-dark-gray">
                                     <img
                                         className=" aspect-square rounded-full"
-                                        src={!isNull(props.user) ? (props.user.url && path(props.user.url)) ?? profilePlaceholder : null}
-                                        alt={!isNull(props.user) ? isNull(props.user.full_name) ? props.user.username : props.user.full_name : null}
+                                        src={path(user?.url) ?? profilePlaceholder}
+                                        alt={user.full_name ?? user.username}
                                     />
                                 </div>
-                                <p className="hidden xs:block font-medium text-sm">{!isNull(props.user) ? isNull(props.user.first_name) || isNull(props.user.last_name) ? props.user.username : props.user.first_name + ' ' + props.user.last_name : null}</p>
+                                <p className="hidden xs:block font-medium text-sm">{user.full_name ?? user.username}</p>
                             </button>
                             <NavMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
                         </div>
