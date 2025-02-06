@@ -1,9 +1,21 @@
+import { useEffect } from 'react';
+import { socket } from '../../socket';
 import chat from '../../assets/chat.svg'
 import { GoDotFill } from "react-icons/go";
 import { FaVideo } from "react-icons/fa";
 import { GrSend } from "react-icons/gr";
 
 const ChatHome = () => {
+    useEffect(() => {
+        socket.on('server_message', (data) => {
+            console.log(data)
+        })
+
+        return () => {
+            socket.off('server_message')
+        }
+    }, [])
+
     return (
         <div className=' h-full w-full relative'>
             <div className=' bg-lnk-white py-3 px-4 border-b border-lnk-orange flex items-center justify-between'>
@@ -41,16 +53,16 @@ const ChatHome = () => {
                 <div className=' flex flex-col gap-3'>
                     {/* RECEPIENT */}
                     <div>
-                        <div class="flex items-start gap-2.5">
+                        <div className="flex items-start gap-2.5">
                             <img 
-                                class="w-8 h-8 rounded-full" 
+                                className="w-8 h-8 rounded-full" 
                                 src="https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
                                 alt="Jese image" 
                             />
-                            <div class="flex flex-col w-full max-w-[320px] leading-1.5 p-4 shadow border border-lnk-gray bg-lnk-gray rounded-e-xl rounded-es-xl">
-                                <p class="text-sm font-normal pb-2 text-lnk-dark">That's awesome. I think our users will really appreciate the improvements.</p>
+                            <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4 shadow border border-lnk-gray bg-lnk-gray rounded-e-xl rounded-es-xl">
+                                <p className="text-sm font-normal pb-2 text-lnk-dark">That's awesome. I think our users will really appreciate the improvements.</p>
                                 <div className='flex items-center justify-end'>
-                                    <span class="text-sm font-normal text-gray-500">9:20AM</span>
+                                    <span className="text-sm font-normal text-gray-500">9:20AM</span>
                                 </div>
                             </div>
                         </div>
@@ -58,11 +70,11 @@ const ChatHome = () => {
 
                     {/* SENDER */}
                     <div className=' flex items-center justify-end'>
-                        <div class="flex items-start gap-2.5">
-                            <div class="flex flex-col w-full max-w-[320px] leading-1.5 p-4  bg-lnk-orange rounded-b-xl rounded-tl-xl">
-                                <p class="text-sm font-normal pb-2 text-lnk-white">That's awesome. I think our users will really appreciate the improvements.</p>
+                        <div className="flex items-start gap-2.5">
+                            <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4  bg-lnk-orange rounded-b-xl rounded-tl-xl">
+                                <p className="text-sm font-normal pb-2 text-lnk-white">That's awesome. I think our users will really appreciate the improvements.</p>
                                 <div className='flex items-center justify-end'>
-                                    <span class="text-sm font-normal text-lnk-gray">9:20AM</span>
+                                    <span className="text-sm font-normal text-lnk-gray">9:20AM</span>
                                 </div>
                             </div>
                         </div>
