@@ -49,7 +49,9 @@ const ChatHome = () => {
                             />
                             <div class="flex flex-col w-full max-w-[320px] leading-1.5 p-4 shadow border border-lnk-gray bg-lnk-gray rounded-e-xl rounded-es-xl">
                                 <p class="text-sm font-normal pb-2 text-lnk-dark">That's awesome. I think our users will really appreciate the improvements.</p>
-                                <span class="text-sm font-normal text-gray-500">Delivered</span>
+                                <div className='flex items-center justify-end'>
+                                    <span class="text-sm font-normal text-gray-500">9:20AM</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -59,7 +61,9 @@ const ChatHome = () => {
                         <div class="flex items-start gap-2.5">
                             <div class="flex flex-col w-full max-w-[320px] leading-1.5 p-4  bg-lnk-orange rounded-b-xl rounded-tl-xl">
                                 <p class="text-sm font-normal pb-2 text-lnk-white">That's awesome. I think our users will really appreciate the improvements.</p>
-                                <span class="text-sm font-normal text-lnk-gray">Delivered</span>
+                                <div className='flex items-center justify-end'>
+                                    <span class="text-sm font-normal text-lnk-gray">9:20AM</span>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -18,12 +18,12 @@ const ChatLayout = () => {
             <div className=" min-h-screen h-auto pt-[4.0625rem] lg:pb-2">
                 <Navigation user={user} />
                 <main className=" h-[calc(100vh-73px)]">
-                    <div className={`h-full max-w-[80rem] w-[95%] xs:w-[90%] mx-auto grid grid-cols-8 gap-5`}>
-                        <div className="fixed top-[4.0625rem] bottom-2 w-[300px] hidden md:block bg-lnk-white shadow border rounded-md">
+                    <div className={`h-full max-w-[80rem] w-[95%] xs:w-[90%] mx-auto grid grid-cols-9 gap-2`}>
+                        <div className="fixed top-[4.0625rem] bottom-2 w-[399px] hidden md:block bg-lnk-white border rounded-md">
                             <ChatConversation />
                         </div>
-                        <div className=" col-span-2"></div>
-                        <div className="col-span-6 pt-12 xs:pt-0 rounded-md bg-lnk-white shadow border border-lnk-gray">
+                        <div className=" col-span-3"></div>
+                        <div className="col-span-6 pt-12 xs:pt-0 rounded-md bg-lnk-white border border-lnk-gray">
                             <Outlet />
                         </div>
                     </div>
