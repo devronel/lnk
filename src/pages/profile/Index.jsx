@@ -169,6 +169,8 @@ const Profile = () => {
         }
     }, [profilePhoto, coverPhoto])
 
+    console.log(data?.pages[0])
+
     return (
         <>
             {/* basic info modal */}
@@ -188,7 +190,7 @@ const Profile = () => {
                 <div className=" relative h-auto w-full">
                     <div className="relative ">
                         <img
-                            className=" aspect-[4/1] w-full"
+                            className="aspect-[4/1] w-full"
                             src={(user?.cover_photo && path(user?.cover_photo)) ?? coverPhotoPlaceholder}
                             alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                         />
@@ -223,7 +225,7 @@ const Profile = () => {
                     {
                         !isNull(user) ? (
                             <>
-                                <h6 className=" text-xl sm:text-2xl font-bold">{!isNull(user.full_name) ? user.full_name : user.username}</h6>
+                                <h6 className=" text-xl sm:text-2xl font-bold">{user?.full_name ?? user.username}</h6>
                                 {
                                     !isNull(user.headline) ? (
                                         <p className=" text-sm font-normal ">{user.headline}</p>
@@ -237,78 +239,82 @@ const Profile = () => {
                             </>
                         ) : null
                     }
-                    <button className=" text-xs font-bold text-lnk-dark-gray hover:underline">2,000 followers</button>
+                    <button className=" text-xs font-bold text-lnk-dark-gray hover:underline">0 followers</button>
                 </div>
             </section>
             {
-                !isNull(user) ? (
-                    !isNull(user.about) ? (
-                        <section className=" px-5 py-3 bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-3">
-                            <h3 className=" text-normal font-bold mb-1 text-lnk-dark-gray">
-                                <FcAbout className=" text-lg inline align-middle mr-1" />
-                                <span className=" align-middle">About</span>
-                            </h3>
-                            <p className=" text-sm font-normal">{user.about}</p>
-                        </section>
-                    ) : null
+                !isNull(user?.about) ? (
+                    <section className=" px-5 py-3 bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-3">
+                        <h3 className=" text-normal font-bold mb-1 text-lnk-dark-gray">
+                            <FcAbout className=" text-lg inline align-middle mr-1" />
+                            <span className=" align-middle">About</span>
+                        </h3>
+                        <p className=" text-sm font-normal">{user.about}</p>
+                    </section>
                 ) : null
             }
-            <div className=" flex items-center gap-3 mb-2">
-                <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
-                <p className=" text-sm font-light text-lnk-dark-gray">
-                    <MdOutlineSignpost className="text-sm inline align-middle mr-1" />
-                    <span className=" align-middle">Latest Post</span>
-                </p>
-                <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
-            </div>
-            <section>
-                {
-                    data?.pages.map(dt => (
-                        dt.result.map(value => (
-                            <Post
-                                key={value.id}
-                                postId={value.id}
-                                content={value.content}
-                                username={value.username}
-                                firstName={value.first_name}
-                                lastName={value.last_name}
-                                fullName={value.full_name}
-                                headline={value.headline}
-                                createdAt={value.created_at}
-                                profilPicUrl={value.url}
-                                postFiles={value.post_files}
-                                postReactions={value.post_reactions}
-                                isReact={value.user_reaction}
-                                reactionCount={value.reaction_count}
-                                commentCount={value.comment_count}
-                            />
-                        ))
-                    ))
-                }
-                {isFetchingNextPage
-                    ? (
-                        <div>
-                            <p className="  text-center text-xs text-lnk-dark-gray">
-                                <PulseLoader
-                                    color={'#FF6500'}
-                                    loading={isFetchingNextPage}
-                                    size={6}
-                                    aria-label="Loading Spinner"
-                                    data-testid="loader"
-                                />
+            {
+                data?.pages[0].result.length > 0 ? (
+                    <>
+                        <div className=" flex items-center gap-3 mb-2">
+                            <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
+                            <p className=" text-sm font-light text-lnk-dark-gray">
+                                <MdOutlineSignpost className="text-sm inline align-middle mr-1" />
+                                <span className=" align-middle">Latest Post</span>
                             </p>
+                            <div className="flex-grow h-[1px] bg-lnk-gray rounded"></div>
                         </div>
-                    )
-                    : hasNextPage
-                        ? null
-                        : (
-                            <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
-                                <PiCoffeeDuotone className=" text-base " />
-                                No more post
-                            </p>
-                        )
-                }
-            </section>
+                        <section>
+                            {
+                                data?.pages.map(dt => (
+                                    dt.result.map(value => (
+                                        <Post
+                                            key={value.id}
+                                            postId={value.id}
+                                            content={value.content}
+                                            username={value.username}
+                                            firstName={value.first_name}
+                                            lastName={value.last_name}
+                                            fullName={value.full_name}
+                                            headline={value.headline}
+                                            createdAt={value.created_at}
+                                            profilPicUrl={value.url}
+                                            postFiles={value.post_files}
+                                            postReactions={value.post_reactions}
+                                            isReact={value.user_reaction}
+                                            reactionCount={value.reaction_count}
+                                            commentCount={value.comment_count}
+                                        />
+                                    ))
+                                ))
+                            }
+                            {isFetchingNextPage
+                                ? (
+                                    <div>
+                                        <p className="  text-center text-xs text-lnk-dark-gray">
+                                            <PulseLoader
+                                                color={'#FF6500'}
+                                                loading={isFetchingNextPage}
+                                                size={6}
+                                                aria-label="Loading Spinner"
+                                                data-testid="loader"
+                                            />
+                                        </p>
+                                    </div>
+                                )
+                                : hasNextPage
+                                    ? null
+                                    : (
+                                        <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
+                                            <PiCoffeeDuotone className=" text-base " />
+                                            No more post
+                                        </p>
+                                    )
+                            }
+                        </section>
+                    </>
+                ) : null
+            }
         </>
     )
 }

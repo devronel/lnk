@@ -93,8 +93,8 @@ const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
                 <Cropper
                     src={coverPhoto}
                     style={{ height: 200, width: "100%" }}
-                    initialAspectRatio={4 / 1}
-                    aspectRatio={4 / 1}
+                    initialAspectRatio={4/1}
+                    aspectRatio={4/1}
                     guides={false}
                     crop={onCrop}
                     viewMode={1}

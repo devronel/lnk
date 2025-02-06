@@ -34,8 +34,8 @@ const Navigation = () => {
             <div className="py-1 border-b border-lnk-dark-gray fixed top-0 left-0 right-0 z-50 bg-lnk-white">
                 <nav className="max-w-[80rem] w-[90%] mx-auto flex items-center justify-between border-b xs:border-none">
                     <Link to="/" className=" font-bold text-xl xs:text-lg text-lnk-orange">Lnk</Link>
-                    <div className=" flex items-center gap-3 md:gap-8">
-                        <ul className=" hidden xs:flex items-center gap-3 sm:gap-5">
+                    <div className=" flex items-center gap-3 md:gap-3">
+                        <ul className=" hidden xs:flex items-center gap-3 sm:gap-5 mr-2">
                             <li>
                                 <Link to="/"><SiFeedly className={`${route === '/' ? 'text-lnk-orange' : null} text-xl sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
@@ -49,7 +49,7 @@ const Navigation = () => {
                                 <Link to="/notifications"><MdNotifications className={`${route === '/notifications' ? 'text-lnk-orange' : null} text-xl sm:text-lg hover:text-lnk-orange transition-colors ease-linear duration-150`} /></Link>
                             </li>
                         </ul>
-                        <span className="hidden xs:block w-[2px] h-5 bg-lnk-dark-gray rounded"></span>
+                        <span className="hidden xs:block w-[1px] h-5 bg-lnk-dark-gray rounded"></span>
                         <div className=" relative">
                             <button onClick={openMenu} className=" flex items-center gap-3 hover:bg-lnk-gray px-3 py-2 rounded transition-colors ease-linear duration-150">
                                 <div className=" w-8 h-8 xs:w-6 xs:h-6 rounded-full overflow-hidden border border-lnk-dark-gray">

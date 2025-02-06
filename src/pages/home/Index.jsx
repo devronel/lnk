@@ -79,7 +79,7 @@ const Home = () => {
     return (
         <>
             <CreatePostModal isPostModalOpen={isPostModalOpen} setIsPostModalOpen={setIsPostModalOpen} />
-            <section className=" flex items-center gap-3 p-3 sm:p-5 rounded border border-lnk-gray bg-lnk-white mb-3">
+            <section className=" flex items-center gap-3 p-3 sm:p-5 rounded shadow border border-lnk-gray bg-lnk-white mb-3">
                 <div className=" h-10 w-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-lnk-dark-gray">
                     <img className=" w-full h-full object-cover" src={isNull(user?.url) ? profilePlaceholder : path(user?.url)} alt="" />
                 </div>

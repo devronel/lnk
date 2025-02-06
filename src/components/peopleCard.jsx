@@ -107,7 +107,7 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
 
     return (
         <div className="">
-            <div className="h-full flex flex-col overflow-hidden rounded border border-lnk-gray bg-lnk-white">
+            <div className="h-full flex flex-col overflow-hidden rounded shadow border border-lnk-gray bg-lnk-white">
                 <div className=" relative">
                     <div className=" h-auto border-b border-lnk-gray">
                         <img className="w-full aspect-[4/1]" src={(path(coverPhoto)) ?? coverPhotoPlaceholder} alt="" />
@@ -117,8 +117,8 @@ const PeopleCard = ({ userId, fullName, headline, address, profileUrl, username,
                     </div>
                 </div>
                 <div className=" pt-8 px-2 mb-4 flex-1">
-                    <Link to={`/profile-info/${username}`} className=" font-bold text-lg hover:underline">{isNull(fullName) ? username : fullName}</Link>
-                    <p className=" font-normal text-xs">{isNull(headline) ? null : headline}</p>
+                    <Link to={`/profile-info/${username}`} title={fullName ?? username} className="truncate font-bold text-lg hover:underline">{fullName ?? username}</Link>
+                    <p title={headline ?? null} className=" font-normal text-xs truncate">{isNull(headline) ? null : headline}</p>
                     <p className=" font-light text-xs text-lnk-dark-gray">{isNull(address) ? null : address}</p>
                 </div>
                 <div className=" px-2 pb-3">
