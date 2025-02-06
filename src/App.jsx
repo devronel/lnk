@@ -21,6 +21,7 @@ import NotFound from './pages/errorPage/404'
 import OTPVerification from './pages/auth/OTPVerification'
 import ChangePassword from './pages/auth/ChangePassword'
 import ProfileLayout from './layouts/ProfileLayout'
+import ChatLayout from './layouts/ChatLayout'
 
 
 const queryClient = new QueryClient({
@@ -41,14 +42,14 @@ function App() {
           <Routes>
             <Route path='/' element={<MainLayout />}>
               <Route path='/' element={<Home />} />
-              {/* <Route path='/profile' element={<Profile />} /> */}
-              {/* <Route path='/profile-info/:username' element={<ViewProfile />} /> */}
-              <Route path='/chat' element={<ChatHome />} />
               <Route path='/notifications' element={<Notifications />} />
             </Route>
             <Route path='/' element={<ProfileLayout />}>
               <Route path='/profile' element={<Profile />} />
               <Route path='/profile-info/:username' element={<ViewProfile />} />
+            </Route>
+            <Route path='/' element={<ChatLayout />}>
+              <Route path='/chat' element={<ChatHome />} />
             </Route>
             <Route path='/' element={<FriendsLayout />}>
               <Route path='/friends' element={<Friends />} />

@@ -1,10 +1,83 @@
-import comingSoon from '../../assets/coming-soon.svg'
+import chat from '../../assets/chat.svg'
+import { GoDotFill } from "react-icons/go";
+import { FaVideo } from "react-icons/fa";
+import { GrSend } from "react-icons/gr";
 
 const ChatHome = () => {
     return (
-        <div className='pt-10 h-auto w-full flex flex-col items-center justify-center gap-2'>
-            <img width={500} src={comingSoon} alt="" />
-            <p className=' text-2xl text-lnk-dark-gray font-bold'>Coming Soon!</p>
+        <div className=' h-full w-full relative'>
+            <div className=' bg-lnk-white py-3 px-4 border-b border-lnk-orange flex items-center justify-between'>
+                <div className=' flex items-center gap-3'>
+                    <img 
+                        src="https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                        alt="" 
+                        className=' w-10 aspect-square rounded-full'
+                    />
+                    <div>
+                        <h2 className='font-bold text-base'>Amy Acker</h2>
+                        <p className=' font-light text-xs flex items-center'>
+                            <GoDotFill className='text-sm text-green-500' />
+                            Online
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <button className='border border-lnk-orange bg-lnk-orange/35 py-1 px-2 rounded-md'>
+                        <FaVideo className='' />
+                    </button>
+                </div>
+            </div>
+            <main className=' px-4 bg-lnk-white overflow-auto absolute left-0 right-0 bottom-[62px] top-[66px]'>
+                <div className='h-full flex flex-col items-center justify-center'>
+                    <img 
+                        src={chat} 
+                        alt=""
+                        className=' w-72 aspect-video' 
+                    />
+                    <p className=' font-semibold text-lnk-dark-gray text-lg'>Start a new chat with Amy Acker.</p>
+                </div>
+
+                {/* CONVERSATION */}
+                <div className=' flex flex-col gap-3'>
+                    {/* RECEPIENT */}
+                    <div>
+                        <div class="flex items-start gap-2.5">
+                            <img 
+                                class="w-8 h-8 rounded-full" 
+                                src="https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                                alt="Jese image" 
+                            />
+                            <div class="flex flex-col w-full max-w-[320px] leading-1.5 p-4 shadow border border-lnk-gray bg-lnk-gray rounded-e-xl rounded-es-xl">
+                                <p class="text-sm font-normal pb-2 text-lnk-dark">That's awesome. I think our users will really appreciate the improvements.</p>
+                                <span class="text-sm font-normal text-gray-500">Delivered</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SENDER */}
+                    <div className=' flex items-center justify-end'>
+                        <div class="flex items-start gap-2.5">
+                            <div class="flex flex-col w-full max-w-[320px] leading-1.5 p-4  bg-lnk-orange rounded-b-xl rounded-tl-xl">
+                                <p class="text-sm font-normal pb-2 text-lnk-white">That's awesome. I think our users will really appreciate the improvements.</p>
+                                <span class="text-sm font-normal text-lnk-gray">Delivered</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+            <div className=' absolute bottom-0 left-0 right-0 px-3 py-2 bg-lnk-white'>
+                <div className=' relative'>
+                    <input 
+                        type="text"
+                        placeholder='Type your message...'
+                        className='pl-4 pr-12 py-3 w-full rounded border font-lato text-sm outline-none focus:outline focus:outline-lnk-orange'
+                    />
+                    <button className='text-xl  text-lnk-orange absolute right-4 top-1/2 -translate-y-1/2'>
+                        <GrSend />
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }
