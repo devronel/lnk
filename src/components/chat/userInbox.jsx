@@ -1,6 +1,9 @@
-const UserInbox = () => {
+import { Link } from "react-router-dom"
+
+const UserInbox = (props) => {
+    const { username } = props
     return (
-        <button className="w-full flex items-center gap-3 px-3 py-2 rounded-tr-md rounded-br-md border-l-2 border-lnk-white hover:border-lnk-orange hover:bg-[#FAFAFA]">
+        <Link to={`/chat/${username}`} className="w-full flex items-center gap-3 px-3 py-2 rounded-tr-md rounded-br-md border-l-2 border-lnk-white hover:border-lnk-orange hover:bg-[#FAFAFA]">
             <img 
                 src="https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
                 alt=""
@@ -8,12 +11,12 @@ const UserInbox = () => {
             />
             <div className="w-full flex flex-col items-start">
                 <div className="w-full flex items-center justify-between">
-                    <h2 className="font-bold text-base text-lnk-dark">Amy Acker</h2>
+                    <h2 className="font-bold text-base text-lnk-dark">{username}</h2>
                     <p className=" font-light text-xs">10:46am</p>
                 </div>
                 <p className="font-light text-sm truncate text-lnk-dark-gray">Hello there</p>
             </div>
-        </button>
+        </Link>
     )
 }
 

@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useLayoutEffect } from "react";
 import toast from "react-hot-toast";
+import { socket } from "../socket"
 import FullPageLoader from "../components/loader/fullPageLoader";
 import axiosInstance from "../utils/axios";
 
@@ -56,6 +57,7 @@ export const AuthProvider = ({ children }) => {
             });
             if (response.status === 200) {
                 setIsLogin(false)
+                socket.disconnect()
             }
         } catch (error) {
             setIsLogin(true)

@@ -1,7 +1,30 @@
+import { useEffect, useState } from "react"
+import { socket } from "../../socket"
 import UserInbox from "../chat/userInbox"
 import LnkInput from "../forms/lnkInput"
 
 const ChatConversation = () => {
+
+    const [conversations, setConversations] = useState([])
+
+    function chatConversation(payload) {
+        setConversations(payload)
+    }
+    
+    useEffect(() => {
+        if(!socket.connected){
+            console.log('Running')
+            socket.connect()
+        }
+        console.log(socket)
+        socket.emit('chat:get-conversation', {})
+        socket.on('chat:conversations', chatConversation)
+
+        return () => {
+            socket.off('chat:conversations', chatConversation)
+        }
+    }, [socket])
+
     return (
         <aside className="">
             <div className=" flex items-start flex-col gap-5 px-3 py-2">
@@ -14,8 +37,14 @@ const ChatConversation = () => {
                     />
                 </div>
                 <div className="w-full flex flex-col gap-3">
-                    <UserInbox />
-                    <UserInbox />
+                    {
+                        conversations.map((value) => (
+                            <UserInbox 
+                                key={value.conversationId}
+                                username={value.username}
+                            />
+                        ))
+                    }
                 </div>
             </div>
         </aside>
