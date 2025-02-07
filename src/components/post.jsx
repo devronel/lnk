@@ -4,10 +4,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isNull, capitalize, debounce } from 'lodash'
 import axiosInstance from "../utils/axios";
 import TiptopView from "./wysiwyg/TiptopView";
+import { diffInDays, path } from "../utils/functions";
 import { FaHeart, FaGlobeAsia, FaRegComment } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
-import { diffInDays, path } from "../utils/functions";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
 /*
     Import assets like image and etc.
@@ -234,6 +235,12 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
                             <FaRegComment className="" />
                             <span>Comment</span>
                         </button>
+                    </li>
+                    <li>
+                        <Link to={`/chat/${username}`} className="text-sm flex items-center gap-1 py-1 sm:py-2 px-2 sm:px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                            <IoChatboxEllipsesOutline className="text-base" />
+                            <span>Send Message</span>
+                        </Link>
                     </li>
                 </ul>
             </div>

@@ -1,32 +1,56 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { socket } from '../../socket';
 import chat from '../../assets/chat.svg'
 import { GoDotFill } from "react-icons/go";
 import { FaVideo } from "react-icons/fa";
 import { GrSend } from "react-icons/gr";
+import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 
 const ChatHome = () => {
+
+    const { username } = useParams()
+    const [messages, setMessages] = useState([])
+    const [message, setMessage] = useState('')
+    const [userMessage, setUserMessage] = useState(null)
+
     useEffect(() => {
-        socket.on('server_message', (data) => {
-            console.log(data)
+        socket.on('send-message', (data) => {
+            setMessages(prevState => [data, ...prevState])
         })
 
+        socket.on('user-profile', data => {
+            console.log(data)
+            setUserMessage(data)
+        })
+
+        socket.emit('chat:get-user-profile', { username: username })
+
         return () => {
-            socket.off('server_message')
+            socket.off('send-message')
+            socket.off('user-messages')
         }
     }, [])
+
+    function onChangeHandler(e){
+        setMessage(e.target.value)
+    }
+
+    function sendMessage(){
+        socket.emit('chat:send-message', message)
+    }
 
     return (
         <div className=' h-full w-full relative'>
             <div className=' bg-lnk-white py-3 px-4 border-b border-lnk-orange flex items-center justify-between'>
                 <div className=' flex items-center gap-3'>
                     <img 
-                        src="https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                        src={userMessage?.profile ?? profilePlaceholder}
                         alt="" 
                         className=' w-10 aspect-square rounded-full'
                     />
                     <div>
-                        <h2 className='font-bold text-base'>Amy Acker</h2>
+                        <h2 className='font-bold text-base'>{userMessage?.full_name ?? userMessage?.username}</h2>
                         <p className=' font-light text-xs flex items-center'>
                             <GoDotFill className='text-sm text-green-500' />
                             Online
@@ -52,24 +76,28 @@ const ChatHome = () => {
                 {/* CONVERSATION */}
                 <div className=' flex flex-col gap-3'>
                     {/* RECEPIENT */}
-                    <div>
-                        <div className="flex items-start gap-2.5">
-                            <img 
-                                className="w-8 h-8 rounded-full" 
-                                src="https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                                alt="Jese image" 
-                            />
-                            <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4 shadow border border-lnk-gray bg-lnk-gray rounded-e-xl rounded-es-xl">
-                                <p className="text-sm font-normal pb-2 text-lnk-dark">That's awesome. I think our users will really appreciate the improvements.</p>
-                                <div className='flex items-center justify-end'>
-                                    <span className="text-sm font-normal text-gray-500">9:20AM</span>
+                    {
+                        messages.map((value, index) => (
+                            <div key={index}>
+                                <div className="flex items-start gap-2.5">
+                                    <img 
+                                        className="w-8 h-8 rounded-full" 
+                                        src="https://images.pexels.com/photos/943084/pexels-photo-943084.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
+                                        alt="Jese image" 
+                                    />
+                                    <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4 shadow border border-lnk-gray bg-lnk-gray rounded-e-xl rounded-es-xl">
+                                        <p className="text-sm font-normal pb-2 text-lnk-dark">{value}</p>
+                                        <div className='flex items-center justify-end'>
+                                            <span className="text-sm font-normal text-gray-500">9:20AM</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        ))
+                    }
 
                     {/* SENDER */}
-                    <div className=' flex items-center justify-end'>
+                    {/* <div className=' flex items-center justify-end'>
                         <div className="flex items-start gap-2.5">
                             <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4  bg-lnk-orange rounded-b-xl rounded-tl-xl">
                                 <p className="text-sm font-normal pb-2 text-lnk-white">That's awesome. I think our users will really appreciate the improvements.</p>
@@ -78,18 +106,21 @@ const ChatHome = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
             </main>
             <div className=' absolute bottom-0 left-0 right-0 px-3 py-2 bg-lnk-white'>
                 <div className=' relative'>
                     <input 
+                        onChange={onChangeHandler}
+                        value={message}
+                        name='message'
                         type="text"
                         placeholder='Type your message...'
                         className='pl-4 pr-12 py-3 w-full rounded border font-lato text-sm outline-none focus:outline focus:outline-lnk-orange'
                     />
-                    <button className='text-xl  text-lnk-orange absolute right-4 top-1/2 -translate-y-1/2'>
+                    <button onClick={sendMessage} className='text-xl  text-lnk-orange absolute right-4 top-1/2 -translate-y-1/2'>
                         <GrSend />
                     </button>
                 </div>

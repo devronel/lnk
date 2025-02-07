@@ -50,6 +50,7 @@ function App() {
             </Route>
             <Route path='/' element={<ChatLayout />}>
               <Route path='/chat' element={<ChatHome />} />
+              <Route path='/chat/:username' element={<ChatHome />} />
             </Route>
             <Route path='/' element={<FriendsLayout />}>
               <Route path='/friends' element={<Friends />} />
