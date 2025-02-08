@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext'
 import { socket } from '../../socket';
@@ -10,6 +10,7 @@ import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 
 const ChatMessages = () => {
 
+    const messageContainerRef = useRef(null)
     const { username } = useParams()
     const { user } = useContext(AuthContext)
     const [messages, setMessages] = useState([])
@@ -21,12 +22,14 @@ const ChatMessages = () => {
         setMessage(e.target.value)
     }
 
-    function sendMessage(){
+    function sendMessage(e){
+        e.preventDefault()
         socket.emit('chat:send-message', { recipient_id: userProfile.userId, message: message })
     }
 
     function getMessage(payload){
         setMessages(payload)
+        setMessage('')
     }
 
     function getUserProfile(payload){
@@ -48,16 +51,22 @@ const ChatMessages = () => {
     }, [username])
 
     useEffect(() => {
+        let room;
         if(userProfile){
-            socket.emit(`chat:get-messages`, { id: userProfile?.userId, room: `room${userProfile?.roomId}` })
+            room = userProfile?.room
+            socket.emit(`chat:get-messages-${user?.id}`, { id: userProfile?.userId, room: room })
+            socket.on(`chat:messages-${room}`, getMessage)
         }
 
-        socket.on(`chat:messages`, getMessage)
 
         return () => {
-            socket.off(`chat:messages`, getMessage)
+            socket.off(`chat:messages-${room}`, getMessage)
         }
     }, [userProfile])
+
+    useEffect(() => {
+        messageContainerRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
+    }, [messages])
 
     return (
         <>
@@ -90,11 +99,11 @@ const ChatMessages = () => {
                             alt=""
                             className=' w-72 aspect-video' 
                         />
-                        <p className=' font-semibold text-lnk-dark-gray text-lg'>Start a new chat with Amy Acker.</p>
+                        <p className=' font-semibold text-lnk-dark-gray text-lg'>Start a new chat with {userProfile?.first_name ?? userProfile?.username}.</p>
                     </div>
 
                     {/* CONVERSATION */}
-                    <div className=' flex flex-col gap-3'>
+                    <div ref={messageContainerRef} className=' flex flex-col gap-3'>
                         {
                             messages.map((value, index) => {
                                 return (
@@ -134,7 +143,7 @@ const ChatMessages = () => {
 
                 </main>
                 <div className=' absolute bottom-0 left-0 right-0 px-3 py-2 bg-lnk-white'>
-                    <div className=' relative'>
+                    <form onSubmit={sendMessage} className=' relative'>
                         <input 
                             onChange={onChangeHandler}
                             value={message}
@@ -143,10 +152,10 @@ const ChatMessages = () => {
                             placeholder='Type your message...'
                             className='pl-4 pr-12 py-3 w-full rounded border font-lato text-sm outline-none focus:outline focus:outline-lnk-orange'
                         />
-                        <button onClick={sendMessage} className='text-xl  text-lnk-orange absolute right-4 top-1/2 -translate-y-1/2'>
+                        <button type='submit' className='text-xl  text-lnk-orange absolute right-4 top-1/2 -translate-y-1/2'>
                             <GrSend />
                         </button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </>
