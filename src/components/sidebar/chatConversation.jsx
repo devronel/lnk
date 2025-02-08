@@ -12,6 +12,9 @@ const ChatConversation = () => {
     }
     
     useEffect(() => {
+        socket.connect()
+        console.log(socket)
+
         const fetchConversations = setTimeout(() => {
             socket.emit('chat:get-conversation', {})
             socket.on('chat:conversations', chatConversation)
