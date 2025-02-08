@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from "react";
+import { socket } from "../socket";
 import { AuthContext } from "../context/AuthContext";
 import { Link, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import Navigation from "../components/navigation"
@@ -12,6 +13,12 @@ const ChatLayout = () => {
     useEffect(() => {
         setCurrentRoute(location.pathname)
     }, [location])
+
+    useEffect(() => {
+        if(!socket.connected){
+            socket.connect()
+        }
+    }, [])
 
     return isLogin ? (
         <>

@@ -22,6 +22,7 @@ import OTPVerification from './pages/auth/OTPVerification'
 import ChangePassword from './pages/auth/ChangePassword'
 import ProfileLayout from './layouts/ProfileLayout'
 import ChatLayout from './layouts/ChatLayout'
+import ChatMessages from './pages/chat/ChatMessages'
 
 
 const queryClient = new QueryClient({
@@ -50,7 +51,7 @@ function App() {
             </Route>
             <Route path='/' element={<ChatLayout />}>
               <Route path='/chat' element={<ChatHome />} />
-              <Route path='/chat/:username' element={<ChatHome />} />
+              <Route path='/chat/:username' element={<ChatMessages />} />
             </Route>
             <Route path='/' element={<FriendsLayout />}>
               <Route path='/friends' element={<Friends />} />

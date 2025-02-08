@@ -12,18 +12,16 @@ const ChatConversation = () => {
     }
     
     useEffect(() => {
-        if(!socket.connected){
-            console.log('Running')
-            socket.connect()
-        }
-        console.log(socket)
-        socket.emit('chat:get-conversation', {})
-        socket.on('chat:conversations', chatConversation)
+        const fetchConversations = setTimeout(() => {
+            socket.emit('chat:get-conversation', {})
+            socket.on('chat:conversations', chatConversation)
+        }, 200)
 
         return () => {
             socket.off('chat:conversations', chatConversation)
+            clearTimeout(fetchConversations)
         }
-    }, [socket])
+    }, [])
 
     return (
         <aside className="">
