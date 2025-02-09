@@ -7,6 +7,7 @@ import { GoDotFill } from "react-icons/go";
 import { FaVideo } from "react-icons/fa";
 import { GrSend } from "react-icons/gr";
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
+import moment from 'moment';
 
 const ChatMessages = () => {
 
@@ -111,14 +112,14 @@ const ChatMessages = () => {
                                         <div key={value.chatMessageId}>
                                             <div className="flex items-start gap-2.5">
                                                 <img 
-                                                    className="w-8 h-8 rounded-full" 
+                                                    className="w-8 aspect-square rounded-full border border-lnk-dark" 
                                                     src={userProfile?.profile ?? profilePlaceholder}
                                                     alt={userProfile?.full_name ?? userProfile?.username}
                                                 />
-                                                <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4 shadow border border-lnk-gray bg-lnk-gray rounded-e-xl rounded-es-xl">
+                                                <div className="flex flex-col w-auto min-w-[120px] max-w-[320px] leading-1.5 px-4 py-2 shadow bg-lnk-gray rounded-e-xl rounded-es-xl">
                                                     <p className="text-sm font-normal pb-2 text-lnk-dark">{value.message}</p>
                                                     <div className='flex items-center justify-end'>
-                                                        <span className="text-sm font-normal text-gray-500">9:20AM</span>
+                                                        <span className="text-xs font-normal text-gray-500">{moment(value.created_at).format('LT')}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -126,10 +127,10 @@ const ChatMessages = () => {
                                     ) : (
                                         <div key={value.chatMessageId} className=' flex items-center justify-end'>
                                             <div className="flex items-start gap-2.5">
-                                                <div className="flex flex-col w-full max-w-[320px] leading-1.5 p-4  bg-lnk-orange rounded-b-xl rounded-tl-xl">
-                                                    <p className="text-sm font-normal pb-2 text-lnk-white">{value.message}</p>
+                                                <div className="flex flex-col w-auto min-w-[120px] max-w-[320px] leading-1.5 px-4 py-2 bg-lnk-orange rounded-b-xl rounded-tl-xl">
+                                                    <p className="text-sm text-right font-normal pb-2 text-lnk-white">{value.message}</p>
                                                     <div className='flex items-center justify-end'>
-                                                        <span className="text-sm font-normal text-lnk-gray">9:20AM</span>
+                                                        <span className="text-xs font-normal text-lnk-gray">{moment(value.created_at).format('LT')}</span>
                                                     </div>
                                                 </div>
                                             </div>

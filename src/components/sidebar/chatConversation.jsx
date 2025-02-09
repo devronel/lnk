@@ -43,6 +43,8 @@ const ChatConversation = () => {
                             <UserInbox 
                                 key={value.conversationId}
                                 username={value.username}
+                                fullName={value.full_name}
+                                profilePhoto={value.profilePhoto}
                             />
                         ))
                     }
