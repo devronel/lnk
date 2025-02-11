@@ -17,8 +17,10 @@ const ChatMessages = () => {
     const [messages, setMessages] = useState([])
     const [newMessages, setNewMessages] = useState([])
     const [message, setMessage] = useState('')
+    const [isNoOlderMessage, setIsNoOlderMessage] = useState(false)
     const [userProfile, setUserProfile] = useState(null)
     const [lastMessageDate, setLastMessageDate] = useState(null)
+    const [chatRoom, setChatRoom] = useState(null)
 
     function onChangeHandler(e){
         setMessage(e.target.value)
@@ -46,7 +48,19 @@ const ChatMessages = () => {
     }
 
     function getUserProfile(payload){
+        setChatRoom(payload.room)
         setUserProfile(payload)
+    }
+
+    function getOlderMessage(){
+        socket.emit(`chat:get-older-messages-${user?.id}`, {
+            recipient_id: userProfile?.userId,
+            lastMessage: messages[messages.length - 1]
+        })
+    }
+    
+    function getOldMessages(payload){
+        payload.length > 0 ? setMessages(prevState => [...prevState, ...payload]) : setIsNoOlderMessage(true)
     }
 
     /*
@@ -57,7 +71,6 @@ const ChatMessages = () => {
             socket.emit(`chat:get-user-profile-${user?.id}`, { username: username })
             socket.on(`chat:user-profile-${user?.id}`, getUserProfile)
         }, 200)
-
 
         return () => {
             socket.off(`chat:user-profile-${user?.id}`, getUserProfile)
@@ -72,21 +85,19 @@ const ChatMessages = () => {
         let room;
         if(userProfile){
             room = userProfile?.room
-            socket.emit(`chat:get-messages-${user?.id}`, { id: userProfile?.userId, room: room })
-            socket.on(`chat:messages-${room}`, getMessage)
-            socket.on(`chat:new-message-${room}`, getNewMessage)
+            socket.emit(`chat:get-messages-${user?.id}`, { id: userProfile?.userId, room: chatRoom })
+            socket.on(`chat:messages-${chatRoom}`, getMessage)
+            socket.on(`chat:new-message-${chatRoom}`, getNewMessage)
+            socket.on(`chat:old-message-${chatRoom}`, getOldMessages)
         }
 
 
         return () => {
-            socket.off(`chat:messages-${room}`, getMessage)
-            socket.off(`chat:new-message-${room}`, getNewMessage)
+            socket.off(`chat:messages-${chatRoom}`, getMessage)
+            socket.off(`chat:new-message-${chatRoom}`, getNewMessage)
+            socket.off(`chat:old-message-${chatRoom}`, getOldMessages)
         }
     }, [userProfile])
-
-    // useEffect(() => {
-    //     setMessages(prevState => [...newMessages, ...prevState])
-    // }, [newMessages])
     
     useEffect(() => {
         if(messages){
@@ -127,6 +138,13 @@ const ChatMessages = () => {
                             className=' w-72 aspect-video' 
                         />
                         <p className=' font-semibold text-lnk-dark-gray text-lg'>Start a new chat with {userProfile?.first_name ?? userProfile?.username}.</p>
+                        {
+                            !isNoOlderMessage ? (
+                                <button onClick={getOlderMessage} className='text-lnk-orange'>
+                                    Load older messages
+                                </button>
+                            ) : null
+                        }
                     </div>
 
                     {/* CONVERSATION */}
@@ -153,7 +171,7 @@ const ChatMessages = () => {
                                     ) : (
                                         <div key={value.chatMessageId} className=' flex items-center justify-end'>
                                             <div className="flex items-start gap-2.5">
-                                                <div className="flex flex-col w-auto min-w-[120px] max-w-[320px] leading-1.5 px-4 py-2 bg-lnk-orange rounded-b-xl rounded-tl-xl">
+                                                <div className="flex flex-col w-auto min-w-[120px] max-w-[320px] leading-1.5 px-4 py-2 bg-lnk-orange/85 rounded-b-xl rounded-tl-xl">
                                                     <p className="text-sm text-right font-normal pb-2 text-lnk-white">{value.message}</p>
                                                     <div className='flex items-center justify-end'>
                                                         <span className="text-xs font-normal text-lnk-gray">{moment(value.created_at).format('LT')}</span>
