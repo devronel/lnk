@@ -15,6 +15,7 @@ const ChatMessages = () => {
     const { username } = useParams()
     const { user } = useContext(AuthContext)
     const [messages, setMessages] = useState([])
+    const [newMessages, setNewMessages] = useState([])
     const [message, setMessage] = useState('')
     const [userProfile, setUserProfile] = useState(null)
     const [lastMessageDate, setLastMessageDate] = useState(null)
@@ -34,6 +35,13 @@ const ChatMessages = () => {
 
     function getMessage(payload){
         setMessages(payload)
+    }
+
+    function getNewMessage(payload){
+        setMessages(prevState => {
+            const newMessages = [payload[0], ...prevState]
+            return newMessages.length > 10 ? newMessages.slice(0, 10) : newMessages
+        })
         setMessage('')
     }
 
@@ -66,13 +74,19 @@ const ChatMessages = () => {
             room = userProfile?.room
             socket.emit(`chat:get-messages-${user?.id}`, { id: userProfile?.userId, room: room })
             socket.on(`chat:messages-${room}`, getMessage)
+            socket.on(`chat:new-message-${room}`, getNewMessage)
         }
 
 
         return () => {
             socket.off(`chat:messages-${room}`, getMessage)
+            socket.off(`chat:new-message-${room}`, getNewMessage)
         }
     }, [userProfile])
+
+    // useEffect(() => {
+    //     setMessages(prevState => [...newMessages, ...prevState])
+    // }, [newMessages])
     
     useEffect(() => {
         if(messages){
