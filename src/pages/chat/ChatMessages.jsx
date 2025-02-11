@@ -17,7 +17,7 @@ const ChatMessages = () => {
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState('')
     const [userProfile, setUserProfile] = useState(null)
-    const [convesationId, setConversationId] = useState(null)
+    const [lastMessageDate, setLastMessageDate] = useState(null)
 
     function onChangeHandler(e){
         setMessage(e.target.value)
@@ -25,7 +25,11 @@ const ChatMessages = () => {
 
     function sendMessage(e){
         e.preventDefault()
-        socket.emit('chat:send-message', { recipient_id: userProfile.userId, message: message })
+        socket.emit('chat:send-message', { 
+            recipient_id: userProfile.userId, 
+            message: message,
+            lastMessageDate: lastMessageDate
+        })
     }
 
     function getMessage(payload){
@@ -37,8 +41,10 @@ const ChatMessages = () => {
         setUserProfile(payload)
     }
 
+    /*
+        GET USER PROFILE
+    */
     useEffect(() => {
-
         const userProfile = setTimeout(() => {
             socket.emit(`chat:get-user-profile-${user?.id}`, { username: username })
             socket.on(`chat:user-profile-${user?.id}`, getUserProfile)
@@ -51,6 +57,9 @@ const ChatMessages = () => {
         }
     }, [username])
 
+    /*
+        GET ALL MESSAGES
+    */
     useEffect(() => {
         let room;
         if(userProfile){
@@ -64,8 +73,11 @@ const ChatMessages = () => {
             socket.off(`chat:messages-${room}`, getMessage)
         }
     }, [userProfile])
-
+    
     useEffect(() => {
+        if(messages){
+            setLastMessageDate(messages[0])
+        }
         messageContainerRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
 
@@ -138,7 +150,7 @@ const ChatMessages = () => {
                                     )
 
                                 )
-                            })
+                            }).reverse()
                         }
                     </div>
 
