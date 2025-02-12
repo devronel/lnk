@@ -31,6 +31,7 @@ const ChatMessages = () => {
         socket.emit('chat:send-message', { 
             recipient_id: userProfile.userId, 
             message: message,
+            chatRoom: chatRoom,
             lastMessageDate: lastMessageDate
         })
     }
@@ -103,8 +104,17 @@ const ChatMessages = () => {
         if(messages){
             setLastMessageDate(messages[0])
         }
-        messageContainerRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
     }, [messages])
+    
+    useEffect(() => {
+        const lastElementView = setTimeout(() => {
+            messageContainerRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
+        }, 300)
+
+        return () => {
+            clearTimeout(lastElementView)
+        }
+    }, [username, message])
 
     return (
         <>
