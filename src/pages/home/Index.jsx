@@ -97,6 +97,7 @@ const Home = () => {
                             fullName={value.full_name}
                             headline={value.headline}
                             createdAt={value.created_at}
+                            userLastSeen={value.last_seen}
                             profilPicUrl={value.url}
                             postFiles={value.post_files}
                             postReactions={value.post_reactions}

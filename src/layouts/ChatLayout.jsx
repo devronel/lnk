@@ -20,10 +20,19 @@ const ChatLayout = () => {
                 <Navigation user={user} />
                 <main className=" h-[calc(100vh-73px)]">
                     <div className={`h-full max-w-[80rem] w-[95%] xs:w-[90%] mx-auto grid grid-cols-9 gap-2`}>
-                        <div className="fixed top-[4.0625rem] bottom-2 w-[399px] hidden md:block bg-lnk-white border rounded-md">
-                            <ChatConversation />
+                        <div className="col-span-3 overflow-y-auto relative bg-lnk-white border rounded-md">
+                            <div className="absolute top-0 w-full z-10 bg-lnk-white border-b border-lnk-orange px-3 py-2">
+                                <h1 className=" mb-3 font-bold text-xl">Chat</h1>
+                                <input 
+                                    type="text" 
+                                    placeholder="Seach friends..." 
+                                    className=" px-3 py-2 w-full rounded border font-lato text-sm outline-none focus:outline focus:outline-lnk-orange" 
+                                />
+                            </div>
+                            <div className=" overflow-y-auto absolute top-24 w-full h-full hidden md:block ">
+                                <ChatConversation />
+                            </div>
                         </div>
-                        <div className=" col-span-3"></div>
                         <div className="col-span-6 pt-12 xs:pt-0 rounded-md bg-lnk-white border border-lnk-gray">
                             <Outlet />
                         </div>

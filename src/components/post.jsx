@@ -21,7 +21,24 @@ import wowIcon from '../assets/icons/wow.png'
 import likeIcon from '../assets/icons/like.png'
 import heartIcon from '../assets/icons/heart.png'
 
-const Post = ({ postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
+const Post = (props) => {
+
+    const {
+        postId, 
+        authUserProfile, 
+        content, 
+        fullName, 
+        username, 
+        headline, 
+        createdAt, 
+        userLastSeen,
+        profilPicUrl, 
+        postFiles, 
+        postReactions, 
+        isReact, 
+        reactionCount, 
+        commentCount
+    } = props
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
@@ -180,8 +197,13 @@ const Post = ({ postId, authUserProfile, content, fullName, username, headline, 
     return (
         <section className=" pt-3 sm:pt-2 mb-4 xs:mb-3 rounded shadow px-2 sm:px-0 sm:border sm:border-lnk-gray sm:bg-lnk-white">
             <div className=" flex items-start gap-2 sm:px-5 pt-3 mb-4">
-                <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                    <img className=" w-full h-full object-cover" src={!isNull(profilPicUrl) ? path(profilPicUrl) : profilePlaceholder} alt="" />
+                <div className="relative rounded-full border border-lnk-dark-gray">
+                    <img 
+                        className=" w-9 aspect-square rounded-full object-cover" 
+                        src={!isNull(profilPicUrl) ? path(profilPicUrl) : profilePlaceholder} 
+                        alt={`Profile of ${fullName ?? username}`} 
+                    />
+                    {userLastSeen ? <span className={`absolute -bottom-[2px] right-1 inline-block w-2 h-2 rounded-full border border-lnk-gray bg-green-500`}></span> : null}
                 </div>
                 <div>
                     <Link to={`/profile-info/${username}`} className=" text-base font-bold hover:underline">{isNull(fullName) ? username : fullName}</Link>

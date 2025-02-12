@@ -28,6 +28,7 @@ const MainLayout = () => {
                 address={user?.address}
                 profileUrl={user?.url}
                 coverPhoto={user?.cover_photo}
+                userLastSeen={user?.last_seen}
             />
         }
     }

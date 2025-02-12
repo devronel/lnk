@@ -15,7 +15,6 @@ const ChatMessages = () => {
     const { username } = useParams()
     const { user } = useContext(AuthContext)
     const [messages, setMessages] = useState([])
-    const [newMessages, setNewMessages] = useState([])
     const [message, setMessage] = useState('')
     const [isNoOlderMessage, setIsNoOlderMessage] = useState(false)
     const [userProfile, setUserProfile] = useState(null)
@@ -64,9 +63,9 @@ const ChatMessages = () => {
         payload.length > 0 ? setMessages(prevState => [...prevState, ...payload]) : setIsNoOlderMessage(true)
     }
 
-    /*
-        GET USER PROFILE
-    */
+    /*===========================================================================================
+                                        GET USER PROFILE
+    =============================================================================================*/
     useEffect(() => {
         const userProfile = setTimeout(() => {
             socket.emit(`chat:get-user-profile-${user?.id}`, { username: username })
@@ -79,13 +78,11 @@ const ChatMessages = () => {
         }
     }, [username])
 
-    /*
-        GET ALL MESSAGES
-    */
+    /*===========================================================================================
+                                        GET ALL, NEW AND OLD MESSAGE
+    =============================================================================================*/
     useEffect(() => {
-        let room;
         if(userProfile){
-            room = userProfile?.room
             socket.emit(`chat:get-messages-${user?.id}`, { id: userProfile?.userId, room: chatRoom })
             socket.on(`chat:messages-${chatRoom}`, getMessage)
             socket.on(`chat:new-message-${chatRoom}`, getNewMessage)
@@ -100,12 +97,20 @@ const ChatMessages = () => {
         }
     }, [userProfile])
     
+
+    /*===========================================================================================
+        GET THE USER LAST MESSAGE AND SEND BACK TO SERVER TO QUERY AND GET THE LATEST MESSAGE
+    =============================================================================================*/
     useEffect(() => {
         if(messages){
             setLastMessageDate(messages[0])
         }
     }, [messages])
     
+
+    /*===========================================================================================
+                MESSAGE CONTAINER AUTOMATIC SCROLLDOWN TO ALWAYS VIEW LATEST MESSAGE
+    =============================================================================================*/
     useEffect(() => {
         const lastElementView = setTimeout(() => {
             messageContainerRef.current?.lastElementChild?.scrollIntoView({ behavior: 'smooth' })
@@ -147,10 +152,10 @@ const ChatMessages = () => {
                             alt=""
                             className=' w-72 aspect-video' 
                         />
-                        <p className=' font-semibold text-lnk-dark-gray text-lg'>Start a new chat with {userProfile?.first_name ?? userProfile?.username}.</p>
+                        <p className=' font-semibold text-lnk-dark-gray text-lg'>Reach out to {userProfile?.first_name ?? userProfile?.username} with a fresh chat.</p>
                         {
-                            !isNoOlderMessage ? (
-                                <button onClick={getOlderMessage} className='text-lnk-orange'>
+                            !isNoOlderMessage && messages.length > 0 ? (
+                                <button onClick={getOlderMessage} className='text-lnk-orange text-sm mt-3'>
                                     Load older messages
                                 </button>
                             ) : null
