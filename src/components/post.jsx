@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isNull, capitalize, debounce } from 'lodash'
 import axiosInstance from "../utils/axios";
 import TiptopView from "./wysiwyg/TiptopView";
+import { PostContext } from "../context/PostContext";
 import { diffInDays, path } from "../utils/functions";
 import { FaHeart, FaGlobeAsia, FaRegComment } from "react-icons/fa";
 import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
@@ -24,6 +25,7 @@ import heartIcon from '../assets/icons/heart.png'
 const Post = (props) => {
 
     const {
+        reference,
         postId, 
         authUserProfile, 
         content, 
@@ -41,6 +43,7 @@ const Post = (props) => {
     } = props
 
     const queryClient = useQueryClient()
+    const { likePost } = useContext(PostContext)
     const [showComment, setShowComment] = useState(false)
     const [isShowReactionIcon, setIsShowReactionIcon] = useState(false)
 
@@ -168,34 +171,34 @@ const Post = (props) => {
     const handleShowReactionIcon = debounce(() => setIsShowReactionIcon(true), 100)
     const handleHideReactionIcon = debounce(() => setIsShowReactionIcon(false), 100)
 
-    const likePost = async (reaction) => {
-        likePostMutation.mutate({ postId: postId, reaction: reaction })
-    }
+    // const likePost = async (reaction) => {
+    //     likePostMutation.mutate({ postId: postId, reaction: reaction })
+    // }
 
-    const likePostMutation = useMutation({
-        mutationFn: async (reaction) => {
-            let result = await axiosInstance.post(`/post/like/${reaction.postId}/${reaction.reaction}`, {}, {
-                withCredentials: true
-            })
-            setIsShowReactionIcon(false)
-            if (result.status === 200) {
-                return result
-            }
-        },
-        onSuccess: async () => {
-            queryClient.invalidateQueries(['posts'])
-        },
-        onError: (error) => {
-            toast.error(error.response.data.message)
-        }
-    })
+    // const likePostMutation = useMutation({
+    //     mutationFn: async (reaction) => {
+    //         let result = await axiosInstance.post(`/post/like/${reaction.postId}/${reaction.reaction}`, {}, {
+    //             withCredentials: true
+    //         })
+    //         setIsShowReactionIcon(false)
+    //         if (result.status === 200) {
+    //             return result
+    //         }
+    //     },
+    //     onSuccess: async () => {
+    //         queryClient.invalidateQueries(['posts'])
+    //     },
+    //     onError: (error) => {
+    //         toast.error(error.response.data.message)
+    //     }
+    // })
 
     const fetchAllComment = async () => {
         setShowComment(true)
     }
 
     return (
-        <section className=" pt-3 sm:pt-2 mb-4 xs:mb-3 rounded shadow px-2 sm:px-0 sm:border sm:border-lnk-gray sm:bg-lnk-white">
+        <section ref={reference} className=" pt-3 sm:pt-2 mb-4 xs:mb-3 rounded shadow px-2 sm:px-0 sm:border sm:border-lnk-gray sm:bg-lnk-white">
             <div className=" flex items-start gap-2 sm:px-5 pt-3 mb-4">
                 <div className="relative rounded-full border border-lnk-dark-gray">
                     <img 
@@ -240,13 +243,13 @@ const Post = (props) => {
                         </button>
                         <div className={`${isShowReactionIcon ? 'block' : 'hidden'} animate__animated animate__fadeIn absolute -top-11 z-10 pb-2 opacity-0 group-hover:opacity-100  transition-all ease-linear duration-150`}>
                             <div className=" bg-lnk-white border border-lnk-gray p-2 flex items-center gap-5 rounded-3xl shadow">
-                                <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                <button onClick={() => likePost(postId, 'heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <FaHeart className=" text-red-500 text-xl" />
                                 </button>
-                                <button onClick={() => likePost('like')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                <button onClick={() => likePost(postId, 'like')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <AiFillLike className=" text-blue-500 text-xl" />
                                 </button>
-                                <button onClick={() => likePost('wow')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
+                                <button onClick={() => likePost(postId, 'wow')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
                                     <BsFillEmojiSurpriseFill className=" text-yellow-500 text-xl" />
                                 </button>
                             </div>

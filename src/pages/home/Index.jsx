@@ -1,7 +1,8 @@
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext, useRef, useCallback } from "react"
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { AuthContext } from "../../context/AuthContext";
+import { PostContext } from "../../context/PostContext";
 import { debounce } from "lodash";
 import PulseLoader from 'react-spinners/PulseLoader'
 import { isNull, path } from "../../utils/functions";
@@ -21,11 +22,12 @@ const Home = () => {
     /*
         Initialize react hooks
     */
+   const observer = useRef(null)
     const { user } = useContext(AuthContext)
+    const { page,posts,fetchAllPost, fetchAllInfiniteScroll } = useContext(PostContext)
     const [isPostModalOpen, setIsPostModalOpen] = useState(false)
     const [documentHeight, setDocumentHeight] = useState(0)
     const [documentHeightInScroll, setDocumentHeightInScroll] = useState(0)
-
     /*
         Functions and event
     */
@@ -49,20 +51,40 @@ const Home = () => {
         },
     })
 
+    const lastPostElementRef = useCallback(
+        (node) => {
+            if(isNull(page)) return;
+            if(observer.current) observer.current.disconnect()
+            observer.current = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting){
+                    fetchAllInfiniteScroll(page)
+                }
+            })
+            if(node) observer.current.observe(node)
+        },
+        [page]
+    )
+
     /*
         Initialize useEffect
     */
-    useEffect(() => {
-        const onScroll = debounce(function () {
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                setDocumentHeightInScroll(window.innerHeight + window.scrollY)
-                fetchNextPage()
-            }
-        }, 500)
-        window.addEventListener('scroll', onScroll)
-        return () => window.removeEventListener('scroll', onScroll)
-    }, [])
+   useEffect(() => {
+        fetchAllPost()
+   },[])
 
+    // useEffect(() => {
+    //     const onScroll = debounce(function () {
+    //         if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    //             setDocumentHeightInScroll(window.innerHeight + window.scrollY)
+    //             // fetchNextPage()
+    //             if(!isNull(page)){
+    //                 fetchAllInfiniteScroll(page)
+    //             }
+    //         }
+    //     }, 500)
+    //     window.addEventListener('scroll', onScroll)
+    //     return () => window.removeEventListener('scroll', onScroll)
+    // }, [page])
 
     useEffect(() => {
         setDocumentHeight(document.body.offsetHeight)
@@ -86,6 +108,28 @@ const Home = () => {
                 <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-2 sm:p-3 rounded text-left bg-white">Start post</button>
             </section>
             {
+                posts.map((value, index) => (
+                    <Post
+                        reference={posts.length === index + 1 ? lastPostElementRef : null}
+                        key={value.id}
+                        postId={value.id}
+                        authUserProfile={user?.url}
+                        content={value.content}
+                        username={value.username}
+                        fullName={value.full_name}
+                        headline={value.headline}
+                        createdAt={value.created_at}
+                        userLastSeen={value.last_seen}
+                        profilPicUrl={value.url}
+                        postFiles={value.post_files}
+                        postReactions={value.post_reactions}
+                        isReact={value.user_reaction}
+                        reactionCount={value.reaction_count}
+                        commentCount={value.comment_count}
+                    />
+                ))
+            }
+            {/* {
                 data?.pages.map(dt => (
                     dt.result.map(value => (
                         <Post
@@ -142,7 +186,7 @@ const Home = () => {
                         No more post
                     </p>
                 )
-            }
+            } */}
 
         </>
     )

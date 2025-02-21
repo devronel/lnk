@@ -4,6 +4,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom"
 import Navigation from "../components/navigation"
 import LeftSidebar from "../components/sidebar/leftSidebar"
 import FriendsMenu from "../components/sidebar/friendsMenu"
+import { PostContextProvider } from "../context/PostContext";
 
 const MainLayout = () => {
     const location = useLocation();
@@ -35,20 +36,22 @@ const MainLayout = () => {
 
     return isLogin ? (
         <>
-            <div className=" min-h-screen h-auto pt-[4.0625rem] lg:pb-2">
-                <Navigation user={user} />
-                <main>
-                    <div className={`max-w-[80rem] w-[95%] xs:w-[90%] mx-auto grid md:grid-cols-8 gap-2`}>
-                        {
-                            pageContent()
-                        }
-                        <div className={`${currentUrl === '/profile' || location.pathname.startsWith('/profile-info/') ? 'col-span-6' : 'col-span-4'} pt-12 xs:pt-0`}>
-                            <Outlet />
+            <PostContextProvider>
+                <div className=" min-h-screen h-auto pt-[4.0625rem] lg:pb-2">
+                    <Navigation user={user} />
+                    <main>
+                        <div className={`max-w-[80rem] w-[95%] xs:w-[90%] mx-auto grid md:grid-cols-8 gap-2`}>
+                            {
+                                pageContent()
+                            }
+                            <div className={`${currentUrl === '/profile' || location.pathname.startsWith('/profile-info/') ? 'col-span-6' : 'col-span-4'} pt-12 xs:pt-0`}>
+                                <Outlet />
+                            </div>
+                            <div></div>
                         </div>
-                        <div></div>
-                    </div>
-                </main>
-            </div>
+                    </main>
+                </div>
+            </PostContextProvider>
         </>
     ) : <Navigate to='/login' state={{ from: location.pathname }} />
 }
