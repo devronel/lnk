@@ -16,12 +16,12 @@ const PostReaction = ({ postReactions, reactionCount }) => {
     if (!postReactions) {
         return <p className="text-xs"></p>;
     }
-
+    
     const reactions = postReactions
         .split(",")
         .map((reaction) => reactionIcons[reaction])
         .filter(Boolean);
-
+    
     return (
         <div className="flex items-center gap-1">
             <div className="flex items-center">

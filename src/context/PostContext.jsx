@@ -41,34 +41,40 @@ export const PostContextProvider = ({ children }) => {
                 withCredentials: true
             })
             if(like.data.success){
-                const { reaction } = like.data.payload
-                const postIndex = posts.findIndex(post => post.id === reaction.post_id)
 
+                const { reaction, usersReaction } = like.data.payload
                 const reactions = []
-                const oldPostReactions = posts[postIndex].post_reactions
-                const oldUserReaction = posts[postIndex].user_reaction
-                const oldPostReactionArray = oldPostReactions.split(',')
                 
-                if(!isNull(oldPostReactions)){
-                    oldPostReactionArray.forEach(value => {
-                        reactions.push(value)
+                usersReaction.forEach(value => {
+                    reactions.push(value.reaction_type)
+                })
+
+                if(like.data.payload.reaction){
+                    const postIndex = posts.findIndex(post => post.id === reaction.post_id)
+                    setPosts(prevState => {
+                        const updatePost = [...prevState]
+                        updatePost[postIndex] = { 
+                            ...updatePost[postIndex],
+                            post_reactions: [...new Set(reactions)].toString(),
+                            reaction_count: usersReaction.length,
+                            user_reaction: reaction.reaction_type  ?? null
+                        }
+                        return updatePost
                     })
-                    reactions.push(reaction.reaction_type)
                 }else{
-                    reactions.push(reaction.reaction_type)
+                    const postIndex = posts.findIndex(post => post.id === postId)
+                    setPosts(prevState => {
+                        const updatePost = [...prevState]
+                        updatePost[postIndex] = { 
+                            ...updatePost[postIndex],
+                            post_reactions: [...new Set(reactions)].toString(),
+                            reaction_count: usersReaction.length,
+                            user_reaction: null
+                        }
+                        return updatePost
+                    })
                 }
 
-                console.log(reactions)
-                console.log(oldUserReaction)
-
-                setPosts(prevState => {
-                    const updatePost = [...prevState]
-                    updatePost[postIndex] = { 
-                        ...updatePost[postIndex],
-                        user_reaction: reaction.reaction_type 
-                    }
-                    return updatePost
-                })
             }
         } catch (error) {
             console.error(error)
