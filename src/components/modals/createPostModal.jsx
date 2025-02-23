@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axiosInstance from "../../utils/axios"
 import Tiptop from "../wysiwyg/Tiptop"
+import { PostContext } from "../../context/PostContext"
 import Modal from "../modal"
 import useError from "../../hooks/useError"
 import { RiCloseCircleFill } from "react-icons/ri"
@@ -14,6 +15,7 @@ import photoGalleryIcon from "../../assets/icons/photo-gallery.png"
 const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
 
     const queryClient = useQueryClient()
+    const { setPosts } = useContext(PostContext)
     const [setErrors, errorExist] = useError()
     const [post, setPost] = useState({
         content: '',
@@ -56,9 +58,42 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
         })
     }
 
-    const save = (e) => {
+    const save = async (e) => {
         e.preventDefault()
-        uploadPostMutation.mutate(post)
+        // uploadPostMutation.mutate(post)
+        try {
+            setLoading(true)
+            let formData = new FormData()
+            let files = Array.from(post.files)
+            files.forEach(value => {
+                formData.append(`files`, value)
+            })
+            formData.append('content', post.content)
+            let result = await axiosInstance.post('/post/create', formData, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            if (result.data.success) {
+                setIsPostModalOpen(false)
+                setLoading(false)
+                setPost({
+                    ...post,
+                    content: '',
+                    files: []
+                })
+                setFilesPreview([])
+
+                // Include new post in posts array in state
+                setPosts(prevState => {
+                    return [result.data.payload.newPost, ...prevState]
+                })
+            }
+        } catch (error) {
+            setLoading(false)
+            console.log(error.response)
+        }
     }
     const uploadPostMutation = useMutation({
         mutationFn: async (post) => {

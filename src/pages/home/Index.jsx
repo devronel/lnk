@@ -24,32 +24,15 @@ const Home = () => {
     */
    const observer = useRef(null)
     const { user } = useContext(AuthContext)
-    const { page,posts,fetchAllPost, fetchAllInfiniteScroll } = useContext(PostContext)
+    const { page, posts, isLoading, fetchAllPost, fetchAllInfiniteScroll } = useContext(PostContext)
     const [isPostModalOpen, setIsPostModalOpen] = useState(false)
     const [documentHeight, setDocumentHeight] = useState(0)
-    const [documentHeightInScroll, setDocumentHeightInScroll] = useState(0)
     /*
         Functions and event
     */
     const startPost = () => {
         setIsPostModalOpen(true)
     }
-
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-        queryKey: ['posts', user?.username],
-        queryFn: async ({ pageParam }) => {
-            let result = await axiosInstance.get(`/post/all?pages=${pageParam}`, {
-                withCredentials: true
-            })
-
-            return result.data.payload
-
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage, pages) => {
-            return lastPage.next_page
-        },
-    })
 
     const lastPostElementRef = useCallback(
         (node) => {
@@ -71,20 +54,6 @@ const Home = () => {
    useEffect(() => {
         fetchAllPost()
    },[])
-
-    // useEffect(() => {
-    //     const onScroll = debounce(function () {
-    //         if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-    //             setDocumentHeightInScroll(window.innerHeight + window.scrollY)
-    //             // fetchNextPage()
-    //             if(!isNull(page)){
-    //                 fetchAllInfiniteScroll(page)
-    //             }
-    //         }
-    //     }, 500)
-    //     window.addEventListener('scroll', onScroll)
-    //     return () => window.removeEventListener('scroll', onScroll)
-    // }, [page])
 
     useEffect(() => {
         setDocumentHeight(document.body.offsetHeight)
@@ -128,6 +97,26 @@ const Home = () => {
                         commentCount={value.comment_count}
                     />
                 ))
+            }
+            {
+                isLoading ? (
+                    <div>
+                        <p className="  text-center text-xs text-lnk-dark-gray">
+                            <PulseLoader
+                                color={'#FF6500'}
+                                loading={isLoading}
+                                size={6}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                            />
+                        </p>
+                    </div>
+                ) : (
+                    <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
+                        <PiCoffeeDuotone className=" text-base " />
+                        No more post
+                    </p>
+                )
             }
             {/* {
                 data?.pages.map(dt => (
