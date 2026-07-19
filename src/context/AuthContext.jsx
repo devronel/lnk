@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useLayoutEffect } from "react";
 import toast from "react-hot-toast";
 import FullPageLoader from "../components/loader/fullPageLoader";
 import axiosInstance from "../utils/axios";
+import axios from "axios";
 
 export const AuthContext = createContext(null)
 
@@ -13,22 +14,23 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [accessToken, setAccessToken] = useState()
 
-    /* =====================================================================
-        AUTHENTICATE/LOGIN USER
-    ========================================================================*/
+    /* --- Authenticate / Login user --- */
     const authenticate = async (data) => {
         try {
             setAuthLoading(true)
-            let user = await axiosInstance.post('/user/authenticate', data, {
+
+            let user = await axiosInstance.post('/authenticate', data, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            if (user.status === 200) {
+
+            if (user.data.success) {
                 setIsLogin(true)
                 setAuthLoading(false)
-                refreshUser()  
+                localStorage.setItem('auth_token', user.data.payload.access_token);
+                setUser(user.data.payload.user);
             }
         } catch (error) {
             setIsLogin(false)
@@ -46,39 +48,49 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    /* =================================================================================
-        LOGOUT USER
-    ====================================================================================*/
+    /* --- Logout --- */
     const logout = async () => {
         try {
-            let response = await axiosInstance.delete('/user/logout', {
-                withCredentials: true
-            });
-            if (response.status === 200) {
-                setIsLogin(false)
-            }
+            await axiosInstance.post('/logout');
         } catch (error) {
-            setIsLogin(true)
+            console.error("Backend logout failed, forcing client cleanup:", error);
+        } finally {
+            localStorage.removeItem('auth_token');
+            setUser(null);
+            setIsLogin(false);
         }
     }
 
-    /* ==================================================================================
-        GET USER DATA, RUN WHEN PAGE RELOAD
-    =====================================================================================*/
+    /* --- Get User Data, Run when page reload --- */
     const refreshUser = async () => {
+
+        const token = localStorage.getItem('auth_token');
+
+        if (!token) {
+            setUser(null);
+            setIsLogin(false);
+            setIsAuthenticating(false);
+            return;
+        }
+
         try {
-            setIsAuthenticating(true)
-            let user = await axiosInstance.get('/user/validate-user', {
-                withCredentials: true
+            setIsAuthenticating(true);
+
+            const response = await axiosInstance.get('/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
-            if (user.status === 200) {
-                setUser(user.data.payload.authUser)
-                setIsAuthenticating(false)
-                setIsLogin(true)
-            }
+
+            setUser(response.data);
+            setIsLogin(true);
+
         } catch (error) {
-            setIsAuthenticating(false)
-            setIsLogin(false)
+            localStorage.removeItem('auth_token');
+            setUser(null);
+            setIsLogin(false);
+        } finally {
+            setIsAuthenticating(false);
         }
     }
 

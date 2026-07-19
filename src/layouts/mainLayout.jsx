@@ -26,8 +26,8 @@ const MainLayout = () => {
                 username={user?.username}
                 headline={user?.headline}
                 address={user?.address}
-                profileUrl={user?.url}
-                coverPhoto={user?.cover_photo}
+                profileUrl={user?.url ?? null}
+                coverPhoto={user?.cover_photo ?? null}
             />
         }
     }

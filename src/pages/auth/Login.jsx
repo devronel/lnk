@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"
-import BeatLoader from 'react-spinners/BeatLoader'
+import { BeatLoader } from 'react-spinners';
 import { AuthContext } from "../../context/AuthContext";
 import LnkInput from "../../components/forms/lnkInput";
 import { FcGoogle } from "react-icons/fc";

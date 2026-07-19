@@ -1,4 +1,4 @@
-import BeatLoader from 'react-spinners/BeatLoader'
+import { BeatLoader } from 'react-spinners'
 
 const Modal = ({ openModal, closeModal, icon, title, children, submit, loader }) => {
 

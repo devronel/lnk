@@ -60,7 +60,7 @@ const Signup = () => {
                         setErrors(error.response.data.errors)
                         break;
                     default:
-                        console.log('An unexpected error occurred')
+                        toast.error("Account Creation Failed!")
                         break;
                 }
             }

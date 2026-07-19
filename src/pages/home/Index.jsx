@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { AuthContext } from "../../context/AuthContext";
 import { debounce } from "lodash";
-import PulseLoader from 'react-spinners/PulseLoader'
+import { PulseLoader } from 'react-spinners'
 import { isNull, path } from "../../utils/functions";
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
@@ -81,7 +81,7 @@ const Home = () => {
             <CreatePostModal isPostModalOpen={isPostModalOpen} setIsPostModalOpen={setIsPostModalOpen} />
             <section className=" flex items-center gap-3 p-3 sm:p-5 rounded shadow border border-lnk-gray bg-lnk-white mb-3">
                 <div className=" h-10 w-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-lnk-dark-gray">
-                    <img className=" w-full h-full object-cover" src={isNull(user?.url) ? profilePlaceholder : path(user?.url)} alt="" />
+                    <img className=" w-full h-full object-cover" src={isNull(user?.url ?? null) ? profilePlaceholder : path(user?.url)} alt="" />
                 </div>
                 <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-2 sm:p-3 rounded text-left bg-white">Start post</button>
             </section>
