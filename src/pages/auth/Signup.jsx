@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom"
 import toast from "react-hot-toast";
-import BeatLoader from 'react-spinners/BeatLoader'
+import { BeatLoader } from 'react-spinners';
 import axiosInstance from "../../utils/axios"
 import LnkInput from "../../components/forms/lnkInput";
 import useError from "../../hooks/useError";
@@ -11,22 +11,18 @@ import { FaInfoCircle } from "react-icons/fa";
 
 const Signup = () => {
 
-    /*
-       Initialize react hooks
-   */
-    let [setErrors, errorExist] = useError()
+    /* --- Initialize react hooks --- */
+    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false)
     const [displayAlertSuccess, setDisplayAlertSuccess] = useState(false)
     const [userData, setUserData] = useState({
         username: '',
         email: '',
         password: '',
-        passwordConfirmation: ''
+        password_confirmation: ''
     })
 
-    /*
-        Functions and event
-    */
+    /* --- Functions and event ---*/
     const handleChangeInput = (e) => {
         setUserData({
             ...userData,
@@ -38,12 +34,13 @@ const Signup = () => {
         e.preventDefault();
         try {
             setLoading(true)
-            let response = await axiosInstance.post('/user/create', userData, {
+            let response = await axiosInstance.post('/register', userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            })
-            if (response.status === 200) {
+            });
+
+            if (response.data.success) {
                 setLoading(false)
                 setDisplayAlertSuccess(true)
                 toast.success("Account successfully created!")
@@ -51,7 +48,7 @@ const Signup = () => {
                     username: '',
                     email: '',
                     password: '',
-                    passwordConfirmation: ''
+                    password_confirmation: ''
                 })
                 setErrors([])
             }
@@ -59,8 +56,8 @@ const Signup = () => {
             setLoading(false)
             if (error.response) {
                 switch (error.response.status) {
-                    case 400:
-                        setErrors(error.response.data.payload)
+                    case 422:
+                        setErrors(error.response.data.errors)
                         break;
                     default:
                         console.log('An unexpected error occurred')
@@ -73,7 +70,7 @@ const Signup = () => {
 
     return (
         <>
-            <section className="  max-w-[400px] w-[90%] mx-auto">
+            <section className="max-w-[400px] w-[90%] mx-auto">
                 <h2 className=" text-3xl mb-1 font-bold">Signup</h2>
                 <p className=" text-sm mb-5 font-light">Hello, Create your Account. <MdWavingHand className="inline-block align-middle text-lnk-orange text-base" /></p>
                 {
@@ -99,28 +96,25 @@ const Signup = () => {
                 </div>
                 <form onSubmit={submit}>
                     <div className=" mb-3">
-                        <LnkInput onChange={handleChangeInput} value={userData.username} name='username' type="text" label="Username" error={errorExist('username')} />
+                        <LnkInput onChange={handleChangeInput} value={userData.username} name='username' type="text" label="Username" error={errors.username} />
                         {
-                            errorExist('username') ? <p className=" text-red-500 text-xs">{errorExist('username').msg}</p> : null
+                            errors.username ? <p className=" text-red-500 text-xs">{errors.username[0]}</p> : null
                         }
                     </div>
                     <div className=" mb-3">
-                        <LnkInput onChange={handleChangeInput} value={userData.email} name='email' type="email" label="Email" error={errorExist('email')} />
+                        <LnkInput onChange={handleChangeInput} value={userData.email} name='email' type="email" label="Email" error={errors.email} />
                         {
-                            errorExist('email') ? <p className=" text-red-500 text-xs">{errorExist('email').msg}</p> : null
+                            errors.email ? <p className=" text-red-500 text-xs">{errors.email[0]}</p> : null
                         }
                     </div>
                     <div className=" mb-3">
-                        <LnkInput onChange={handleChangeInput} value={userData.password} name='password' type='password' label="Password" error={errorExist('password')} />
+                        <LnkInput onChange={handleChangeInput} value={userData.password} name='password' type='password' label="Password" error={errors.password} />
                         {
-                            errorExist('password') ? <p className=" text-red-500 text-xs">{errorExist('password').msg}</p> : null
+                            errors.password ? <p className=" text-red-500 text-xs">{errors.password[0]}</p> : null
                         }
                     </div>
                     <div className=" mb-3">
-                        <LnkInput onChange={handleChangeInput} value={userData.passwordConfirmation} name='passwordConfirmation' type='password' label="Re-type Password" error={errorExist('passwordConfirmation')} />
-                        {
-                            errorExist('passwordConfirmation') ? <p className=" text-red-500 text-xs">{errorExist('passwordConfirmation').msg}</p> : null
-                        }
+                        <LnkInput onChange={handleChangeInput} value={userData.password_confirmation} name='password_confirmation' type='password' label="Re-type Password" error={false} />
                     </div>
                     <button type="submit" disabled={loading} className={`${loading ? 'bg-opacity-80' : null} flex items-center justify-center bg-lnk-orange w-full h-10 py-2.5 mb-3 rounded text-lnk-white text-sm font-bold hover:bg-opacity-80 transition-all ease-linear duration-150`}>
                         {loading ? null : 'Signup'}
