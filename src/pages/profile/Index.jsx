@@ -11,9 +11,7 @@ import Modal from "../../components/modal";
 import LnkInput from "../../components/forms/lnkInput";
 import LnkTextarea from "../../components/forms/lnkTextarea";
 
-/*
-    Icons
-*/
+/* --- Icons --- */
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
 import { FcAbout } from "react-icons/fc";
@@ -22,9 +20,7 @@ import { CiEdit } from "react-icons/ci";
 import { FaRegImage } from "react-icons/fa";
 import { BiSolidError } from "react-icons/bi";
 
-/*
-    Import photos
-*/
+/* --- Import photos --- */
 import profilePlaceholder from "../../assets/profile-placeholder.jpg"
 import empty from "../../assets/empty.svg"
 import coverPhotoPlaceholder from "../../assets/cover-photo-placeholder.png"
@@ -33,29 +29,23 @@ import ProfilePhotoModal from "../../components/modals/profilePhotoModal";
 
 const Profile = () => {
 
-    /*
-        Initialize React hooks like states, context api and etc.
-    */
-    let { user, refreshUser } = useContext(AuthContext)
-    let [openModal, setOpenModal] = useState(false)
-    let [loading, setLoading] = useState(false)
-
-
+    /* --- Initialize React hooks like states, context api and etc. --- */
+    const { user, setUser, refreshUser } = useContext(AuthContext)
+    const [openModal, setOpenModal] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [errors, setErrors] = useState({})
+    const [profilePhoto, setProfilePhoto] = useState(null)
+    const [coverPhoto, setCoverPhoto] = useState(null)
     const [userData, setUserData] = useState({
-        firstName: user?.first_name ? user.first_name : '',
-        lastName: user?.last_name ? user.last_name : '',
-        headline: user?.headline ? user.headline : '',
-        dateOfBirth: user?.date_of_birth ? dateFormat(user.date_of_birth) : '',
-        address: user?.address ? user.address : '',
-        about: user?.about ? user.about : ''
+        firstName: '',
+        lastName: '',
+        headline: '',
+        dateOfBirth: '',
+        address: '',
+        about: ''
     })
 
-    let [profilePhoto, setProfilePhoto] = useState(null)
-    let [coverPhoto, setCoverPhoto] = useState(null)
-
-    /*
-        Onchange handler
-    */
+    /* --- Onchange handler --- */
     const handleOnChange = (e) => {
         setUserData({
             ...userData,
@@ -97,38 +87,49 @@ const Profile = () => {
     }
 
 
-    /*
-        Modal functions for open and close
-    */
+    /* --- Modal functions for open and close --- */
     const modalOpen = () => {
         setOpenModal(prevState => !prevState)
     }
 
-     /*=======================================================================================
-                                    SAVE USER DETAILS
-    =========================================================================================*/
+     /* --- SAVE USER DETAILS --- */
     const saveUserDetails = async () => {
         try {
             setLoading(true)
-            let response = await axiosInstance.post('/user/update-user-details', userData, {
+            let response = await axiosInstance.post('/profile', userData, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
-            if (response.status === 200) {
+
+            if (response.data.success) {
                 setOpenModal(false)
                 setLoading(false)
-                refreshUser()
+                setErrors({})
+                setUser(prev => {
+                    return {
+                        ...prev,
+                        full_name: userData.firstName + ' ' + userData.lastName
+                    }
+                })
             }
         } catch (error) {
-
+            setLoading(false)
+            if (error.response) {
+                switch (error.response.status) {
+                    case 422:
+                        setErrors(error.response.data.errors)
+                        break;
+                    default:
+                        toast.error("Something's went wrong.")
+                        break;
+                }
+            }
         }
     }
 
-    /*=======================================================================================
-                                    FETCH USER POSTS
-    =========================================================================================*/
+    /* --- Fetch User Post --- */
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['user-posts', user?.username],
         queryFn: async ({ pageParam }) => {
@@ -146,6 +147,38 @@ const Profile = () => {
         },
     })
 
+    useEffect(() => {
+        const getUserDetail = async () => {
+            try {
+
+                const response = await axiosInstance.get('/profile');
+
+                if(!response.data.payload.detail) return;
+                
+                if(response.data.success){
+
+                    const detail = response.data.payload.detail
+
+                    setUserData(prev => {
+                        return {
+                            ...prev,
+                            firstName: detail.first_name,
+                            lastName: detail.last_name,
+                            headline: detail.headline,
+                            dateOfBirth: dateFormat(detail.date_of_birth),
+                            address: detail.address,
+                            about: detail.about
+                        }
+                    })
+                }
+            } catch (error) {
+                toast.error("Something's went wrong.")
+            }
+        }
+
+        getUserDetail();
+    }, []);
+
     
     useEffect(() => {
         const onScroll = debounce(function () {
@@ -158,9 +191,8 @@ const Profile = () => {
         return () => window.removeEventListener('scroll', onScroll)
     }, [])
 
-     /*=======================================================================================
-                                DISABLE SCROLL WHEN MODAL IS OPEN
-    =========================================================================================*/
+
+    /* --- DISABLE SCROLL WHEN MODAL IS OPEN --- */
     useEffect(() => {
         if (!isNull(profilePhoto) || !isNull(coverPhoto)) {
             document.body.style.overflow = 'hidden'
@@ -169,18 +201,91 @@ const Profile = () => {
         }
     }, [profilePhoto, coverPhoto])
 
-    console.log(data?.pages[0])
-
     return (
         <>
-            {/* basic info modal */}
+            {/* Basic info modal */}
             <Modal submit={saveUserDetails} loader={loading} openModal={openModal} closeModal={() => setOpenModal(false)} setOpenModal={setOpenModal} title="Edit Profile" icon={<CiEdit className=" text-xl text-lnk-orange" />}>
-                <LnkInput onChange={handleOnChange} value={userData.firstName} name='firstName' type='text' className='mb-3' placeholder="First name" label='First name' />
-                <LnkInput onChange={handleOnChange} value={userData.lastName} name='lastName' type='text' className='mb-3' placeholder="Last name" label='Last name' />
-                <LnkInput onChange={handleOnChange} value={userData.headline} name='headline' type='text' className='mb-3' placeholder="Headline" label='Headline' />
-                <LnkInput onChange={handleOnChange} value={userData.dateOfBirth} name='dateOfBirth' type='date' className='mb-3' label='Date of Birth' />
-                <LnkInput onChange={handleOnChange} value={userData.address} name='address' type='text' className='mb-3' label='Address' />
-                <LnkTextarea onChange={handleOnChange} value={userData.about} name='about' className='mb-3' label='About' placeholder='Tell a little bit about yourself' />
+                <div className='mb-3'>
+                    <LnkInput 
+                        onChange={handleOnChange} 
+                        value={userData.firstName} 
+                        error={errors.firstName}  
+                        name='firstName' type='text' 
+                        placeholder="First name" 
+                        required
+                        label='First name' 
+                    />
+                    {
+                        errors.firstName ? <p className=" text-red-500 text-xs">{errors.firstName[0]}</p> : null
+                    }
+                </div>
+                <div className='mb-3'>
+                    <LnkInput 
+                        onChange={handleOnChange} 
+                        value={userData.lastName} 
+                        error={errors.lastName}
+                        name='lastName' type='text' 
+                        placeholder="Last name" 
+                        required
+                        label='Last name' 
+                    />
+                    {
+                        errors.lastName ? <p className=" text-red-500 text-xs">{errors.lastName[0]}</p> : null
+                    }
+                </div>
+                <div className='mb-3'>
+                    <LnkInput 
+                        onChange={handleOnChange} 
+                        value={userData.headline} 
+                        error={errors.headline}
+                        name='headline' 
+                        type='text' 
+                        placeholder="Headline" 
+                        required
+                        label='Headline' 
+                    />
+                    {
+                        errors.headline ? <p className=" text-red-500 text-xs">{errors.headline[0]}</p> : null
+                    }
+                </div>
+                <div className='mb-3'>
+                    <LnkInput 
+                        onChange={handleOnChange} 
+                        value={userData.dateOfBirth} 
+                        error={errors.dateOfBirth}
+                        name='dateOfBirth' type='date'
+                        label='Date of Birth' 
+                        required
+                    />
+                </div>
+                <div className='mb-3' >
+                    <LnkInput 
+                        onChange={handleOnChange} 
+                        value={userData.address} 
+                        error={errors.address}
+                        name='address' 
+                        type='text'
+                        label='Address' 
+                        required
+                    />
+                    {
+                        errors.address ? <p className=" text-red-500 text-xs">{errors.address[0]}</p> : null
+                    }
+                </div>
+                <div className='mb-3'>
+                    <LnkTextarea 
+                        onChange={handleOnChange} 
+                        value={userData.about} 
+                        error={errors.about}
+                        name='about' 
+                        label='About' 
+                        placeholder='Tell a little bit about yourself' 
+                        required
+                    />
+                    {
+                        errors.about ? <p className=" text-red-500 text-xs">{errors.about[0]}</p> : null
+                    }
+                </div>
             </Modal>
 
             <ProfilePhotoModal profilePhoto={profilePhoto} setProfilePhoto={setProfilePhoto} />
@@ -226,16 +331,8 @@ const Profile = () => {
                         !isNull(user) ? (
                             <>
                                 <h6 className=" text-xl sm:text-2xl font-bold">{user?.full_name ?? user.username}</h6>
-                                {
-                                    !isNull(user.headline) ? (
-                                        <p className=" text-sm font-normal ">{user.headline}</p>
-                                    ) : null
-                                }
-                                {
-                                    !isNull(user.address) ? (
-                                        <p className="mt-1 text-xs font-light mb-1 ">{user.address}</p>
-                                    ) : null
-                                }
+                                <p className=" text-sm font-normal ">{userData.headline}</p>
+                                <p className="mt-1 text-xs font-light mb-1 ">{userData.address}</p>
                             </>
                         ) : null
                     }
@@ -243,13 +340,13 @@ const Profile = () => {
                 </div>
             </section>
             {
-                !isNull(user?.about) ? (
+                !isNull(userData.about) ? (
                     <section className=" px-5 py-3 bg-lnk-white border border-lnk-gray rounded overflow-hidden mb-3">
                         <h3 className=" text-normal font-bold mb-1 text-lnk-dark-gray">
                             <FcAbout className=" text-lg inline align-middle mr-1" />
                             <span className=" align-middle">About</span>
                         </h3>
-                        <p className=" text-sm font-normal">{user.about}</p>
+                        <p className=" text-sm font-normal">{userData.about}</p>
                     </section>
                 ) : null
             }

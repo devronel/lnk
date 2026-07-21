@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
                     Authorization: `Bearer ${token}`
                 }
             });
-
+            
             setUser(response.data);
             setIsLogin(true);
 
