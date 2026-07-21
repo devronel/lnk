@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
                 }
             });
             
-            setUser(response.data);
+            setUser(response.data.data);
             setIsLogin(true);
 
         } catch (error) {

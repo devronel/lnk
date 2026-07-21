@@ -309,7 +309,7 @@ const Profile = () => {
                         <div className="w-20 h-20 xs:w-28 xs:h-28 sm:w-32 sm:h-32 aspect-square group rounded-full border border-lnk-white relative">
                             <img
                                 className=" aspect-square rounded-full "
-                                src={(user?.url && path(user?.url)) ?? profilePlaceholder}
+                                src={user?.avatar_url ?? profilePlaceholder}
                                 alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                             />
                             <div className="bg-opacity-0 group-hover:bg-opacity-60 bg-lnk-dark absolute inset-0 rounded-full flex items-center justify-center transition-all ease-linear duration-150">

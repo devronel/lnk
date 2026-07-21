@@ -55,7 +55,7 @@ const Navigation = () => {
                                 <div className=" w-8 h-8 xs:w-6 xs:h-6 rounded-full overflow-hidden border border-lnk-dark-gray">
                                     <img
                                         className=" aspect-square rounded-full"
-                                        src={path(user?.url) ?? profilePlaceholder}
+                                        src={user?.avatar_url ?? profilePlaceholder}
                                         alt={user.full_name ?? user.username}
                                     />
                                 </div>

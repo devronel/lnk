@@ -13,7 +13,7 @@ import { AiFillPicture } from "react-icons/ai"
 const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
 
     const cropperRef = useRef()
-    const { refreshUser } = useContext(AuthContext)
+    const { refreshUser, setUser } = useContext(AuthContext)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [photoBytes, setPhotoBytes] = useState(0)
@@ -37,8 +37,8 @@ const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
         e.preventDefault()
         try {
             setIsLoading(true)
-            let photo = dataURLtoFile(cropImage)
-            let response = await axiosInstance.post('/user/change-profile-photo', { profilePhoto: photo },
+            const photo = dataURLtoFile(cropImage)
+            const response = await axiosInstance.post('/profile/avatar', { avatar: photo },
                 {
                     withCredentials: true,
                     headers: {
@@ -47,13 +47,19 @@ const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
                 }
             )
 
-            if (response.status === 200) {
+            console.log(response)
+            if (response.data.success) {
                 setIsLoading(false)
                 setError(null)
                 setProfilePhoto(null)
                 setCropImage(null)
                 setPhotoBytes(null)
-                refreshUser()
+                setUser(prev => {
+                    return {
+                        ...prev,
+                        avatar_url: response.data.payload.avatar_url
+                    }
+                })
             }
 
         } catch (error) {
