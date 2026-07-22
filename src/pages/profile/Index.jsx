@@ -296,7 +296,7 @@ const Profile = () => {
                     <div className="relative ">
                         <img
                             className="aspect-[4/1] w-full"
-                            src={(user?.cover_photo && path(user?.cover_photo)) ?? coverPhotoPlaceholder}
+                            src={user?.cover_photo_url ?? coverPhotoPlaceholder}
                             alt={!isNull(user?.full_name) ? user?.full_name : user?.username}
                         />
                         <div className=" absolute inset-0 bg-lnk-dark opacity-10"></div>

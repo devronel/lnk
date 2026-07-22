@@ -9,6 +9,7 @@ import { convertBytes, dataURLtoFile, isNull } from "../../utils/functions"
 import { MdError } from "react-icons/md"
 import { FaCheck } from "react-icons/fa"
 import { AiFillPicture } from "react-icons/ai"
+import toast from "react-hot-toast"
 
 const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
 
@@ -60,11 +61,13 @@ const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
                         avatar_url: response.data.payload.avatar_url
                     }
                 })
+                toast.success(response.data.message)
             }
 
         } catch (error) {
             setIsLoading(false)
             setError(error.response.data.message)
+            toast.error("Something's wrong!")
         }
     }
 

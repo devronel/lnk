@@ -9,11 +9,12 @@ import Modal from "../modal"
 import { AiFillPicture } from "react-icons/ai"
 import { FaCheck } from "react-icons/fa"
 import { MdError } from "react-icons/md"
+import toast from "react-hot-toast";
 
 const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
 
     const cropperRef = useRef()
-    const { refreshUser } = useContext(AuthContext)
+    const { refreshUser, setUser } = useContext(AuthContext)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
     const [cropImage, setCropImage] = useState(null)
@@ -42,19 +43,27 @@ const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
         try {
             let photo = dataURLtoFile(cropImage)
             setIsLoading(true)
-            let response = await axiosInstance.post('/user/change-cover-photo', { coverPhoto: photo }, {
+            let response = await axiosInstance.post('/profile/cover-photo', { cover_photo: photo }, {
                 withCredentials: true,
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             })
-            if (response.status === 200) {
+
+            if (response.data.success) {
                 reset()
-                refreshUser()
+                toast.success(response.data.message)
+                setUser(prev => {
+                    return {
+                        ...prev,
+                        cover_photo_url: response.data.payload.cover_photo_url
+                    }
+                })
             }
         } catch (error) {
             setIsLoading(false)
             setError(error.response.data.message)
+            toast.error("Something's wrong!")
         }
     }
 
