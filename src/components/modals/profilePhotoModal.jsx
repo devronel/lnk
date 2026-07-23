@@ -38,7 +38,7 @@ const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
         e.preventDefault()
         try {
             setIsLoading(true)
-            const photo = dataURLtoFile(cropImage)
+            const photo = dataURLtoFile(cropImage, profilePhoto.filename)
             const response = await axiosInstance.post('/profile/avatar', { avatar: photo },
                 {
                     withCredentials: true,
@@ -48,7 +48,6 @@ const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
                 }
             )
 
-            console.log(response)
             if (response.data.success) {
                 setIsLoading(false)
                 setError(null)
@@ -97,7 +96,7 @@ const ProfilePhotoModal = ({ profilePhoto, setProfilePhoto }) => {
 
             <div className=" flex flex-col items-center justify-center gap-2">
                 <Cropper
-                    src={profilePhoto}
+                    src={profilePhoto?.base64}
                     style={{ height: 300, width: "100%" }}
                     initialAspectRatio={1 / 1}
                     aspectRatio={1 / 1}

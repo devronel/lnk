@@ -12,19 +12,19 @@ const LeftSidebar = ({ fullName, username, headline, address, profileUrl, coverP
             <div className=" relative overflow-hidden rounded shadow border border-lnk-gray bg-lnk-white">
                 <div className="">
                     <img
-                        className="h-16 aspect-[4/1] w-full border-b border-lnk-gray"
+                        className=" h-20 aspect-[4/1] w-full border-b border-lnk-gray"
                         src={isNull(coverPhoto) ? coverPhotoPlaceholder : path(coverPhoto)}
                         alt={fullName ?? username}
                     />
                 </div>
-                <div className=" rounded-full overflow-hidden border border-lnk-white absolute top-9 left-2">
+                <div className=" rounded-full overflow-hidden border border-lnk-white absolute top-14 left-2">
                     <img
                         className="w-12 aspect-square object-cover"
                         src={isNull(profileUrl) ? profilePlacholder : path(profileUrl)}
                         alt={fullName ?? username}
                     />
                 </div>
-                <div className=" pt-6 pb-3 px-2">
+                <div className=" pt-9 pb-3 px-2">
                     <h4 className=" font-bold text-base">{fullName ?? username}</h4>
                     <p className=" font-normal text-xs">{headline ?? 'No headline available'}</p>
                     <p className=" font-light text-xs text-lnk-dark-gray">{address}</p>

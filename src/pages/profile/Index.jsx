@@ -55,7 +55,8 @@ const Profile = () => {
 
     const choosePhoto = (e) => {
         if (e.target.files && e.target.files[0]) {
-            let targetAttr = e.target.name
+            const filename = e.target.files[0].name
+            const targetAttr = e.target.name
             const MAX_SIZE = 1 * 1000 * 1000;
             if (e.target.files[0].size >= MAX_SIZE) {
                 toast.error(`The file size exceeds the maximum limit of 1mb. Please upload a smaller file.`, {
@@ -75,10 +76,16 @@ const Profile = () => {
             }
             let reader = new FileReader()
             reader.onload = function (e) {
+
+                const photoInfo = {
+                    base64: e.target.result,
+                    filename: filename
+                }
+
                 if (targetAttr === 'profile__photo') {
-                    setProfilePhoto(e.target.result);
+                    setProfilePhoto(photoInfo);
                 } else {
-                    setCoverPhoto(e.target.result)
+                    setCoverPhoto(photoInfo)
                 }
             };
             reader.readAsDataURL(e.target.files[0])
@@ -190,7 +197,6 @@ const Profile = () => {
         window.addEventListener('scroll', onScroll)
         return () => window.removeEventListener('scroll', onScroll)
     }, [])
-
 
     /* --- DISABLE SCROLL WHEN MODAL IS OPEN --- */
     useEffect(() => {

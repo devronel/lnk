@@ -82,7 +82,6 @@ export const AuthProvider = ({ children }) => {
                 }
             });
             
-            console.log(response.data)
             setUser(response.data.data);
             setIsLogin(true);
 

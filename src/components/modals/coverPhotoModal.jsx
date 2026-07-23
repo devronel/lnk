@@ -41,7 +41,7 @@ const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
     const save = async (e) => {
         e.preventDefault()
         try {
-            let photo = dataURLtoFile(cropImage)
+            let photo = dataURLtoFile(cropImage, coverPhoto.filename)
             setIsLoading(true)
             let response = await axiosInstance.post('/profile/cover-photo', { cover_photo: photo }, {
                 withCredentials: true,
@@ -100,7 +100,7 @@ const CoverPhotoModal = ({ coverPhoto, setCoverPhoto }) => {
             </div>
             <>
                 <Cropper
-                    src={coverPhoto}
+                    src={coverPhoto?.base64}
                     style={{ height: 200, width: "100%" }}
                     initialAspectRatio={4/1}
                     aspectRatio={4/1}

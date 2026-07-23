@@ -96,9 +96,7 @@ export const getTime = (value) => {
 /*
     Convert base64 image into File object
 */
-export const dataURLtoFile = (dataurl) => {
-
-    let generatedName = window.crypto.randomUUID()
+export const dataURLtoFile = (dataurl, filename) => {
 
     var arr = dataurl.split(",")
     let mime = arr[0].match(/:(.*?);/)[1]
@@ -111,7 +109,7 @@ export const dataURLtoFile = (dataurl) => {
         u8arr[n] = bstr.charCodeAt(n);
     }
 
-    return new File([u8arr], generatedName, { type: mime });
+    return new File([u8arr], filename, { type: mime });
 }
 
 /*
