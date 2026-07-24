@@ -8,18 +8,17 @@ import heartIcon from '../assets/icons/heart.png'
 
 const reactionIcons = {
     heart: <span className="flex items-center justify-center"><img width={23} height={23} src={heartIcon} alt="Heart icon" /></span>,
-    like: <span className=" flex items-center justify-center"><img width={23} height={23} src={likeIcon} alt="Like icon" /></span>,
-    wow: <span className=" flex items-center justify-center"><img width={18} height={18} src={wowIcon} alt="Wow icon" /></span>,
+    like: <span className="flex items-center justify-center "><img width={23} height={23} src={likeIcon} alt="Like icon" /></span>,
+    wow: <span className="flex items-center justify-center "><img width={18} height={18} src={wowIcon} alt="Wow icon" /></span>,
 };
 
 const PostReaction = ({ postReactions, reactionCount }) => {
-    if (!postReactions) {
+    if (postReactions.length <= 0) {
         return <p className="text-xs"></p>;
     }
 
     const reactions = postReactions
-        .split(",")
-        .map((reaction) => reactionIcons[reaction])
+        .map((reaction) => reactionIcons[reaction.type])
         .filter(Boolean);
 
     return (

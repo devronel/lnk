@@ -67,16 +67,9 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
     const uploadPostMutation = useMutation({
         mutationFn: async (post) => {
             setLoading(true)
-            // let formData = new FormData()
-            // let files = Array.from(post.files)
-            // files.forEach(value => {
-            //     formData.append(`files`, value)
-            // })
-            // formData.append('content', post.content)
             let response = await axiosInstance.post('/post', post, {
                 withCredentials: true,
                 headers: {
-                    // 'Content-Type': 'multipart/form-data'
                     'Content-Type': 'application/json'
                 }
             })
@@ -122,7 +115,7 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
 
     return (
         <Modal submit={save} loader={loading} openModal={isPostModalOpen} closeModal={closeModal} title='Create Post' icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
-            <div className=" mb-3">
+            <div className="mb-3 ">
                 <LnkTextarea 
                     onChange={handleOnchange} 
                     value={post.content}
@@ -131,24 +124,24 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
                     required
                 />
             </div>
-            {/* <div className=" flex items-center flex-wrap gap-2">
+            {/* <div className="flex flex-wrap items-center gap-2 ">
                 {
                     filesPreview.length > 0 ? (
                         filesPreview.map((value, index) => {
                             return (
-                                <div key={index} className=" group relative">
-                                    <button onClick={() => removeImage(index)} className="hidden group-hover:block absolute -top-1 -right-2">
-                                        <RiCloseCircleFill className=" text-red-600 text-lg" />
+                                <div key={index} className="relative  group">
+                                    <button onClick={() => removeImage(index)} className="absolute hidden group-hover:block -top-1 -right-2">
+                                        <RiCloseCircleFill className="text-lg text-red-600 " />
                                     </button>
-                                    <img className="w-20 aspect-video object-contain rounded-md bg-lnk-gray" src={value} alt="" />
+                                    <img className="object-contain w-20 rounded-md aspect-video bg-lnk-gray" src={value} alt="" />
                                 </div>
                             )
                         })
                     ) : null
                 }
             </div>
-            <div className=" flex items-center gap-2 justify-end">
-                <label title="Attach Image" htmlFor="files" className="cursor-pointer hover:text-lnk-orange text-2xl">
+            <div className="flex items-center justify-end gap-2 ">
+                <label title="Attach Image" htmlFor="files" className="text-2xl cursor-pointer hover:text-lnk-orange">
                     <img width={30} className=" aspect-square" src={photoGalleryIcon} alt="Attach image" />
                     <input onChange={handleOnchange} type="file" multiple name="files" id="files" hidden accept=".png,.webp,.jpeg,.jpg" />
                 </label>

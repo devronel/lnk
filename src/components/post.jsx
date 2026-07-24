@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isNull, capitalize, debounce } from 'lodash'
@@ -10,9 +10,7 @@ import { AiFillLike, AiOutlineLike, AiOutlineComment } from "react-icons/ai";
 import { BsFillEmojiSurpriseFill } from "react-icons/bs"
 import { diffInDays, path } from "../utils/functions";
 
-/*
-    Import assets like image and etc.
-*/
+// --- Import assets like image and etc. ---
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 import PostReaction from "./postReactions";
 import toast from "react-hot-toast";
@@ -21,146 +19,166 @@ import wowIcon from '../assets/icons/wow.png'
 import likeIcon from '../assets/icons/like.png'
 import heartIcon from '../assets/icons/heart.png'
 
-const Post = ({ post, postId, authUserProfile, content, fullName, username, headline, createdAt, profilPicUrl, postFiles, postReactions, isReact, reactionCount, commentCount }) => {
+const REACTION_CONFIG = {
+  like: {
+    icon: likeIcon,
+    labelClass: 'font-bold text-blue-500',
+    alt: 'Like icon',
+    size: 20,
+  },
+  heart: {
+    icon: heartIcon,
+    labelClass: 'font-bold text-red-500',
+    alt: 'Heart icon',
+    size: 20,
+  },
+  wow: {
+    icon: wowIcon,
+    labelClass: 'font-bold text-yellow-500',
+    alt: 'Wow icon',
+    size: 20,
+  },
+};
+
+const Post = ({ post }) => {
 
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
     const [isShowReactionIcon, setIsShowReactionIcon] = useState(false)
 
     //  --- Post images display ---
-    const postImageDisplay = () => {
+    // const postImageDisplay = () => {
 
-        if (!isNull(post.files)) {
+    //     if (!isNull(post.files)) {
 
-            let postImages = []
+    //         let postImages = []
 
-            if (postImages.length === 1) {
-                return (
-                    <Link to={`/post-image/${post.id}/${post.username}`} className="block bg-lnk-gray p-1 h-[18.75rem]">
-                        <div className="w-full h-full">
-                            <img
-                                className="w-full h-full object-contain"
-                                src={path(postImages[0].url)}
-                                alt={postImages[0].filename}
-                            />
-                        </div>
-                    </Link>
-                )
-            } else if (postImages.length === 2) {
-                return (
-                    <Link to={`/post-image/${post.id}/${post.username}`} className="grid grid-cols-2">
-                        {
-                            postImages.map(value => (
-                                <div key={value.id} className='bg-lnk-gray p-1'>
-                                    <div className=" w-full h-full">
-                                        <img
-                                            className="w-full h-full object-contain"
-                                            src={path(value.url)}
-                                            alt={value.filename}
-                                        />
-                                    </div>
-                                </div>
-                            ))
-                        }
-                    </Link>
-                )
-            } else if (postImages.length >= 3) {
+    //         if (postImages.length === 1) {
+    //             return (
+    //                 <Link to={`/post-image/${post.id}/${post.username}`} className="block bg-lnk-gray p-1 h-[18.75rem]">
+    //                     <div className="w-full h-full">
+    //                         <img
+    //                             className="object-contain w-full h-full"
+    //                             src={path(postImages[0].url)}
+    //                             alt={postImages[0].filename}
+    //                         />
+    //                     </div>
+    //                 </Link>
+    //             )
+    //         } else if (postImages.length === 2) {
+    //             return (
+    //                 <Link to={`/post-image/${post.id}/${post.username}`} className="grid grid-cols-2">
+    //                     {
+    //                         postImages.map(value => (
+    //                             <div key={value.id} className='p-1 bg-lnk-gray'>
+    //                                 <div className="w-full h-full ">
+    //                                     <img
+    //                                         className="object-contain w-full h-full"
+    //                                         src={path(value.url)}
+    //                                         alt={value.filename}
+    //                                     />
+    //                                 </div>
+    //                             </div>
+    //                         ))
+    //                     }
+    //                 </Link>
+    //             )
+    //         } else if (postImages.length >= 3) {
 
-                let twoPhotos
+    //             let twoPhotos
 
-                if (postImages.length > 3) {
-                    twoPhotos = postImages.slice(1, 3);
-                } else {
-                    twoPhotos = postImages.splice(1)
-                }
+    //             if (postImages.length > 3) {
+    //                 twoPhotos = postImages.slice(1, 3);
+    //             } else {
+    //                 twoPhotos = postImages.splice(1)
+    //             }
 
-                return (
-                    <Link to={`/post-image/${postId}/${username}`} className="grid grid-cols-2 gap-1 h-full">
-                        <div className=''>
-                            <img className="aspect-square object-cover" src={path(postImages[0].url)} alt={postImages[0].filename} />
-                        </div>
-                        <div className=" grid grid-cols-1 grid-rows-2 gap-1 aspect-square">
-                            {
-                                twoPhotos.map(value => (
-                                    <div key={value.id} className='h-full relative'>
-                                        {
-                                            twoPhotos[twoPhotos.length - 1] === value && postImages.length > 1 ? (
-                                                <div className=" bg-lnk-dark opacity-55 absolute inset-0 flex items-center justify-center">
-                                                    <p className=" text-lnk-white">{postImages.length - 3} more</p>
-                                                </div>) : null
-                                        }
-                                        <img
-                                            className="w-full h-full object-cover"
-                                            src={path(value.url)}
-                                            alt={value.filename}
-                                        />
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </Link>
-                )
-            }
-            else {
-                return null
-            }
-        } else {
-            return null
-        }
-    }
+    //             return (
+    //                 <Link to={`/post-image/${postId}/${username}`} className="grid h-full grid-cols-2 gap-1">
+    //                     <div className=''>
+    //                         <img className="object-cover aspect-square" src={path(postImages[0].url)} alt={postImages[0].filename} />
+    //                     </div>
+    //                     <div className="grid grid-cols-1 grid-rows-2 gap-1 aspect-square">
+    //                         {
+    //                             twoPhotos.map(value => (
+    //                                 <div key={value.id} className='relative h-full'>
+    //                                     {
+    //                                         twoPhotos[twoPhotos.length - 1] === value && postImages.length > 1 ? (
+    //                                             <div className="absolute inset-0 flex items-center justify-center bg-lnk-dark opacity-55">
+    //                                                 <p className=" text-lnk-white">{postImages.length - 3} more</p>
+    //                                             </div>) : null
+    //                                     }
+    //                                     <img
+    //                                         className="object-cover w-full h-full"
+    //                                         src={path(value.url)}
+    //                                         alt={value.filename}
+    //                                     />
+    //                                 </div>
+    //                             ))
+    //                         }
+    //                     </div>
+    //                 </Link>
+    //             )
+    //         }
+    //         else {
+    //             return null
+    //         }
+    //     } else {
+    //         return null
+    //     }
+    // }
 
-    /*
-        Display user reaction for current authenticated user
-    */
+    // --- Display user reaction for current authenticated user ---
     const userReaction = () => {
-        if (isReact === 'like') {
+        const currentReaction = post.user_reaction;
+        const config = REACTION_CONFIG[currentReaction];
+
+        if (!config) {
             return (
                 <>
-                    <img width={20} height={20} src={likeIcon} alt="Like icon" />
-                    <span className="text-blue-500 font-bold">{capitalize(isReact)}</span>
-                </>
-            )
-        }
-        else if (isReact === 'heart') {
-            return (
-                <>
-                    <img width={20} height={20} src={heartIcon} alt="Heart icon" />
-                    <span className="text-red-500 font-bold">{capitalize(isReact)}</span>
-                </>
-            )
-        }
-        else if (isReact === 'wow') {
-            return (
-                <>
-                    <img width={16} height={16} src={wowIcon} alt="Wow icon" />
-                    <span className="text-yellow-500 font-bold">{capitalize(isReact)}</span>
-                </>
-            )
-        } else {
-            return (
-                <>
-                    <AiOutlineLike className="" />
+                    <AiOutlineLike />
                     <span>React</span>
                 </>
-            )
+            );
         }
+
+        return (
+            <>
+                <img
+                    width={config.size}
+                    height={config.size}
+                    src={config.icon}
+                    alt={config.alt}
+                />
+                <span className={config.labelClass}>
+                    {capitalize(currentReaction)}
+                </span>
+            </>
+        );
     }
 
     const handleShowReactionIcon = debounce(() => setIsShowReactionIcon(true), 100)
     const handleHideReactionIcon = debounce(() => setIsShowReactionIcon(false), 100)
 
     const likePost = async (reaction) => {
-        likePostMutation.mutate({ postId: postId, reaction: reaction })
+        likePostMutation.mutate({ postId: post.id, reaction: reaction })
     }
 
     const likePostMutation = useMutation({
         mutationFn: async (reaction) => {
-            let result = await axiosInstance.post(`/post/like/${reaction.postId}/${reaction.reaction}`, {}, {
-                withCredentials: true
-            })
+            const response = await axiosInstance.post(
+                `/post/${reaction.postId}/reactions`, 
+                { type: reaction.reaction },
+                {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
             setIsShowReactionIcon(false)
-            if (result.status === 200) {
-                return result
+            if (response.data.success) {
+                return response
             }
         },
         onSuccess: async () => {
@@ -176,60 +194,57 @@ const Post = ({ post, postId, authUserProfile, content, fullName, username, head
     }
 
     return (
-        <section className=" pt-3 sm:pt-2 mb-4 xs:mb-3 rounded shadow px-2 sm:px-0 sm:border sm:border-lnk-gray sm:bg-lnk-white">
-            <div className=" flex items-start gap-2 sm:px-5 pt-3 mb-4">
-                <div className=" w-9 h-9 rounded-full overflow-hidden border border-lnk-dark-gray">
-                    <img className="w-full h-full object-cover" src={post.user?.avatar_url ?? profilePlaceholder} alt="" />
+        <section className="px-2 pt-3 mb-4 rounded shadow sm:pt-2 xs:mb-3 sm:px-0 sm:border sm:border-lnk-gray sm:bg-lnk-white">
+            <div className="flex items-start gap-2 pt-3 mb-4 sm:px-5">
+                <div className="overflow-hidden border rounded-full w-9 h-9 border-lnk-dark-gray">
+                    <img className="object-cover w-full h-full" src={post.user?.avatar_url ?? profilePlaceholder} alt="" />
                 </div>
                 <div>
-                    <Link to={`/`} className=" text-base font-bold hover:underline">
+                    <Link to={`/`} className="text-base font-bold hover:underline">
                         { post.user.full_name ?? post.user.username }
                     </Link>
-                    <p className=" text-xs font-light">{ post.user?.headline }</p>
-                    <p className=" text-xs font-light text-lnk-dark-gray">
+                    <p className="text-xs font-light ">{ post.user?.headline }</p>
+                    <p className="text-xs font-light text-lnk-dark-gray">
                         <span className="inline-block">{diffInDays(post.created_at)}</span>
-                        <FaGlobeAsia className=" inline-block align-middle ml-1" />
+                        <FaGlobeAsia className="inline-block ml-1 align-middle " />
                     </p>
                 </div>
             </div>
             <div className="mb-4">
-                <div className=" sm:px-5 mb-1">
+                <div className="mb-1 sm:px-5">
                     <ReactMarkdown>{post.content}</ReactMarkdown>
                 </div>
-                {
-                    postImageDisplay()
-                }
             </div>
-            <div className="sm:px-5 flex items-center justify-between mb-2">
-                <PostReaction postReactions={'heart,like,wow'} reactionCount={3} />
+            <div className="flex items-center justify-between mb-2 sm:px-5">
+                <PostReaction postReactions={post.reactions} reactionCount={post.total_reactions} />
                 <div>
-                    <button onClick={fetchAllComment} className=" text-xs text-lnk-dark-gray hover:underline">
+                    <button onClick={fetchAllComment} className="text-xs text-lnk-dark-gray hover:underline">
                         0 Comment
                     </button>
                 </div>
             </div>
             <div className="sm:px-5">
-                <ul className=" flex items-center gap-5 py-1 border-t border-lnk-gray">
+                <ul className="flex items-center gap-5 py-1 border-t border-lnk-gray">
                     <li onMouseEnter={handleShowReactionIcon} onMouseLeave={handleHideReactionIcon} tabIndex={0} className="relative group">
-                        <button onTouchStart={handleShowReactionIcon} onTouchEnd={isShowReactionIcon ? handleHideReactionIcon : handleShowReactionIcon} className="text-sm flex items-center gap-1 py-1 sm:py-2 px-2 sm:px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                        <button onTouchStart={handleShowReactionIcon} onTouchEnd={isShowReactionIcon ? handleHideReactionIcon : handleShowReactionIcon} className="flex items-center gap-1 px-2 py-1 text-sm transition-colors duration-150 ease-linear rounded sm:py-2 sm:px-4 hover:bg-lnk-gray">
                             {userReaction()}
                         </button>
                         <div className={`${isShowReactionIcon ? 'block' : 'hidden'} animate__animated animate__fadeIn absolute -top-11 z-10 pb-2 opacity-0 group-hover:opacity-100  transition-all ease-linear duration-150`}>
-                            <div className=" bg-lnk-white border border-lnk-gray p-2 flex items-center gap-5 rounded-3xl shadow">
-                                <button onClick={() => likePost('heart')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
-                                    <FaHeart className=" text-red-500 text-xl" />
+                            <div className="flex items-center gap-5 p-2 border shadow bg-lnk-white border-lnk-gray rounded-3xl">
+                                <button onClick={() => likePost('heart')} className="transition-transform duration-150 ease-linear hover:-translate-y-1">
+                                    <FaHeart className="text-xl text-red-500 " />
                                 </button>
-                                <button onClick={() => likePost('like')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
-                                    <AiFillLike className=" text-blue-500 text-xl" />
+                                <button onClick={() => likePost('like')} className="transition-transform duration-150 ease-linear hover:-translate-y-1">
+                                    <AiFillLike className="text-xl text-blue-500 " />
                                 </button>
-                                <button onClick={() => likePost('wow')} className=" hover:-translate-y-1 transition-transform ease-linear duration-150">
-                                    <BsFillEmojiSurpriseFill className=" text-yellow-500 text-xl" />
+                                <button onClick={() => likePost('wow')} className="transition-transform duration-150 ease-linear hover:-translate-y-1">
+                                    <BsFillEmojiSurpriseFill className="text-xl text-yellow-500 " />
                                 </button>
                             </div>
                         </div>
                     </li>
                     <li>
-                        <button onClick={fetchAllComment} className="text-sm flex items-center gap-1 py-1 sm:py-2 px-2 sm:px-4 hover:bg-lnk-gray transition-colors ease-linear duration-150 rounded">
+                        <button onClick={fetchAllComment} className="flex items-center gap-1 px-2 py-1 text-sm transition-colors duration-150 ease-linear rounded sm:py-2 sm:px-4 hover:bg-lnk-gray">
                             <FaRegComment className="" />
                             <span>Comment</span>
                         </button>
@@ -237,7 +252,7 @@ const Post = ({ post, postId, authUserProfile, content, fullName, username, head
                 </ul>
             </div>
             <div className={`sm:px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
-                <PostComments postId={post.id} isShowComment={showComment} authUserProfile={authUserProfile} />
+                <PostComments postId={post.id} isShowComment={showComment} authUserProfile={post.user.avatar_url} />
             </div>
         </section>
     )
