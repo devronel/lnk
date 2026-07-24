@@ -15,7 +15,7 @@ const LnkTextarea = ({ onChange, value, placeholder, label, name, className, err
                 value={value}
                 name={name}
                 rows='5'
-                id={label.toLowerCase().replace(' ', '-')}
+                id={label ? label.toLowerCase().replace(' ', '-') : ''}
                 placeholder={placeholder}
                 className={`${error ? ' border-red-500' : 'border-lnk-gray'} px-3 py-2 w-full font-lato rounded border text-sm outline-none focus:outline focus:outline-lnk-orange `}></textarea>
         </div>

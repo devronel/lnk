@@ -9,6 +9,7 @@ import { FcAddImage } from "react-icons/fc"
 import { BsFileEarmarkPostFill } from "react-icons/bs"
 
 import photoGalleryIcon from "../../assets/icons/photo-gallery.png"
+import LnkTextarea from "../forms/lnkTextarea"
 
 
 const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
@@ -17,6 +18,9 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
     const [setErrors, errorExist] = useError()
     const [post, setPost] = useState({
         content: '',
+        type: 1,
+        visibility: 1,
+        status: 1,
         files: []
     })
     const [loading, setLoading] = useState(false)
@@ -63,20 +67,23 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
     const uploadPostMutation = useMutation({
         mutationFn: async (post) => {
             setLoading(true)
-            let formData = new FormData()
-            let files = Array.from(post.files)
-            files.forEach(value => {
-                formData.append(`files`, value)
-            })
-            formData.append('content', post.content)
-            let result = await axiosInstance.post('/post/create', formData, {
+            // let formData = new FormData()
+            // let files = Array.from(post.files)
+            // files.forEach(value => {
+            //     formData.append(`files`, value)
+            // })
+            // formData.append('content', post.content)
+            let response = await axiosInstance.post('/post', post, {
                 withCredentials: true,
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    // 'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'application/json'
                 }
             })
-            if (result.status === 200) {
-                return result
+
+            if (response.data.success) {
+                console.log(response.data)
+                return response
             }
         },
         onSuccess: async () => {
@@ -91,7 +98,6 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
             setFilesPreview([])
         },
         onError: (error) => {
-            setErrors(error.response.data.payload)
             setLoading(false)
         }
     })
@@ -117,10 +123,13 @@ const CreatePostModal = ({ isPostModalOpen, setIsPostModalOpen }) => {
     return (
         <Modal submit={save} loader={loading} openModal={isPostModalOpen} closeModal={closeModal} title='Create Post' icon={<BsFileEarmarkPostFill className=" text-lnk-orange" />}>
             <div className=" mb-3">
-                <Tiptop content={post} setContent={setPost} setErrors={setErrors} />
-                {
-                    errorExist('content') ? <p className=" text-red-500 text-xs mt-1 italic">{errorExist('content').msg}</p> : null
-                }
+                <LnkTextarea 
+                    onChange={handleOnchange} 
+                    value={post.content}
+                    name='content'
+                    placeholder="What's on your mind?" 
+                    required
+                />
             </div>
             {/* <div className=" flex items-center flex-wrap gap-2">
                 {

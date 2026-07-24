@@ -188,14 +188,18 @@ const Profile = () => {
 
     
     useEffect(() => {
-        const onScroll = debounce(function () {
+        const onScroll = debounce(() => {
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-                fetchNextPage()
+            fetchNextPage();
             }
-        }, 500)
+        }, 500);
 
-        window.addEventListener('scroll', onScroll)
-        return () => window.removeEventListener('scroll', onScroll)
+        window.addEventListener('scroll', onScroll);
+
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            onScroll.cancel();
+        };
     }, [])
 
     /* --- DISABLE SCROLL WHEN MODAL IS OPEN --- */

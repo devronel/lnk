@@ -3,8 +3,9 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import axiosInstance from "../../utils/axios";
 import { AuthContext } from "../../context/AuthContext";
 import { debounce } from "lodash";
+import ReactMarkdown from 'react-markdown';
 import { PulseLoader } from 'react-spinners'
-import { isNull, path } from "../../utils/functions";
+import { diffInDays, isNull, path } from "../../utils/functions";
 import { TbLoaderQuarter } from "react-icons/tb";
 import { PiCoffeeDuotone } from "react-icons/pi";
 import Post from "../../components/post"
@@ -15,6 +16,8 @@ import Post from "../../components/post"
 */
 import profilePlaceholder from '../../assets/profile-placeholder.jpg'
 import CreatePostModal from "../../components/modals/createPostModal";
+import { Link } from "react-router-dom";
+import { FaGlobeAsia } from "react-icons/fa";
 
 const Home = () => {
 
@@ -36,11 +39,12 @@ const Home = () => {
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
         queryKey: ['posts', user?.username],
         queryFn: async ({ pageParam }) => {
-            let result = await axiosInstance.get(`/post/all?pages=${pageParam}`, {
+            let result = await axiosInstance.get(`/post?pages=${pageParam}`, {
                 withCredentials: true
             })
-
-            return result.data.payload
+            
+            console.log(result.data.data)
+            return result.data
 
         },
         initialPageParam: 0,
@@ -86,61 +90,53 @@ const Home = () => {
                 <button onClick={startPost} className=" flex-grow text-sm border border-lnk-gray p-2 sm:p-3 rounded text-left bg-white">Start post</button>
             </section>
             {
-                data?.pages.map(dt => (
-                    dt.result.map(value => (
-                        <Post
-                            key={value.id}
-                            postId={value.id}
-                            authUserProfile={user?.url}
-                            content={value.content}
-                            username={value.username}
-                            fullName={value.full_name}
-                            headline={value.headline}
-                            createdAt={value.created_at}
-                            profilPicUrl={value.url}
-                            postFiles={value.post_files}
-                            postReactions={value.post_reactions}
-                            isReact={value.user_reaction}
-                            reactionCount={value.reaction_count}
-                            commentCount={value.comment_count}
-                        />
-                    ))
+                data?.pages.map((page, pageIndex) => (
+                    <div key={pageIndex}>
+                        {
+                            page.data.map((post) => (
+                                <Post 
+                                    key={post.id}
+                                    post={post}
+                                />
+                            ))
+                        }
+                    </div>
                 ))
             }
             {
-                documentHeight <= documentHeightInScroll ? (
-                    isFetchingNextPage
-                        ? (
-                            <div>
-                                <p className="  text-center text-xs text-lnk-dark-gray">
-                                    <PulseLoader
-                                        color={'#FF6500'}
-                                        loading={isFetchingNextPage}
-                                        size={6}
-                                        aria-label="Loading Spinner"
-                                        data-testid="loader"
-                                    />
-                                </p>
-                            </div>
-                        )
-                        : hasNextPage
-                            ? (
-                                <p className="  text-center text-xs text-lnk-dark-gray">
-                                    Load more
-                                </p>
-                            )
-                            : (
-                                <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
-                                    <PiCoffeeDuotone className=" text-base " />
-                                    No more post
-                                </p>
-                            )
-                ) : (
-                    <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
-                        <PiCoffeeDuotone className=" text-base " />
-                        No more post
-                    </p>
-                )
+                // documentHeight <= documentHeightInScroll ? (
+                //     isFetchingNextPage
+                //         ? (
+                //             <div>
+                //                 <p className="  text-center text-xs text-lnk-dark-gray">
+                //                     <PulseLoader
+                //                         color={'#FF6500'}
+                //                         loading={isFetchingNextPage}
+                //                         size={6}
+                //                         aria-label="Loading Spinner"
+                //                         data-testid="loader"
+                //                     />
+                //                 </p>
+                //             </div>
+                //         )
+                //         : hasNextPage
+                //             ? (
+                //                 <p className="  text-center text-xs text-lnk-dark-gray">
+                //                     Load more
+                //                 </p>
+                //             )
+                //             : (
+                //                 <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
+                //                     <PiCoffeeDuotone className=" text-base " />
+                //                     No more post
+                //                 </p>
+                //             )
+                // ) : (
+                //     <p className=" flex items-center justify-center gap-1 text-center text-xs text-lnk-dark-gray">
+                //         <PiCoffeeDuotone className=" text-base " />
+                //         No more post
+                //     </p>
+                // )
             }
 
         </>
