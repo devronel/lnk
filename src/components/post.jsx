@@ -46,88 +46,6 @@ const Post = ({ post }) => {
     const [showComment, setShowComment] = useState(false)
     const [isShowReactionIcon, setIsShowReactionIcon] = useState(false)
 
-    //  --- Post images display ---
-    // const postImageDisplay = () => {
-
-    //     if (!isNull(post.files)) {
-
-    //         let postImages = []
-
-    //         if (postImages.length === 1) {
-    //             return (
-    //                 <Link to={`/post-image/${post.id}/${post.username}`} className="block bg-lnk-gray p-1 h-[18.75rem]">
-    //                     <div className="w-full h-full">
-    //                         <img
-    //                             className="object-contain w-full h-full"
-    //                             src={path(postImages[0].url)}
-    //                             alt={postImages[0].filename}
-    //                         />
-    //                     </div>
-    //                 </Link>
-    //             )
-    //         } else if (postImages.length === 2) {
-    //             return (
-    //                 <Link to={`/post-image/${post.id}/${post.username}`} className="grid grid-cols-2">
-    //                     {
-    //                         postImages.map(value => (
-    //                             <div key={value.id} className='p-1 bg-lnk-gray'>
-    //                                 <div className="w-full h-full ">
-    //                                     <img
-    //                                         className="object-contain w-full h-full"
-    //                                         src={path(value.url)}
-    //                                         alt={value.filename}
-    //                                     />
-    //                                 </div>
-    //                             </div>
-    //                         ))
-    //                     }
-    //                 </Link>
-    //             )
-    //         } else if (postImages.length >= 3) {
-
-    //             let twoPhotos
-
-    //             if (postImages.length > 3) {
-    //                 twoPhotos = postImages.slice(1, 3);
-    //             } else {
-    //                 twoPhotos = postImages.splice(1)
-    //             }
-
-    //             return (
-    //                 <Link to={`/post-image/${postId}/${username}`} className="grid h-full grid-cols-2 gap-1">
-    //                     <div className=''>
-    //                         <img className="object-cover aspect-square" src={path(postImages[0].url)} alt={postImages[0].filename} />
-    //                     </div>
-    //                     <div className="grid grid-cols-1 grid-rows-2 gap-1 aspect-square">
-    //                         {
-    //                             twoPhotos.map(value => (
-    //                                 <div key={value.id} className='relative h-full'>
-    //                                     {
-    //                                         twoPhotos[twoPhotos.length - 1] === value && postImages.length > 1 ? (
-    //                                             <div className="absolute inset-0 flex items-center justify-center bg-lnk-dark opacity-55">
-    //                                                 <p className=" text-lnk-white">{postImages.length - 3} more</p>
-    //                                             </div>) : null
-    //                                     }
-    //                                     <img
-    //                                         className="object-cover w-full h-full"
-    //                                         src={path(value.url)}
-    //                                         alt={value.filename}
-    //                                     />
-    //                                 </div>
-    //                             ))
-    //                         }
-    //                     </div>
-    //                 </Link>
-    //             )
-    //         }
-    //         else {
-    //             return null
-    //         }
-    //     } else {
-    //         return null
-    //     }
-    // }
-
     // --- Display user reaction for current authenticated user ---
     const userReaction = () => {
         const currentReaction = post.user_reaction;
@@ -252,7 +170,7 @@ const Post = ({ post }) => {
                 </ul>
             </div>
             <div className={`sm:px-5 pb-2 mt-2 ${showComment ? 'block' : 'hidden'}`}>
-                <PostComments postId={post.id} isShowComment={showComment} authUserProfile={post.user.avatar_url} />
+                <PostComments postId={post.id} isShowComment={showComment} />
             </div>
         </section>
     )

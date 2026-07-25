@@ -39,13 +39,11 @@ const Home = () => {
                 withCredentials: true
             })
 
-            console.log(result.data)
             return result.data
 
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage, pages) => {
-            console.log(lastPage, pages)
             if (lastPage.meta.current_page < lastPage.meta.last_page) {
                 return lastPage.meta.current_page + 1;
             }
