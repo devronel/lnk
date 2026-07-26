@@ -19,8 +19,11 @@ export const AuthProvider = ({ children }) => {
         try {
             setAuthLoading(true)
 
+            await axios.get('http://localhost:8000/sanctum/csrf-cookie', {
+                withCredentials: true
+            });
+
             let user = await axiosInstance.post('/authenticate', data, {
-                withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -29,7 +32,6 @@ export const AuthProvider = ({ children }) => {
             if (user.data.success) {
                 setIsLogin(true)
                 setAuthLoading(false)
-                localStorage.setItem('auth_token', user.data.payload.access_token);
                 setUser(user.data.payload.user);
             }
         } catch (error) {
@@ -55,7 +57,6 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error("Backend logout failed, forcing client cleanup:", error);
         } finally {
-            localStorage.removeItem('auth_token');
             setUser(null);
             setIsLogin(false);
         }
@@ -64,29 +65,15 @@ export const AuthProvider = ({ children }) => {
     /* --- Get User Data, Run when page reload --- */
     const refreshUser = async () => {
 
-        const token = localStorage.getItem('auth_token');
-
-        if (!token) {
-            setUser(null);
-            setIsLogin(false);
-            setIsAuthenticating(false);
-            return;
-        }
-
         try {
             setIsAuthenticating(true);
 
-            const response = await axiosInstance.get('/user', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            
+            const response = await axiosInstance.get('/user');
+
             setUser(response.data.data);
             setIsLogin(true);
 
         } catch (error) {
-            localStorage.removeItem('auth_token');
             setUser(null);
             setIsLogin(false);
         } finally {

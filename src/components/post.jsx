@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isNull, capitalize, debounce } from 'lodash'
@@ -45,6 +45,9 @@ const Post = ({ post }) => {
     const queryClient = useQueryClient()
     const [showComment, setShowComment] = useState(false)
     const [isShowReactionIcon, setIsShowReactionIcon] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const textRef = useRef(null);
 
     // --- Display user reaction for current authenticated user ---
     const userReaction = () => {
@@ -111,6 +114,13 @@ const Post = ({ post }) => {
         setShowComment(true)
     }
 
+    useEffect(() => {
+        const el = textRef.current;
+        if (el) {
+            setIsOverflowing(el.scrollHeight > el.clientHeight);
+        }
+    }, [post.content]);
+
     return (
         <section className="px-2 pt-3 mb-4 rounded shadow sm:pt-2 xs:mb-3 sm:px-0 sm:border sm:border-lnk-gray sm:bg-lnk-white">
             <div className="flex items-start gap-2 pt-3 mb-4 sm:px-5">
@@ -129,9 +139,19 @@ const Post = ({ post }) => {
                 </div>
             </div>
             <div className="mb-4">
-                <div className="mb-1 sm:px-5">
+                <div ref={textRef} className={` sm:px-5 ${!isExpanded ? 'line-clamp-5' : ''}`}>
                     <ReactMarkdown>{post.content}</ReactMarkdown>
                 </div>
+                {isOverflowing && (
+                    <div className="sm:px-5">
+                        <button
+                            onClick={() => setIsExpanded(!isExpanded)}
+                            className="text-xs font-semibold text-lnk-orange hover:underline focus:outline-none"
+                        >
+                            {isExpanded ? 'See less' : 'See more'}
+                        </button>
+                    </div>
+                )}
             </div>
             <div className="flex items-center justify-between mb-2 sm:px-5">
                 <PostReaction postReactions={post.reactions} reactionCount={post.total_reactions} />
@@ -162,7 +182,10 @@ const Post = ({ post }) => {
                         </div>
                     </li>
                     <li>
-                        <button onClick={fetchAllComment} className="flex items-center gap-1 px-2 py-1 text-sm transition-colors duration-150 ease-linear rounded sm:py-2 sm:px-4 hover:bg-lnk-gray">
+                        <button 
+                            onClick={fetchAllComment} 
+                            className={`${showComment ? 'bg-lnk-gray' : ''} flex items-center gap-1 px-2 py-1 text-sm transition-colors duration-150 ease-linear rounded sm:py-2 sm:px-4 hover:bg-lnk-gray`}
+                        >
                             <FaRegComment className="" />
                             <span>Comment</span>
                         </button>

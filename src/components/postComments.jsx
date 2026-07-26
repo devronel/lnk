@@ -10,7 +10,7 @@ import { GrSend } from "react-icons/gr"
 
 import profilePlaceholder from "../assets/profile-placeholder.jpg"
 
-const PostComments = ({ postId, isShowComment, authUserProfile }) => {
+const PostComments = ({ postId, isShowComment }) => {
 
     const queryClient = useQueryClient()
     const { user } = useContext(AuthContext)
